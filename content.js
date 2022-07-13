@@ -31,7 +31,7 @@ SELECTORS = {
     },
     RELATED: '#related',
     COMMENTS: '#comments',
-    PLAYLIST: '#playlist > #container',
+    PLAYLIST: '#secondary-inner > #playlist',
     COLUMN_LEFT: '#primary-inner',
     COLUMN_RIGHT: '#secondary-inner',
   },
@@ -142,16 +142,6 @@ function fullPlayer() {
   const playerV = SELECTORS.PLAYER.VIDEO();
   const playerControls = SELECTORS.PLAYER.CONTROLS.CONTROLS();
   const hoverBar = SELECTORS.PLAYER.CONTROLS.TIME_BAR();
-  //   const player = document.querySelector('#ytd-player');
-  //   const playerV = document.querySelector(
-  //     '#movie_player > div.html5-video-container > video'
-  //   );
-  //   const playerControls = document.querySelector(
-  //     '#movie_player > div.ytp-chrome-bottom'
-  //   );
-  //   const hoverBar = document.querySelector(
-  //     '#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container'
-  //   );
 
   player.removeAttribute('style');
   window.dispatchEvent(new Event('resize'));
@@ -258,7 +248,8 @@ function resizeUpdate() {
       SELECTORS.PLAYER.CONTROLS.THEATER().title == 'Default view (t)' ||
       (SELECTORS.CHAT.CHAT() &&
         SELECTORS.CHAT.BODY() &&
-        SELECTORS.CHAT.BODY().childElementCount > 0)
+        SELECTORS.CHAT.BODY().childElementCount > 0) ||
+      (SELECTORS.PLAYLIST() && !SELECTORS.PLAYLIST().hidden)
     ) {
       el.style.position = 'absolute';
       el.style.overflow = 'visible';
@@ -266,40 +257,33 @@ function resizeUpdate() {
       el.style.position = 'fixed';
       el.style.overflow = 'auto';
     }
+  }
 
-    // check if we are at a live stream and switch back to default comment mode as this acts the same as new mode
-    if (
-      SELECTORS.CHAT.OPEN_BUTTON() &&
-      !SELECTORS.CHAT.OPEN_BUTTON().textContent.includes('replay')
-    ) {
-      console.log('LIVE STREAM');
+  // change comment box according to if 'SHOW CHAT' box is there
+  if (SELECTORS.CHAT.CHAT()) {
+    el.style.height =
+      'calc(100vh - ' + (SELECTORS.CHAT.CHAT().offsetHeight + 115) + 'px)';
+  } else {
+    el.style.height = 'calc(100vh - 90px)';
+  }
+
+  // check if we are at a live stream and switch back to default comment mode as this acts the same as new mode
+  if (
+    SELECTORS.CHAT.OPEN_BUTTON() &&
+    !SELECTORS.CHAT.OPEN_BUTTON().textContent.includes('replay')
+  ) {
+    if (currentState === 'new') {
       defaultComments();
-    } else {
-      console.log('NOT LIVE STREAM');
-      newComments();
     }
-
+  } else {
     if (window.innerWidth <= 1016) {
       if (currentState === 'new') {
         defaultComments();
       }
     } else {
       if (currentState === 'default') {
-        //   newComments();
+        newComments();
       }
-    }
-
-    // change comment box according to if 'SHOW CHAT' box is there
-    if (SELECTORS.CHAT.CHAT()) {
-      el.style.height =
-        'calc(100vh - ' + (SELECTORS.CHAT.CHAT().offsetHeight + 115) + 'px)';
-      // } else if (SELECTORS.PLAYLIST()) {
-      // temp fix by using check if we are in theater, or fullscreen
-      //   el.style.height =
-      //     'calc(100vh - ' + (SELECTORS.PLAYLIST().offsetHeight + 115) + 'px)';
-    } else {
-      //   el.style.height = 'calc(100vh - 90px)';
-      el.style.height = 'calc(100vh - 90px)';
     }
   }
 }
@@ -340,10 +324,8 @@ var oldRef = window.location.href;
 setInterval(() => {
   if (oldRef !== window.location.href) {
     oldRef = window.location.href;
-    console.log('new ref');
     setTimeout(() => {
       // waitForElm('#comments').then((elm) => {
-      console.log('ready');
       resizeUpdate();
       // });
     }, 750);
@@ -364,10 +346,18 @@ if (window.location.href.includes('watch')) {
     // fullscreen
     SELECTORS.PLAYER.CONTROLS.FULLSCREEN().addEventListener('click', () =>
       setTimeout(() => {
-        console.log('fullscreen');
         resizeUpdate();
       }, 100)
     );
+
+    // key press for fullscreen and theater
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'KeyT' || e.code === 'KeyF') {
+        setTimeout(() => {
+          resizeUpdate();
+        }, 100);
+      }
+    });
 
     // SELECTORS.COLUMN_RIGHT().appendChild(el);
 
@@ -375,7 +365,6 @@ if (window.location.href.includes('watch')) {
     waitForElm(SELECTORS.RAW.CHAT.SHOW_HIDE).then((elm) => {
       SELECTORS.CHAT.SHOW_HIDE().addEventListener('click', () =>
         setTimeout(() => {
-          console.log('CHAT!');
           resizeUpdate();
         }, 200)
       );
