@@ -15,6 +15,7 @@ SELECTORS = {
       TITLE: 'h1.title.ytd-video-primary-info-renderer > yt-formatted-string',
       CHANNEL:
         '#channel-name.ytd-video-owner-renderer > #container > #text-container > #text > a',
+      DISLIKE: 'yt-formatted-string.ytd-toggle-button-renderer',
       CONTAINER: '#player-container.ytd-watch-flexy',
       BOUNDS: '#player-theater-container, #player-container-inner',
       VIDEO: '#movie_player > div.html5-video-container > video',
@@ -67,6 +68,7 @@ SELECTORS = {
       document.querySelector(SELECTORS.RAW.PLAYER.MOVIE_PLAYER),
     TITLE: () => document.querySelector(SELECTORS.RAW.PLAYER.TITLE),
     CHANNEL: () => document.querySelector(SELECTORS.RAW.PLAYER.CHANNEL),
+    DISLIKE: () => document.querySelectorAll(SELECTORS.RAW.PLAYER.DISLIKE)[1],
     CONTAINER: () => document.querySelector(SELECTORS.RAW.PLAYER.CONTAINER),
     BOUNDS: () => {
       for (const selector of document.querySelectorAll(
@@ -205,31 +207,6 @@ function miniPlayer() {
   // SELECTORS.PLAYER.MOVIE_PLAYER().class = miniPlayerClasses;
   SELECTORS.MINI_PLAYER.ROOT().setAttribute('enabled', '');
   SELECTORS.MINI_PLAYER.ROOT().setAttribute('active', '');
-
-  // var playerV2 = document.evaluate(
-  //     '//*[@id="primary"]/div/div[1]/div/div/div',
-  //     document,
-  //     null,
-  //     XPathResult.FIRST_ORDERED_NODE_TYPE,
-  //     null
-  //   ).singleNodeValue;
-  //   var playerCon = document.evaluate(
-  //     '/html/body/ytd-app/ytd-miniplayer/div[2]/div/div[1]/div[1]/div',
-  //     document,
-  //     null,
-  //     XPathResult.FIRST_ORDERED_NODE_TYPE,
-  //     null
-  //   ).singleNodeValue;
-  //   document
-  //     .querySelector('body > ytd-app')
-  //     .setAttribute('miniplayer-is-active', '');
-  //   document
-  //     .querySelector('body > ytd-app > ytd-miniplayer')
-  //     .setAttribute('enabled', '');
-  //   document
-  //     .querySelector('body > ytd-app > ytd-miniplayer')
-  //     .setAttribute('active', '');
-  //   playerCon.appendChild(player);
 }
 
 function fullPlayer() {
@@ -283,38 +260,6 @@ function fullPlayer() {
   SELECTORS.MINI_PLAYER.ROOT().removeAttribute('enabled');
   SELECTORS.PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
   // SELECTORS.PLAYER.MOVIE_PLAYER().class = fullPlayerClasses;
-
-  // var playerV2 = document.evaluate(
-  //     '/html/body/ytd-app/ytd-miniplayer/div[2]/div/div[1]/div[1]/div/ytd-player',
-  //     document,
-  //     null,
-  //     XPathResult.FIRST_ORDERED_NODE_TYPE,
-  //     null
-  //   ).singleNodeValue;
-  //   var playerCon = document.evaluate(
-  //     '//*[@id="primary"]/div/div[1]/div/div/div',
-  //     document,
-  //     null,
-  //     XPathResult.FIRST_ORDERED_NODE_TYPE,
-  //     null
-  //   ).singleNodeValue;
-  //   player.style.top = '0px';
-  //   player.style.left = '0px';
-  //   player.style.width = 'calc(100%)';
-  //   player.style.height = 'calc(100%)';
-  //   player.style.zIndex = 9999999;
-  //   playerV.style.width = 'calc(100vw)';
-  //   playerV.style.height = 'calc(100vh)';
-  //   document
-  //     .querySelector('body > ytd-app')
-  //     .removeAttribute('miniplayer-is-active');
-  //   document
-  //     .querySelector('body > ytd-app > ytd-miniplayer')
-  //     .removeAttribute('enabled');
-  //   document
-  //     .querySelector('body > ytd-app > ytd-miniplayer')
-  //     .removeAttribute('active');
-  //   document.querySelector('#player-container').appendChild(player);
 }
 
 var newCommentsEnabled = false;
@@ -396,10 +341,43 @@ function resizeUpdate() {
   }
 }
 
-function setupPage() {
-  resRatio =
-    SELECTORS.PLAYER.VIDEO().offsetWidth /
-    SELECTORS.PLAYER.VIDEO().offsetHeight;
+function shortenNumber(num) {
+  const abbrev = ['K', 'M', 'B', 'T']; // could be an array of strings: [' m', ' Mo', ' Md']
+
+  function round(n, precision) {
+    var prec = Math.pow(10, precision);
+    return Math.round(n * prec) / prec;
+  }
+
+  var base = Math.floor(Math.log(Math.abs(num)) / Math.log(1000));
+  var suffix = abbrev[Math.min(2, base - 1)];
+  base = abbrev.indexOf(suffix) + 1;
+  return suffix ? round(num / Math.pow(1000, base), 0) + suffix : '' + num;
+}
+
+function setupWatchPage() {
+  waitForElm(SELECTORS.RAW.PLAYER.DISLIKE).then(() => {
+    fetch(
+      'https://returnyoutubedislikeapi.com/votes?videoId=' +
+        currentURL.searchParams.get('v')
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        SELECTORS.PLAYER.DISLIKE().textContent = shortenNumber(data.dislikes);
+      });
+  });
+
+  // this needs to be changed to only add when it is live
+  // live chat button click
+  waitForElm(SELECTORS.RAW.CHAT.SHOW_HIDE).then(() => {
+    SELECTORS.CHAT.SHOW_HIDE().addEventListener('click', () => {
+      setTimeout(() => {
+        resizeUpdate();
+      }, 200);
+    });
+
+    resizeUpdate();
+  });
 }
 
 function waitForElm(selector) {
@@ -422,74 +400,82 @@ function waitForElm(selector) {
   });
 }
 
-var oldRef = window.location.href;
+// watch for page change
+var currentURL = new URL(window.location.href);
 setInterval(() => {
-  if (oldRef !== window.location.href) {
-    if (window.location.href.includes('watch')) {
+  if (currentURL.href !== window.location.href) {
+    currentURL = new URL(window.location.href);
+    if (currentURL.pathname.startsWith('/watch')) {
       setTimeout(() => {
-        setupPage();
-        resizeUpdate();
+        setupWatchPage();
+        // resizeUpdate();
       }, 750);
     }
-
-    oldRef = window.location.href;
   }
 }, 50);
 
-if (window.location.href.includes('watch')) {
-  window.onscroll = () => {
+// wait for changes to the video so we can check if video aspect ratio changes
+waitForElm(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
+  const mutationCallback = (mutationsList) => {
+    for (const _ of mutationsList) {
+      resRatio =
+        SELECTORS.PLAYER.VIDEO().offsetWidth /
+        SELECTORS.PLAYER.VIDEO().offsetHeight;
+    }
+  };
+
+  const observer = new MutationObserver(mutationCallback);
+  observer.observe(SELECTORS.PLAYER.VIDEO(), { attributes: true });
+});
+
+window.onscroll = () => {
+  if (currentURL.pathname.startsWith('/watch')) {
     if (window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight) {
       miniPlayer();
     } else {
       fullPlayer();
     }
-  };
+  }
+};
 
-  window.addEventListener('resize', () => {
+window.addEventListener('resize', () => {
+  if (currentURL.pathname.startsWith('/watch')) {
     resizeUpdate();
-  });
+  }
+});
 
-  waitForElm('#comments').then(() => {
-    console.log('YouTube Enhancements Loaded!');
-
-    setupPage();
-
-    // theater mode
-    SELECTORS.PLAYER.CONTROLS.THEATER().addEventListener('click', () =>
+// key press for fullscreen and theater
+window.addEventListener('keydown', (e) => {
+  if (currentURL.pathname.startsWith('/watch')) {
+    if (e.code === 'KeyT' || e.code === 'KeyF') {
       setTimeout(() => {
         resizeUpdate();
-      }, 100)
-    );
+      }, 100);
+    }
+  }
+});
 
-    // fullscreen
-    SELECTORS.PLAYER.CONTROLS.FULLSCREEN().addEventListener('click', () =>
-      setTimeout(() => {
-        resizeUpdate();
-      }, 100)
-    );
+document.addEventListener('click', (e) => {
+  const clicked = e.target;
 
-    // key press for fullscreen and theater
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'KeyT' || e.code === 'KeyF') {
-        setTimeout(() => {
-          resizeUpdate();
-        }, 100);
-      }
-    });
-
-    // live chat button click
-    waitForElm(SELECTORS.RAW.CHAT.SHOW_HIDE).then((elm) => {
-      SELECTORS.CHAT.SHOW_HIDE().addEventListener('click', () =>
-        setTimeout(() => {
-          resizeUpdate();
-        }, 200)
-      );
-
+  // theater mode
+  if (clicked === SELECTORS.PLAYER.CONTROLS.THEATER()) {
+    setTimeout(() => {
       resizeUpdate();
-    });
+    }, 100);
+  }
 
+  // fullscreen
+  if (clicked === SELECTORS.PLAYER.CONTROLS.FULLSCREEN()) {
+    setTimeout(() => {
+      resizeUpdate();
+    }, 100);
+  }
+});
+
+if (currentURL.pathname.startsWith('/watch')) {
+  waitForElm('#comments').then(() => {
+    setupWatchPage();
     resizeUpdate();
-
-    console.log('YouTube Enhancements Active!');
   });
 }
