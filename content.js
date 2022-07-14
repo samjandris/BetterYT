@@ -28,6 +28,7 @@ SELECTORS = {
           'button[aria-label*="Switch camera"]',
           'button[aria-label*="Theater mode (t)"]',
           'button[aria-label*="Play on TV"]',
+          'button[aria-label*="AirPlay"]',
           'button[title*="Full screen"]',
           '#ytp-caption-window-container',
         ],

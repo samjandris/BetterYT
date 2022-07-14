@@ -1,5 +1,6 @@
 {
   "name": "YouTube Enhancements",
+  "description": "Add useful changes to YouTube, such as showing mini player when scrolling away from video and option to change comments to stay to the right of the video.",
   "version": "1.0.0",
   "manifest_version": 3,
   "background": {
