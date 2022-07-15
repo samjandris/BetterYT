@@ -1,13 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <body style="width: 300px; align-content: center">
+  <body style="width: 200px">
+    <input type="checkbox" id="miniPlayer" name="miniPlayer" value="true" />
+    <label for="miniPlayer"> Mini player on scroll</label>
+
+    <br />
+
+    <input
+      type="checkbox"
+      id="returnDislikes"
+      name="returnDislikes"
+      value="true"
+    />
+    <label for="returnDislikes"> Return dislike count</label>
+
+    <br />
+
     <input
       type="checkbox"
       id="experimentalComments"
       name="experimentalComments"
       value="true"
     />
-    <label for="experimentalComments"> Experimental comments</label><br />
+    <label for="experimentalComments"> Experimental comments (BETA)</label>
+
     <script src="popup.js"></script>
   </body>
 </html>

@@ -1,3 +1,56 @@
+class Helper {
+  static waitForElement(selector) {
+    return new Promise((resolve) => {
+      if (document.querySelector(selector)) {
+        return resolve(document.querySelector(selector));
+      }
+
+      const observer = new MutationObserver((mutations) => {
+        if (document.querySelector(selector)) {
+          resolve(document.querySelector(selector));
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+    });
+  }
+
+  static fitResolution(boundingElement, aspectRatio) {
+    var top = 0;
+    var left = 0;
+    var width = boundingElement.offsetHeight * aspectRatio;
+    var height = boundingElement.offsetHeight;
+    if (width > boundingElement.offsetWidth) {
+      const ratio = width / boundingElement.offsetWidth;
+      width = width / ratio;
+      height = height / ratio;
+      top = (boundingElement.offsetHeight - height) / 2;
+    } else if (width < boundingElement.offsetWidth) {
+      left = (boundingElement.offsetWidth - width) / 2;
+    }
+
+    return [top, left, width, height];
+  }
+
+  static abbreviateNumber(num) {
+    const abbrev = ['K', 'M', 'B', 'T']; // could be an array of strings: [' m', ' Mo', ' Md']
+
+    function round(n, precision) {
+      var prec = Math.pow(10, precision);
+      return Math.round(n * prec) / prec;
+    }
+
+    var base = Math.floor(Math.log(Math.abs(num)) / Math.log(1000));
+    var suffix = abbrev[Math.min(2, base - 1)];
+    base = abbrev.indexOf(suffix) + 1;
+    return suffix ? round(num / Math.pow(1000, base), 0) + suffix : '' + num;
+  }
+}
+
 SELECTORS = {
   RAW: {
     CHAT: {
@@ -21,11 +74,14 @@ SELECTORS = {
       VIDEO: '#movie_player > div.html5-video-container > video',
       CONTROLS: {
         TO_HIDE: [
+          '.ytp-chrome-top',
+          '.ytp-iv-player-content',
           'a[aria-label*="Previous"]',
           'a[aria-label*="Next"]',
           'div[class="ytp-chapter-container"]',
           'button[aria-label*="Autoplay"]',
           'button[aria-label*="Subtitles"]',
+          'button[aria-label*="Settings"]',
           'button[aria-label*="Switch camera"]',
           'button[aria-label*="Theater mode (t)"]',
           'button[aria-label*="Play on TV"]',
@@ -106,184 +162,132 @@ SELECTORS = {
   COLUMN_RIGHT: () => document.querySelector(SELECTORS.RAW.COLUMN_RIGHT),
 };
 
-var resRatio = 0;
+MiniPlayer = () => {
+  var resRatio = 0;
 
-// ytp-player-minimized ytp-small-mode ytp-menu-shown
-var miniPlayerClasses =
-  'html5-video-player ytp-transparent ytp-exp-bottom-control-flexbox ytp-exp-ppp-update ytp-fit-cover-video ytp-fine-scrubbing-exp ytp-hide-info-bar ytp-iv-drawer-enabled ytp-autonav-endscreen-cancelled-state playing-mode ytp-heat-map ytp-autohide ytp-menu-shown ytp-player-minimized ytp-small-mode';
+  // ytp-player-minimized ytp-small-mode ytp-menu-shown
+  var miniPlayerClasses =
+    'html5-video-player ytp-transparent ytp-exp-bottom-control-flexbox ytp-exp-ppp-update ytp-fit-cover-video ytp-fine-scrubbing-exp ytp-hide-info-bar ytp-iv-drawer-enabled ytp-autonav-endscreen-cancelled-state playing-mode ytp-heat-map ytp-autohide ytp-menu-shown ytp-player-minimized ytp-small-mode';
 
-// ytp-large-width-mode
-var fullPlayerClasses =
-  'html5-video-player ytp-transparent ytp-exp-bottom-control-flexbox ytp-exp-ppp-update ytp-fit-cover-video ytp-fine-scrubbing-exp ytp-hide-info-bar ytp-iv-drawer-enabled ytp-autonav-endscreen-cancelled-state ytp-heat-map ytp-large-width-mode playing-mode ytp-autohide';
+  // ytp-large-width-mode
+  var fullPlayerClasses =
+    'html5-video-player ytp-transparent ytp-exp-bottom-control-flexbox ytp-exp-ppp-update ytp-fit-cover-video ytp-fine-scrubbing-exp ytp-hide-info-bar ytp-iv-drawer-enabled ytp-autonav-endscreen-cancelled-state ytp-heat-map ytp-large-width-mode playing-mode ytp-autohide';
 
-// returns a resolution that abides by the aspect ratio provided and fit within the bounding elements boundaries
-function fitResolution(boundingElement, aspectRatio) {
-  var top = 0;
-  var left = 0;
-  var width = boundingElement.offsetHeight * aspectRatio;
-  var height = boundingElement.offsetHeight;
-  if (width > boundingElement.offsetWidth) {
-    const ratio = width / boundingElement.offsetWidth;
-    width = width / ratio;
-    height = height / ratio;
-    top = (boundingElement.offsetHeight - height) / 2;
-  } else if (width < boundingElement.offsetWidth) {
-    left = (boundingElement.offsetWidth - width) / 2;
-  }
+  function showMiniPlayer() {
+    const player = SELECTORS.PLAYER.PLAYER();
+    const playerV = SELECTORS.PLAYER.VIDEO();
+    const playerControls = SELECTORS.PLAYER.CONTROLS.CONTROLS();
 
-  return [top, left, width, height];
-}
+    player.style.width = SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth + 'px';
+    player.style.height = SELECTORS.MINI_PLAYER.CONTAINER().offsetHeight + 'px';
 
-function miniPlayer() {
-  // const player = SELECTORS.PLAYER.PLAYER();
-  // const playerV = SELECTORS.PLAYER.VIDEO();
-  // const playerControls = SELECTORS.PLAYER.CONTROLS.CONTROLS();
-  // const hoverBar = SELECTORS.PLAYER.CONTROLS.TIME_BAR();
+    const [top, left, width, height] = Helper.fitResolution(
+      SELECTORS.MINI_PLAYER.CONTAINER(),
+      resRatio
+    );
 
-  // player.style.position = 'fixed';
-  // player.style.bottom = '10px';
-  // player.style.right = '10px';
-  // player.style.width = '400px';
-  // player.style.height = '225px';
-  // player.style.zIndex = 9999999;
+    playerV.style.top = top + 'px';
+    playerV.style.left = left + 'px';
+    playerV.style.width = width + 'px';
+    playerV.style.height = height + 'px';
 
-  // playerV.style.top = '0px';
-  // playerV.style.left = '0px';
-  // playerV.style.width =
-  //   SELECTORS.COLUMN_RIGHT().offsetWidth + 'px';
-  // playerV.style.height =
-  //   SELECTORS.COLUMN_RIGHT().offsetWidth / (16 / 9) + 'px';
-  // playerControls.style.width =
-  //   player.offsetWidth - playerControls.offsetLeft * 2 + 'px';
+    playerControls.style.width =
+      SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth -
+      playerControls.offsetLeft * 2 +
+      'px';
 
-  // hoverBar.setAttribute('hidden', '');
+    SELECTORS.PLAYER.CONTROLS.TIME_BAR().setAttribute('hidden', '');
 
-  // for (const controlSelector of SELECTORS.PLAYER.CONTROLS.TO_HIDE) {
-  //   const control = document.querySelector(controlSelector);
-  //   if (control) {
-  //     control.setAttribute('hidden', '');
-  //   }
-  // }
-
-  //   window.dispatchEvent(new Event('resize'));
-
-  // Site Wide Mini Player Tests
-  const player = SELECTORS.PLAYER.PLAYER();
-  const playerV = SELECTORS.PLAYER.VIDEO();
-  const playerControls = SELECTORS.PLAYER.CONTROLS.CONTROLS();
-
-  player.style.width = SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth + 'px';
-  player.style.height = SELECTORS.MINI_PLAYER.CONTAINER().offsetHeight + 'px';
-
-  const [top, left, width, height] = fitResolution(
-    SELECTORS.MINI_PLAYER.CONTAINER(),
-    resRatio
-  );
-
-  playerV.style.top = top + 'px';
-  playerV.style.left = left + 'px';
-  playerV.style.width = width + 'px';
-  playerV.style.height = height + 'px';
-
-  playerControls.style.width =
-    SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth -
-    playerControls.offsetLeft * 2 +
-    'px';
-
-  SELECTORS.PLAYER.CONTROLS.TIME_BAR().setAttribute('hidden', '');
-
-  for (const controlSelector of SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE) {
-    const control = document.querySelector(controlSelector);
-    if (control) {
-      control.setAttribute('hidden', '');
+    for (const controlSelector of SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE) {
+      const control = document.querySelector(controlSelector);
+      if (control) {
+        control.setAttribute('hidden', '');
+      }
     }
+
+    SELECTORS.MINI_PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
+    SELECTORS.MINI_PLAYER.TITLE().textContent =
+      SELECTORS.PLAYER.TITLE().textContent;
+    SELECTORS.MINI_PLAYER.CHANNEL().textContent =
+      SELECTORS.PLAYER.CHANNEL().textContent;
+    SELECTORS.MINI_PLAYER.ROOT().setAttribute('enabled', '');
+    SELECTORS.MINI_PLAYER.ROOT().setAttribute('active', '');
+    // SELECTORS.PLAYER.MOVIE_PLAYER().class = miniPlayerClasses;
   }
 
-  SELECTORS.MINI_PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
-  SELECTORS.MINI_PLAYER.TITLE().textContent =
-    SELECTORS.PLAYER.TITLE().textContent;
-  SELECTORS.MINI_PLAYER.CHANNEL().textContent =
-    SELECTORS.PLAYER.CHANNEL().textContent;
-  // SELECTORS.PLAYER.MOVIE_PLAYER().class = miniPlayerClasses;
-  SELECTORS.MINI_PLAYER.ROOT().setAttribute('enabled', '');
-  SELECTORS.MINI_PLAYER.ROOT().setAttribute('active', '');
-}
+  function showFullPlayer() {
+    const player = SELECTORS.PLAYER.PLAYER();
+    const playerV = SELECTORS.PLAYER.VIDEO();
+    const playerControls = SELECTORS.PLAYER.CONTROLS.CONTROLS();
+    player.removeAttribute('style');
 
-function fullPlayer() {
-  // const player = SELECTORS.PLAYER.PLAYER();
-  // const playerV = SELECTORS.PLAYER.VIDEO();
-  // const playerControls = SELECTORS.PLAYER.CONTROLS.CONTROLS();
-  // const hoverBar = SELECTORS.PLAYER.CONTROLS.TIME_BAR();
-  // player.removeAttribute('style');
-  // window.dispatchEvent(new Event('resize'));
-  // playerV.style.width = player.offsetWidth - playerV.offsetLeft * 2 + 'px';
-  // playerV.style.height = player.offsetHeight - playerV.offsetTop * 2 + 'px';
-  // playerControls.style.width =
-  //   player.offsetWidth - playerControls.offsetLeft * 2 + 'px';
-  // hoverBar.removeAttribute('hidden');
-  // for (const controlSelector of SELECTORS.PLAYER.CONTROLS.TO_HIDE) {
-  //   const control = document.querySelector(controlSelector);
-  //   if (control) {
-  //     control.removeAttribute('hidden');
-  //   }
-  // }
-  //   window.dispatchEvent(new Event('resize'));
+    const [top, left, width, height] = Helper.fitResolution(
+      SELECTORS.PLAYER.PLAYER(),
+      resRatio
+    );
 
-  // Site Wide Mini Player Tests
-  const player = SELECTORS.PLAYER.PLAYER();
-  const playerV = SELECTORS.PLAYER.VIDEO();
-  const playerControls = SELECTORS.PLAYER.CONTROLS.CONTROLS();
-  player.removeAttribute('style');
-  // window.dispatchEvent(new Event('resize'));
-
-  const [top, left, width, height] = fitResolution(
-    SELECTORS.PLAYER.PLAYER(),
-    resRatio
-  );
-
-  playerV.style.top = top + 'px';
-  playerV.style.left = left + 'px';
-  playerV.style.width = width + 'px';
-  playerV.style.height = height + 'px';
-  playerControls.style.width =
-    player.offsetWidth - playerControls.offsetLeft * 2 + 'px';
-  SELECTORS.PLAYER.CONTROLS.TIME_BAR().removeAttribute('hidden');
-  for (const controlSelector of SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE) {
-    const control = document.querySelector(controlSelector);
-    if (control) {
-      control.removeAttribute('hidden');
+    playerV.style.top = top + 'px';
+    playerV.style.left = left + 'px';
+    playerV.style.width = width + 'px';
+    playerV.style.height = height + 'px';
+    playerControls.style.width =
+      player.offsetWidth - playerControls.offsetLeft * 2 + 'px';
+    SELECTORS.PLAYER.CONTROLS.TIME_BAR().removeAttribute('hidden');
+    for (const controlSelector of SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE) {
+      const control = document.querySelector(controlSelector);
+      if (control) {
+        control.removeAttribute('hidden');
+      }
     }
+
+    SELECTORS.MINI_PLAYER.ROOT().removeAttribute('active');
+    SELECTORS.MINI_PLAYER.ROOT().removeAttribute('enabled');
+    SELECTORS.PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
+    // SELECTORS.PLAYER.MOVIE_PLAYER().class = fullPlayerClasses;
   }
-  // window.dispatchEvent(new Event('resize'));
 
-  SELECTORS.MINI_PLAYER.ROOT().removeAttribute('active');
-  SELECTORS.MINI_PLAYER.ROOT().removeAttribute('enabled');
-  SELECTORS.PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
-  // SELECTORS.PLAYER.MOVIE_PLAYER().class = fullPlayerClasses;
-}
+  window.addEventListener('scroll', () => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      if (window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight) {
+        showMiniPlayer();
+      } else {
+        showFullPlayer();
+      }
+    }
+  });
 
-var newCommentsEnabled = false;
-chrome.storage.sync.get('experimentalComments', (data) => {
-  newCommentsEnabled = data.experimentalComments;
-});
+  // wait for changes to the video so we can check if video aspect ratio changes
+  Helper.waitForElement(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
+    const mutationCallback = (mutationsList) => {
+      for (const _ of mutationsList) {
+        resRatio =
+          SELECTORS.PLAYER.VIDEO().offsetWidth /
+          SELECTORS.PLAYER.VIDEO().offsetHeight;
+      }
+    };
 
-var currentState = 'default';
+    const observer = new MutationObserver(mutationCallback);
+    observer.observe(SELECTORS.PLAYER.VIDEO(), { attributes: true });
+  });
+};
 
-var el = document.createElement('div');
-el.style.overflow = 'auto';
-el.style.position = 'fixed';
-el.setAttribute('hidden', '');
+NewComments = () => {
+  var currentState = 'default';
 
-function defaultComments() {
-  SELECTORS.COLUMN_RIGHT().appendChild(SELECTORS.RELATED());
-  SELECTORS.COLUMN_LEFT().appendChild(SELECTORS.COMMENTS());
-
+  var el = document.createElement('div');
+  el.style.overflow = 'auto';
+  el.style.position = 'fixed';
   el.setAttribute('hidden', '');
-  currentState = 'default';
-}
 
-function newComments() {
-  if (newCommentsEnabled) {
+  function showDefaultComments() {
+    SELECTORS.COLUMN_RIGHT().appendChild(SELECTORS.RELATED());
+    SELECTORS.COLUMN_LEFT().appendChild(SELECTORS.COMMENTS());
+
+    el.setAttribute('hidden', '');
+    currentState = 'default';
+  }
+
+  function showNewComments() {
     SELECTORS.COLUMN_LEFT().appendChild(SELECTORS.RELATED());
 
     el.appendChild(SELECTORS.COMMENTS());
@@ -291,191 +295,162 @@ function newComments() {
     el.removeAttribute('hidden');
     currentState = 'new';
   }
-}
 
-function resizeUpdate() {
-  el.style.width = SELECTORS.COLUMN_RIGHT().offsetWidth + 'px';
+  function resizeUpdate() {
+    el.style.width = SELECTORS.COLUMN_RIGHT().offsetWidth + 'px';
 
-  // check if we are in theater mode, fullscreen, or a live chat replay is expanded
-  if (
-    SELECTORS.PLAYER.CONTROLS.FULLSCREEN().title == 'Exit full screen (f)' ||
-    SELECTORS.PLAYER.CONTROLS.THEATER().title == 'Default view (t)' ||
-    (SELECTORS.CHAT.CHAT() &&
-      SELECTORS.CHAT.BODY() &&
-      SELECTORS.CHAT.BODY().childElementCount > 0) ||
-    (SELECTORS.PLAYLIST() && !SELECTORS.PLAYLIST().hidden)
-  ) {
-    el.style.position = 'absolute';
-    el.style.overflow = 'visible';
-  } else {
-    el.style.position = 'fixed';
-    el.style.overflow = 'auto';
-  }
-
-  // change comment box according to if 'SHOW CHAT' box is there
-  if (SELECTORS.CHAT.CHAT()) {
-    el.style.height =
-      'calc(100vh - ' + (SELECTORS.CHAT.CHAT().offsetHeight + 115) + 'px)';
-  } else {
-    el.style.height = 'calc(100vh - 90px)';
-  }
-
-  // check if we are at a live stream and switch back to default comment mode as this acts the same as new mode
-  if (
-    SELECTORS.CHAT.OPEN_BUTTON() &&
-    !SELECTORS.CHAT.OPEN_BUTTON().textContent.includes('replay')
-  ) {
-    if (currentState === 'new') {
-      defaultComments();
+    // check if we are in theater mode, fullscreen, or a live chat replay is expanded
+    if (
+      SELECTORS.PLAYER.CONTROLS.FULLSCREEN().title == 'Exit full screen (f)' ||
+      SELECTORS.PLAYER.CONTROLS.THEATER().title == 'Default view (t)' ||
+      (SELECTORS.CHAT.CHAT() &&
+        SELECTORS.CHAT.BODY() &&
+        SELECTORS.CHAT.BODY().childElementCount > 0) ||
+      (SELECTORS.PLAYLIST() && !SELECTORS.PLAYLIST().hidden)
+    ) {
+      el.style.position = 'absolute';
+      el.style.overflow = 'visible';
+    } else {
+      el.style.position = 'fixed';
+      el.style.overflow = 'auto';
     }
-  } else {
-    if (window.innerWidth <= 1016) {
+
+    // change comment box according to if 'SHOW CHAT' box is there
+    if (SELECTORS.CHAT.CHAT()) {
+      el.style.height =
+        'calc(100vh - ' + (SELECTORS.CHAT.CHAT().offsetHeight + 115) + 'px)';
+    } else {
+      el.style.height = 'calc(100vh - 90px)';
+    }
+
+    // check if we are at a live stream and switch back to default comment mode as this acts the same as new mode
+    if (
+      SELECTORS.CHAT.OPEN_BUTTON() &&
+      !SELECTORS.CHAT.OPEN_BUTTON().textContent.includes('replay')
+    ) {
       if (currentState === 'new') {
-        defaultComments();
+        showDefaultComments();
       }
     } else {
-      if (currentState === 'default') {
-        newComments();
+      if (window.innerWidth <= 1016) {
+        if (currentState === 'new') {
+          showDefaultComments();
+        }
+      } else {
+        if (currentState === 'default') {
+          showNewComments();
+        }
       }
     }
   }
-}
 
-function shortenNumber(num) {
-  const abbrev = ['K', 'M', 'B', 'T']; // could be an array of strings: [' m', ' Mo', ' Md']
-
-  function round(n, precision) {
-    var prec = Math.pow(10, precision);
-    return Math.round(n * prec) / prec;
-  }
-
-  var base = Math.floor(Math.log(Math.abs(num)) / Math.log(1000));
-  var suffix = abbrev[Math.min(2, base - 1)];
-  base = abbrev.indexOf(suffix) + 1;
-  return suffix ? round(num / Math.pow(1000, base), 0) + suffix : '' + num;
-}
-
-function setupWatchPage() {
-  waitForElm(SELECTORS.RAW.PLAYER.DISLIKE).then(() => {
-    fetch(
-      'https://returnyoutubedislikeapi.com/votes?videoId=' +
-        currentURL.searchParams.get('v')
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        SELECTORS.PLAYER.DISLIKE().textContent = shortenNumber(data.dislikes);
-      });
-  });
-
-  // this needs to be changed to only add when it is live
-  // live chat button click
-  waitForElm(SELECTORS.RAW.CHAT.SHOW_HIDE).then(() => {
-    SELECTORS.CHAT.SHOW_HIDE().addEventListener('click', () => {
-      setTimeout(() => {
-        resizeUpdate();
-      }, 200);
-    });
-
-    resizeUpdate();
-  });
-}
-
-function waitForElm(selector) {
-  return new Promise((resolve) => {
-    if (document.querySelector(selector)) {
-      return resolve(document.querySelector(selector));
-    }
-
-    const observer = new MutationObserver((mutations) => {
-      if (document.querySelector(selector)) {
-        resolve(document.querySelector(selector));
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-  });
-}
-
-// watch for page change
-var currentURL = new URL(window.location.href);
-setInterval(() => {
-  if (currentURL.href !== window.location.href) {
-    currentURL = new URL(window.location.href);
+  window.addEventListener('resize', () => {
     if (currentURL.pathname.startsWith('/watch')) {
-      setTimeout(() => {
-        setupWatchPage();
-        // resizeUpdate();
-      }, 750);
+      resizeUpdate();
     }
-  }
-}, 50);
+  });
 
-// wait for changes to the video so we can check if video aspect ratio changes
-waitForElm(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
-  const mutationCallback = (mutationsList) => {
-    for (const _ of mutationsList) {
-      resRatio =
-        SELECTORS.PLAYER.VIDEO().offsetWidth /
-        SELECTORS.PLAYER.VIDEO().offsetHeight;
-    }
-  };
+  window.addEventListener('click', (e) => {
+    const clicked = e.target;
 
-  const observer = new MutationObserver(mutationCallback);
-  observer.observe(SELECTORS.PLAYER.VIDEO(), { attributes: true });
-});
-
-window.onscroll = () => {
-  if (currentURL.pathname.startsWith('/watch')) {
-    if (window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight) {
-      miniPlayer();
-    } else {
-      fullPlayer();
-    }
-  }
-};
-
-window.addEventListener('resize', () => {
-  if (currentURL.pathname.startsWith('/watch')) {
-    resizeUpdate();
-  }
-});
-
-// key press for fullscreen and theater
-window.addEventListener('keydown', (e) => {
-  if (currentURL.pathname.startsWith('/watch')) {
-    if (e.code === 'KeyT' || e.code === 'KeyF') {
+    // theater mode
+    if (clicked === SELECTORS.PLAYER.CONTROLS.THEATER()) {
       setTimeout(() => {
         resizeUpdate();
       }, 100);
     }
-  }
-});
 
-document.addEventListener('click', (e) => {
-  const clicked = e.target;
+    // fullscreen
+    if (clicked === SELECTORS.PLAYER.CONTROLS.FULLSCREEN()) {
+      setTimeout(() => {
+        resizeUpdate();
+      }, 100);
+    }
+  });
 
-  // theater mode
-  if (clicked === SELECTORS.PLAYER.CONTROLS.THEATER()) {
-    setTimeout(() => {
-      resizeUpdate();
-    }, 100);
-  }
+  // key press for fullscreen and theater
+  window.addEventListener('keydown', (e) => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      if (e.code === 'KeyT' || e.code === 'KeyF') {
+        setTimeout(() => {
+          resizeUpdate();
+        }, 100);
+      }
+    }
+  });
 
-  // fullscreen
-  if (clicked === SELECTORS.PLAYER.CONTROLS.FULLSCREEN()) {
-    setTimeout(() => {
-      resizeUpdate();
-    }, 100);
-  }
-});
-
-if (currentURL.pathname.startsWith('/watch')) {
-  waitForElm('#comments').then(() => {
-    setupWatchPage();
+  window.addEventListener('url', () => {
     resizeUpdate();
   });
-}
+
+  if (currentURL.pathname.startsWith('/watch')) {
+    Helper.waitForElement(SELECTORS.RAW.CHAT.SHOW_HIDE).then(() => {
+      SELECTORS.CHAT.SHOW_HIDE().addEventListener('click', () => {
+        setTimeout(() => {
+          resizeUpdate();
+        }, 200);
+      });
+
+      // resizeUpdate();
+    });
+
+    Helper.waitForElement('#comments').then(() => {
+      resizeUpdate();
+    });
+  }
+};
+
+ReturnDislikes = () => {
+  function updateDislikes() {
+    console.log(currentURL.searchParams.get('v'));
+    Helper.waitForElement(SELECTORS.RAW.PLAYER.DISLIKE).then(() => {
+      fetch(
+        'https://returnyoutubedislikeapi.com/votes?videoId=' +
+          currentURL.searchParams.get('v')
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          SELECTORS.PLAYER.DISLIKE().textContent = Helper.abbreviateNumber(
+            data.dislikes
+          );
+        });
+    });
+  }
+
+  window.addEventListener('url', () => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      updateDislikes();
+    }
+  });
+
+  if (currentURL.pathname.startsWith('/watch')) {
+    updateDislikes();
+  }
+};
+
+// watch for page change and call event
+var currentURL = new URL(window.location.href);
+setInterval(() => {
+  if (currentURL.href !== window.location.href) {
+    currentURL = new URL(window.location.href);
+    window.dispatchEvent(
+      new CustomEvent('url', {
+        detail: { url: currentURL },
+      })
+    );
+  }
+}, 50);
+
+chrome.storage.sync.get((data) => {
+  if (data.miniPlayer) {
+    MiniPlayer();
+  }
+
+  if (data.returnDislikes) {
+    ReturnDislikes();
+  }
+
+  if (data.experimentalComments) {
+    NewComments();
+  }
+});

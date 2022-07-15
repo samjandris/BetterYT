@@ -1,12 +1,25 @@
-chrome.storage.sync.get('experimentalComments', (data) => {
+chrome.storage.sync.get((data) => {
+  document.getElementById('miniPlayer').checked = data.miniPlayer;
+  document.getElementById('returnDislikes').checked = data.returnDislikes;
   document.getElementById('experimentalComments').checked =
     data.experimentalComments;
+});
+
+document.getElementById('miniPlayer').addEventListener('change', () => {
+  chrome.storage.sync.set({
+    miniPlayer: document.getElementById('miniPlayer').checked,
+  });
+});
+
+document.getElementById('returnDislikes').addEventListener('change', () => {
+  chrome.storage.sync.set({
+    returnDislikes: document.getElementById('returnDislikes').checked,
+  });
 });
 
 document
   .getElementById('experimentalComments')
   .addEventListener('change', () => {
-    console.log(document.getElementById('experimentalComments').checked);
     chrome.storage.sync.set({
       experimentalComments: document.getElementById('experimentalComments')
         .checked,
