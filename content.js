@@ -1,13 +1,13 @@
 class Helper {
-  static waitForElement(selector) {
+  static onElementLoad(selectorRaw) {
     return new Promise((resolve) => {
-      if (document.querySelector(selector)) {
-        return resolve(document.querySelector(selector));
+      if (document.querySelector(selectorRaw)) {
+        return resolve(document.querySelector(selectorRaw));
       }
 
-      const observer = new MutationObserver((mutations) => {
-        if (document.querySelector(selector)) {
-          resolve(document.querySelector(selector));
+      const observer = new MutationObserver(() => {
+        if (document.querySelector(selectorRaw)) {
+          resolve(document.querySelector(selectorRaw));
           observer.disconnect();
         }
       });
@@ -15,6 +15,30 @@ class Helper {
       observer.observe(document.body, {
         childList: true,
         subtree: true,
+      });
+    });
+  }
+
+  static onAttributeChange(selectorRaw, callback) {
+    Helper.onElementLoad(selectorRaw).then(() => {
+      const observer = new MutationObserver((mutationsList) => {
+        callback(observer, mutationsList);
+      });
+
+      observer.observe(document.querySelector(selectorRaw), {
+        attributes: true,
+      });
+    });
+  }
+
+  static onChildElementChange(selectorRaw, callback) {
+    Helper.onElementLoad(selectorRaw).then(() => {
+      const observer = new MutationObserver((mutationsList) => {
+        callback(observer, mutationsList);
+      });
+
+      observer.observe(document.querySelector(selectorRaw), {
+        childList: true,
       });
     });
   }
@@ -70,7 +94,9 @@ SELECTORS = {
         '#channel-name.ytd-video-owner-renderer > #container > #text-container > #text > a',
       DISLIKE: 'yt-formatted-string.ytd-toggle-button-renderer',
       CONTAINER: '#player-container.ytd-watch-flexy',
-      BOUNDS: '#player-theater-container, #player-container-inner',
+      DEFAULT_CONTAINER: '#player-container-inner',
+      THEATER_CONTAINER: '#player-theater-container',
+      BOUNDS: '#player-container-inner, #player-theater-container',
       VIDEO: '#movie_player > div.html5-video-container > video',
       CONTROLS: {
         TO_HIDE: [
@@ -126,6 +152,10 @@ SELECTORS = {
     CHANNEL: () => document.querySelector(SELECTORS.RAW.PLAYER.CHANNEL),
     DISLIKE: () => document.querySelectorAll(SELECTORS.RAW.PLAYER.DISLIKE)[1],
     CONTAINER: () => document.querySelector(SELECTORS.RAW.PLAYER.CONTAINER),
+    DEFAULT_CONTAINER: () =>
+      document.querySelector(SELECTORS.RAW.PLAYER.DEFAULT_CONTAINER),
+    THEATER_CONTAINER: () =>
+      document.querySelector(SELECTORS.RAW.PLAYER.THEATER_CONTAINER),
     BOUNDS: () => {
       for (const selector of document.querySelectorAll(
         SELECTORS.RAW.PLAYER.BOUNDS
@@ -231,7 +261,9 @@ MiniPlayer = () => {
     playerV.style.width = width + 'px';
     playerV.style.height = height + 'px';
     playerControls.style.width =
-      player.offsetWidth - playerControls.offsetLeft * 2 + 'px';
+      SELECTORS.PLAYER.CONTAINER().offsetWidth -
+      playerControls.offsetLeft * 2 +
+      'px';
     SELECTORS.PLAYER.CONTROLS.TIME_BAR().removeAttribute('hidden');
     for (const controlSelector of SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE) {
       const control = document.querySelector(controlSelector);
@@ -246,28 +278,49 @@ MiniPlayer = () => {
     // SELECTORS.PLAYER.MOVIE_PLAYER().class = fullPlayerClasses;
   }
 
+  function doPlayer() {
+    if (window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight) {
+      showMiniPlayer();
+    } else {
+      showFullPlayer();
+    }
+  }
+
   window.addEventListener('scroll', () => {
     if (currentURL.pathname.startsWith('/watch')) {
-      if (window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight) {
-        showMiniPlayer();
-      } else {
-        showFullPlayer();
-      }
+      doPlayer();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      doPlayer();
+    }
+  });
+
+  // this might be needed to solve strange bug where sometimes video does not maximize fully when expanding from mini player
+  // window.addEventListener('onUrlChange', () => {
+  //   if (currentURL.pathname.startsWith('/watch')) {
+  //     Helper.onAttributeChange(SELECTORS.RAW.PLAYER.VIDEO, (o) => {
+  //       doPlayer();
+  //       o.disconnect();
+  //     });
+  //   }
+  // });
+
+  window.addEventListener('onViewModeChange', () => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      doPlayer();
     }
   });
 
   // wait for changes to the video so we can check if video aspect ratio changes
-  Helper.waitForElement(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
-    const mutationCallback = (mutationsList) => {
-      for (const _ of mutationsList) {
-        resRatio =
-          SELECTORS.PLAYER.VIDEO().offsetWidth /
-          SELECTORS.PLAYER.VIDEO().offsetHeight;
-      }
-    };
-
-    const observer = new MutationObserver(mutationCallback);
-    observer.observe(SELECTORS.PLAYER.VIDEO(), { attributes: true });
+  Helper.onAttributeChange(SELECTORS.RAW.PLAYER.VIDEO, () => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      resRatio =
+        SELECTORS.PLAYER.VIDEO().offsetWidth /
+        SELECTORS.PLAYER.VIDEO().offsetHeight;
+    }
   });
 };
 
@@ -301,11 +354,8 @@ NewComments = () => {
 
     // check if we are in theater mode, fullscreen, or a live chat replay is expanded
     if (
-      SELECTORS.PLAYER.CONTROLS.FULLSCREEN().title == 'Exit full screen (f)' ||
-      SELECTORS.PLAYER.CONTROLS.THEATER().title == 'Default view (t)' ||
-      (SELECTORS.CHAT.CHAT() &&
-        SELECTORS.CHAT.BODY() &&
-        SELECTORS.CHAT.BODY().childElementCount > 0) ||
+      SELECTORS.PLAYER.THEATER_CONTAINER().hasChildNodes() ||
+      SELECTORS.CHAT.SHOW_HIDE() ||
       (SELECTORS.PLAYLIST() && !SELECTORS.PLAYLIST().hidden)
     ) {
       el.style.position = 'absolute';
@@ -350,51 +400,27 @@ NewComments = () => {
     }
   });
 
-  window.addEventListener('click', (e) => {
-    const clicked = e.target;
-
-    // theater mode
-    if (clicked === SELECTORS.PLAYER.CONTROLS.THEATER()) {
-      setTimeout(() => {
-        resizeUpdate();
-      }, 100);
-    }
-
-    // fullscreen
-    if (clicked === SELECTORS.PLAYER.CONTROLS.FULLSCREEN()) {
-      setTimeout(() => {
-        resizeUpdate();
-      }, 100);
-    }
-  });
-
-  // key press for fullscreen and theater
-  window.addEventListener('keydown', (e) => {
+  window.addEventListener('onUrlChange', () => {
     if (currentURL.pathname.startsWith('/watch')) {
-      if (e.code === 'KeyT' || e.code === 'KeyF') {
-        setTimeout(() => {
-          resizeUpdate();
-        }, 100);
-      }
+      Helper.onAttributeChange(SELECTORS.RAW.PLAYER.VIDEO, (o) => {
+        resizeUpdate();
+        o.disconnect();
+      });
     }
   });
 
-  window.addEventListener('url', () => {
-    resizeUpdate();
+  window.addEventListener('onViewModeChange', () => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      resizeUpdate();
+    }
   });
 
   if (currentURL.pathname.startsWith('/watch')) {
-    Helper.waitForElement(SELECTORS.RAW.CHAT.SHOW_HIDE).then(() => {
-      SELECTORS.CHAT.SHOW_HIDE().addEventListener('click', () => {
-        setTimeout(() => {
-          resizeUpdate();
-        }, 200);
-      });
-
-      // resizeUpdate();
+    Helper.onElementLoad(SELECTORS.RAW.CHAT.SHOW_HIDE).then(() => {
+      resizeUpdate();
     });
 
-    Helper.waitForElement('#comments').then(() => {
+    Helper.onElementLoad(SELECTORS.RAW.PLAYER.BOUNDS).then(() => {
       resizeUpdate();
     });
   }
@@ -402,8 +428,7 @@ NewComments = () => {
 
 ReturnDislikes = () => {
   function updateDislikes() {
-    console.log(currentURL.searchParams.get('v'));
-    Helper.waitForElement(SELECTORS.RAW.PLAYER.DISLIKE).then(() => {
+    Helper.onElementLoad(SELECTORS.RAW.PLAYER.DISLIKE).then(() => {
       fetch(
         'https://returnyoutubedislikeapi.com/votes?videoId=' +
           currentURL.searchParams.get('v')
@@ -417,7 +442,7 @@ ReturnDislikes = () => {
     });
   }
 
-  window.addEventListener('url', () => {
+  window.addEventListener('onUrlChange', () => {
     if (currentURL.pathname.startsWith('/watch')) {
       updateDislikes();
     }
@@ -428,18 +453,49 @@ ReturnDislikes = () => {
   }
 };
 
-// watch for page change and call event
+// create url event
 var currentURL = new URL(window.location.href);
 setInterval(() => {
   if (currentURL.href !== window.location.href) {
     currentURL = new URL(window.location.href);
-    window.dispatchEvent(
-      new CustomEvent('url', {
-        detail: { url: currentURL },
-      })
-    );
+    setTimeout(() => {
+      window.dispatchEvent(
+        new CustomEvent('onUrlChange', {
+          detail: { url: currentURL },
+        })
+      );
+    }, 0);
   }
 }, 50);
+
+// create theater mode event
+Helper.onChildElementChange(SELECTORS.RAW.PLAYER.BOUNDS, () => {
+  if (!SELECTORS.PLAYER.MOVIE_PLAYER().ariaLabel.includes('Fullscreen')) {
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('onToggleTheater'));
+      window.dispatchEvent(new CustomEvent('onViewModeChange'));
+    }, 0);
+  }
+});
+
+// create fullscreen mode event
+Helper.onAttributeChange(SELECTORS.RAW.PLAYER.MOVIE_PLAYER, (_, e) => {
+  for (const i of e) {
+    if (i.attributeName === 'aria-label') {
+      setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent('onToggleFullscreen', {
+            detail: {
+              isFullscreen: i.target.ariaLabel.includes('Fullscreen'),
+            },
+          })
+        );
+
+        window.dispatchEvent(new CustomEvent('onViewModeChange'));
+      }, 0);
+    }
+  }
+});
 
 chrome.storage.sync.get((data) => {
   if (data.miniPlayer) {
