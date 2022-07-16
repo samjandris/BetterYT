@@ -193,7 +193,7 @@ SELECTORS = {
 };
 
 MiniPlayer = () => {
-  var resRatio = 0;
+  var resRatio = null;
 
   // ytp-player-minimized ytp-small-mode ytp-menu-shown
   var miniPlayerClasses =
@@ -279,10 +279,13 @@ MiniPlayer = () => {
   }
 
   function doPlayer() {
-    if (window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight) {
-      showMiniPlayer();
-    } else {
-      showFullPlayer();
+    // this check is to stop the player from breaking if doPlayer() is called before resRatio is ready
+    if (SELECTORS.PLAYER.BOUNDS() && resRatio) {
+      if (window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight) {
+        showMiniPlayer();
+      } else {
+        showFullPlayer();
+      }
     }
   }
 
@@ -294,21 +297,22 @@ MiniPlayer = () => {
 
   window.addEventListener('resize', () => {
     if (currentURL.pathname.startsWith('/watch')) {
-      doPlayer();
+      if (!SELECTORS.PLAYER.MOVIE_PLAYER().ariaLabel.includes('Fullscreen')) {
+        doPlayer();
+      }
     }
   });
 
   // this might be needed to solve strange bug where sometimes video does not maximize fully when expanding from mini player
-  // window.addEventListener('onUrlChange', () => {
-  //   if (currentURL.pathname.startsWith('/watch')) {
-  //     Helper.onAttributeChange(SELECTORS.RAW.PLAYER.VIDEO, (o) => {
-  //       doPlayer();
-  //       o.disconnect();
-  //     });
-  //   }
-  // });
+  window.addEventListener('onUrlChange', () => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      Helper.onElementLoad(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
+        doPlayer();
+      });
+    }
+  });
 
-  window.addEventListener('onViewModeChange', () => {
+  window.addEventListener('onToggleTheater', () => {
     if (currentURL.pathname.startsWith('/watch')) {
       doPlayer();
     }
