@@ -61,7 +61,7 @@ class Helper {
   }
 
   static abbreviateNumber(num) {
-    const abbrev = ['K', 'M', 'B', 'T']; // could be an array of strings: [' m', ' Mo', ' Md']
+    const abbrev = ['K', 'M', 'B', 'T'];
 
     function round(n, precision) {
       var prec = Math.pow(10, precision);
@@ -77,6 +77,10 @@ class Helper {
 
 SELECTORS = {
   RAW: {
+    PAGE: {
+      WATCH_FLEXY: 'ytd-watch-flexy',
+      APP: 'ytd-app',
+    },
     CHAT: {
       CHAT: '#chat',
       SHOW_HIDE: '#show-hide-button',
@@ -116,8 +120,7 @@ SELECTORS = {
           '#ytp-caption-window-container',
         ],
         CONTROLS: '#movie_player > div.ytp-chrome-bottom',
-        TIME_BAR:
-          '#movie_player > div.ytp-chrome-bottom > div.ytp-progress-bar-container',
+        TIME_BAR: '.ytp-progress-bar-container',
         FULLSCREEN: 'button[title*=" screen (f)"]',
         THEATER: 'button[aria-label*="(t)"]',
       },
@@ -133,6 +136,10 @@ SELECTORS = {
     PLAYLIST: '#secondary-inner > #playlist',
     COLUMN_LEFT: '#primary-inner',
     COLUMN_RIGHT: '#secondary-inner',
+  },
+  PAGE: {
+    WATCH_FLEXY: () => document.querySelector(SELECTORS.RAW.PAGE.WATCH_FLEXY),
+    APP: () => document.querySelector(SELECTORS.RAW.PAGE.APP),
   },
   CHAT: {
     CHAT: () => document.querySelector(SELECTORS.RAW.CHAT.CHAT),
@@ -195,14 +202,6 @@ SELECTORS = {
 MiniPlayer = () => {
   var resRatio = null;
 
-  // ytp-player-minimized ytp-small-mode ytp-menu-shown
-  var miniPlayerClasses =
-    'html5-video-player ytp-transparent ytp-exp-bottom-control-flexbox ytp-exp-ppp-update ytp-fit-cover-video ytp-fine-scrubbing-exp ytp-hide-info-bar ytp-iv-drawer-enabled ytp-autonav-endscreen-cancelled-state playing-mode ytp-heat-map ytp-autohide ytp-menu-shown ytp-player-minimized ytp-small-mode';
-
-  // ytp-large-width-mode
-  var fullPlayerClasses =
-    'html5-video-player ytp-transparent ytp-exp-bottom-control-flexbox ytp-exp-ppp-update ytp-fit-cover-video ytp-fine-scrubbing-exp ytp-hide-info-bar ytp-iv-drawer-enabled ytp-autonav-endscreen-cancelled-state ytp-heat-map ytp-large-width-mode playing-mode ytp-autohide';
-
   function showMiniPlayer() {
     const player = SELECTORS.PLAYER.PLAYER();
     const playerV = SELECTORS.PLAYER.VIDEO();
@@ -242,7 +241,15 @@ MiniPlayer = () => {
       SELECTORS.PLAYER.CHANNEL().textContent;
     SELECTORS.MINI_PLAYER.ROOT().setAttribute('enabled', '');
     SELECTORS.MINI_PLAYER.ROOT().setAttribute('active', '');
-    // SELECTORS.PLAYER.MOVIE_PLAYER().class = miniPlayerClasses;
+
+    if (
+      !SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
+        'ytp-player-minimized'
+      )
+    ) {
+      SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-player-minimized');
+      SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-small-mode');
+    }
   }
 
   function showFullPlayer() {
@@ -275,13 +282,22 @@ MiniPlayer = () => {
     SELECTORS.MINI_PLAYER.ROOT().removeAttribute('active');
     SELECTORS.MINI_PLAYER.ROOT().removeAttribute('enabled');
     SELECTORS.PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
-    // SELECTORS.PLAYER.MOVIE_PLAYER().class = fullPlayerClasses;
+
+    if (
+      SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-player-minimized')
+    ) {
+      SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-player-minimized');
+      SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-small-mode');
+    }
   }
 
   function doPlayer() {
     // this check is to stop the player from breaking if doPlayer() is called before resRatio is ready
-    if (SELECTORS.PLAYER.BOUNDS() && resRatio) {
-      if (window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight) {
+    if (SELECTORS.PLAYER.BOUNDS() && SELECTORS.PAGE.APP() && resRatio) {
+      if (
+        window.scrollY >= SELECTORS.PLAYER.BOUNDS().offsetHeight ||
+        SELECTORS.PAGE.APP().scrollTop >= SELECTORS.PLAYER.BOUNDS().offsetHeight
+      ) {
         showMiniPlayer();
       } else {
         showFullPlayer();
@@ -295,6 +311,12 @@ MiniPlayer = () => {
     }
   });
 
+  SELECTORS.PAGE.APP().addEventListener('scroll', () => {
+    if (currentURL.pathname.startsWith('/watch')) {
+      doPlayer();
+    }
+  });
+
   window.addEventListener('resize', () => {
     if (currentURL.pathname.startsWith('/watch')) {
       if (!SELECTORS.PLAYER.MOVIE_PLAYER().ariaLabel.includes('Fullscreen')) {
@@ -303,7 +325,7 @@ MiniPlayer = () => {
     }
   });
 
-  // this might be needed to solve strange bug where sometimes video does not maximize fully when expanding from mini player
+  // this is needed to solve strange bug where sometimes video does not maximize fully when expanding from mini player
   window.addEventListener('onUrlChange', () => {
     if (currentURL.pathname.startsWith('/watch')) {
       Helper.onElementLoad(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
@@ -312,7 +334,8 @@ MiniPlayer = () => {
     }
   });
 
-  window.addEventListener('onToggleTheater', () => {
+  // 'onViewModeChange' is needed to fix problem where exiting fullscreen when in mini player does not auto expand
+  window.addEventListener('onViewModeChange', () => {
     if (currentURL.pathname.startsWith('/watch')) {
       doPlayer();
     }
