@@ -31,6 +31,20 @@ class Helper {
     });
   }
 
+  static onAttributeChangeSubtree(selectorRaw, callback) {
+    Helper.onElementLoad(selectorRaw).then(() => {
+      const observer = new MutationObserver((mutationsList) => {
+        callback(observer, mutationsList);
+      });
+
+      observer.observe(document.querySelector(selectorRaw), {
+        childList: true,
+        subtree: true,
+        attributes: true,
+      });
+    });
+  }
+
   static onChildElementChange(selectorRaw, callback) {
     Helper.onElementLoad(selectorRaw).then(() => {
       const observer = new MutationObserver((mutationsList) => {
@@ -102,6 +116,8 @@ SELECTORS = {
       THEATER_CONTAINER: '#player-theater-container',
       BOUNDS: '#player-container-inner, #player-theater-container',
       VIDEO: '#movie_player > div.html5-video-container > video',
+      GRADIENT_TOP: '.ytp-gradient-top',
+      GRADIENT_BOTTOM: '.ytp-gradient-bottom',
       CONTROLS: {
         TO_HIDE: [
           '.ytp-chrome-top',
@@ -119,8 +135,17 @@ SELECTORS = {
           'button[title*="Full screen"]',
           '#ytp-caption-window-container',
         ],
-        CONTROLS: '#movie_player > div.ytp-chrome-bottom',
-        TIME_BAR: '.ytp-progress-bar-container',
+        CONTAINER: '#movie_player > div.ytp-chrome-bottom',
+        CONTROLS: '.ytp-chrome-controls',
+        PROGRESS_BAR: {
+          CONTAINER: '.ytp-chrome-bottom .ytp-progress-bar-container',
+          CHAPTERS: {
+            CONTAINER: '.ytp-chapters-container',
+          },
+          SCRUBBER: {
+            CONTAINER: '.ytp-scrubber-container',
+          },
+        },
         FULLSCREEN: 'button[title*=" screen (f)"]',
         THEATER: 'button[aria-label*="(t)"]',
       },
@@ -136,6 +161,22 @@ SELECTORS = {
     PLAYLIST: '#secondary-inner > #playlist',
     COLUMN_LEFT: '#primary-inner',
     COLUMN_RIGHT: '#secondary-inner',
+    BETTERYT: {
+      MINI_PLAYER: {
+        CONTROLS: {
+          PROGRESS_BAR: {
+            CONTAINER: '.betteryt.ytp-progress-bar-container',
+            SLIDER: '.betteryt.ytp-progress-bar',
+            CHAPTERS: {
+              CONTAINER: '.betteryt.ytp-chapters-container',
+            },
+            SCRUBBER: {
+              CONTAINER: '.betteryt.ytp-scrubber-container',
+            },
+          },
+        },
+      },
+    },
   },
   PAGE: {
     WATCH_FLEXY: () => document.querySelector(SELECTORS.RAW.PAGE.WATCH_FLEXY),
@@ -173,12 +214,34 @@ SELECTORS = {
       }
     },
     VIDEO: () => document.querySelector(SELECTORS.RAW.PLAYER.VIDEO),
+    GRADIENT_TOP: () =>
+      document.querySelector(SELECTORS.RAW.PLAYER.GRADIENT_TOP),
+    GRADIENT_BOTTOM: () =>
+      document.querySelector(SELECTORS.RAW.PLAYER.GRADIENT_BOTTOM),
     CONTROLS: {
       TO_HIDE: () => SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE,
+      CONTAINER: () =>
+        document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.CONTAINER),
       CONTROLS: () =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.CONTROLS),
-      TIME_BAR: () =>
-        document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.TIME_BAR),
+      PROGRESS_BAR: {
+        CONTAINER: () =>
+          document.querySelector(
+            SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER
+          ),
+        CHAPTERS: {
+          CONTAINER: () =>
+            document.querySelector(
+              SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER
+            ),
+        },
+        SCRUBBER: {
+          CONTAINER: () =>
+            document.querySelector(
+              SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER
+            ),
+        },
+      },
       FULLSCREEN: () =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.FULLSCREEN),
       THEATER: () =>
@@ -197,6 +260,36 @@ SELECTORS = {
   PLAYLIST: () => document.querySelector(SELECTORS.RAW.PLAYLIST),
   COLUMN_LEFT: () => document.querySelector(SELECTORS.RAW.COLUMN_LEFT),
   COLUMN_RIGHT: () => document.querySelector(SELECTORS.RAW.COLUMN_RIGHT),
+  BETTERYT: {
+    MINI_PLAYER: {
+      CONTROLS: {
+        PROGRESS_BAR: {
+          CONTAINER: () =>
+            document.querySelector(
+              SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER
+            ),
+          SLIDER: () =>
+            document.querySelector(
+              SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER
+            ),
+          CHAPTERS: {
+            CONTAINER: () =>
+              document.querySelector(
+                SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR
+                  .CHAPTERS.CONTAINER
+              ),
+          },
+          SCRUBBER: {
+            CONTAINER: () =>
+              document.querySelector(
+                SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR
+                  .SCRUBBER.CONTAINER
+              ),
+          },
+        },
+      },
+    },
+  },
 };
 
 MiniPlayer = () => {
@@ -222,10 +315,13 @@ MiniPlayer = () => {
 
     playerControls.style.width =
       SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth -
-      playerControls.offsetLeft * 2 +
+      SELECTORS.PLAYER.CONTROLS.CONTAINER().offsetLeft * 2 +
       'px';
 
-    SELECTORS.PLAYER.CONTROLS.TIME_BAR().setAttribute('hidden', '');
+    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().setAttribute(
+      'hidden',
+      ''
+    );
 
     for (const controlSelector of SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE) {
       const control = document.querySelector(controlSelector);
@@ -242,13 +338,24 @@ MiniPlayer = () => {
     SELECTORS.MINI_PLAYER.ROOT().setAttribute('enabled', '');
     SELECTORS.MINI_PLAYER.ROOT().setAttribute('active', '');
 
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().removeAttribute(
+      'hidden'
+    );
+
     if (
       !SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
         'ytp-player-minimized'
-      )
+      ) ||
+      !SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-small-mode')
     ) {
       SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-player-minimized');
       SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-small-mode');
+
+      if (SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-big-mode')) {
+        SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-big-mode');
+        SELECTORS.PLAYER.GRADIENT_TOP().setAttribute('hidden', '');
+        SELECTORS.PLAYER.GRADIENT_BOTTOM().setAttribute('hidden', '');
+      }
     }
   }
 
@@ -269,9 +376,11 @@ MiniPlayer = () => {
     playerV.style.height = height + 'px';
     playerControls.style.width =
       SELECTORS.PLAYER.CONTAINER().offsetWidth -
-      playerControls.offsetLeft * 2 +
+      SELECTORS.PLAYER.CONTROLS.CONTAINER().offsetLeft * 2 +
       'px';
-    SELECTORS.PLAYER.CONTROLS.TIME_BAR().removeAttribute('hidden');
+    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().removeAttribute(
+      'hidden'
+    );
     for (const controlSelector of SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE) {
       const control = document.querySelector(controlSelector);
       if (control) {
@@ -284,10 +393,32 @@ MiniPlayer = () => {
     SELECTORS.PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
 
     if (
-      SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-player-minimized')
+      SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
+        'ytp-player-minimized'
+      ) ||
+      SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-small-mode')
     ) {
       SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-player-minimized');
       SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-small-mode');
+
+      if (
+        SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-fullscreen') &&
+        !SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-big-mode')
+      ) {
+        SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-big-mode');
+        if (
+          SELECTORS.PLAYER.GRADIENT_TOP().hasAttribute('hidden') ||
+          SELECTORS.PLAYER.GRADIENT_BOTTOM().hasAttribute('hidden')
+        ) {
+          SELECTORS.PLAYER.GRADIENT_TOP().removeAttribute('hidden');
+          SELECTORS.PLAYER.GRADIENT_BOTTOM().removeAttribute('hidden');
+        }
+      }
+
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().setAttribute(
+        'hidden',
+        ''
+      );
     }
   }
 
@@ -301,6 +432,184 @@ MiniPlayer = () => {
         showMiniPlayer();
       } else {
         showFullPlayer();
+      }
+    }
+  }
+
+  var pointerDown = false;
+  function createProgressBar() {
+    var progressBarContainer = document.createElement('div');
+    progressBarContainer.classList = 'betteryt ytp-progress-bar-container';
+    progressBarContainer.setAttribute('hidden', '');
+    progressBarContainer.setAttribute('data-layer', '4');
+
+    var progressBar = document.createElement('div');
+    progressBar.classList = 'betteryt ytp-progress-bar';
+    progressBar.setAttribute('role', 'slider');
+
+    progressBar.addEventListener('pointerup', () => {
+      pointerDown = false;
+    });
+    progressBar.addEventListener('pointerdown', (e) => {
+      pointerDown = true;
+
+      let x =
+        e.clientX - SELECTORS.MINI_PLAYER.CONTAINER().getBoundingClientRect().x;
+
+      SELECTORS.PLAYER.VIDEO().currentTime =
+        (x / SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) *
+        SELECTORS.PLAYER.VIDEO().duration;
+
+      updateProgressBar();
+    });
+    progressBar.addEventListener('pointerleave', () => {
+      pointerDown = false;
+    });
+    progressBar.addEventListener('pointermove', (e) => {
+      if (pointerDown) {
+        let x =
+          e.clientX -
+          SELECTORS.MINI_PLAYER.CONTAINER().getBoundingClientRect().x;
+
+        SELECTORS.PLAYER.VIDEO().currentTime =
+          (x / SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) *
+          SELECTORS.PLAYER.VIDEO().duration;
+
+        updateProgressBar();
+      }
+    });
+
+    var chaptersContainer = document.createElement('div');
+    chaptersContainer.classList = 'betteryt ytp-chapters-container';
+
+    var scrubberContainer = document.createElement('div');
+    scrubberContainer.classList = 'betteryt ytp-scrubber-container';
+
+    var scrubberButton = document.createElement('div');
+    scrubberButton.classList =
+      'betteryt ytp-scrubber-button ytp-swatch-background-color';
+
+    var scrubberIndicator = document.createElement('div');
+    scrubberIndicator.classList = 'betteryt ytp-scrubber-pull-indicator';
+
+    scrubberButton.appendChild(scrubberIndicator);
+    scrubberContainer.appendChild(scrubberButton);
+
+    progressBar.appendChild(chaptersContainer);
+    progressBar.appendChild(scrubberContainer);
+    progressBarContainer.appendChild(progressBar);
+
+    SELECTORS.PLAYER.MOVIE_PLAYER().appendChild(progressBarContainer);
+
+    createChapters();
+  }
+
+  function createChapters() {
+    while (
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
+        .firstChild
+    ) {
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER().removeChild(
+        SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
+          .firstChild
+      );
+    }
+
+    for (const i of SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
+      .children) {
+      let chapter = document.createElement('div');
+      chapter.classList =
+        'betteryt ytp-chapter-hover-container ytp-exp-chapter-hover-container';
+
+      chapter.style.width =
+        Math.round(
+          (parseInt(i.style.width.replace('px', '')) /
+            parseInt(
+              SELECTORS.PLAYER.CONTROLS.CONTROLS().style.width.replace('px', '')
+            )) *
+            SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth
+        ) + 'px';
+
+      if (i.style.marginRight) {
+        chapter.style.marginRight = '2px';
+      }
+
+      let chapterProgressPadding = document.createElement('div');
+      chapterProgressPadding.classList = 'betteryt ytp-progress-bar-padding';
+
+      let chapterProgressList = document.createElement('div');
+      chapterProgressList.classList = 'betteryt ytp-progress-list';
+
+      let chapterPlayProgress = document.createElement('div');
+      chapterPlayProgress.classList =
+        'betteryt ytp-play-progress ytp-swatch-background-color';
+      chapterPlayProgress.style.left = i.children[1].children[0].style.left;
+      chapterPlayProgress.style.transform =
+        i.children[1].children[0].style.transform;
+
+      chapterProgressList.appendChild(chapterPlayProgress);
+      chapter.appendChild(chapterProgressPadding);
+      chapter.appendChild(chapterProgressList);
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER().appendChild(
+        chapter
+      );
+    }
+
+    function findWidth() {
+      let totalWidth = 0;
+
+      for (const i of SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
+        .children) {
+        totalWidth += parseFloat(i.style.width.replace('px', ''));
+
+        if (i.style.marginRight) {
+          totalWidth += parseInt(i.style.marginRight.replace('px', ''));
+        }
+      }
+
+      for (const i of SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
+        .children) {
+        if (totalWidth > SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) {
+          i.style.width =
+            parseFloat(i.style.width.replace('px', '')) - 1 + 'px';
+          totalWidth -= 1;
+        }
+      }
+
+      if (totalWidth > SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) {
+        findWidth();
+      }
+    }
+
+    findWidth();
+  }
+
+  function updateProgressBar() {
+    let newX =
+      (SELECTORS.PLAYER.VIDEO().currentTime /
+        SELECTORS.PLAYER.VIDEO().duration) *
+      SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth;
+
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER().style.transform =
+      'translateX(' + newX + 'px)';
+
+    let width = 0;
+    for (const i of SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
+      .children) {
+      let chapterElement = i.children[1].children[0];
+      width += parseInt(i.style.width.replace('px', ''));
+
+      if (i.style.marginRight) {
+        width += parseInt(i.style.marginRight.replace('px', ''));
+      }
+
+      if (newX >= width) {
+        chapterElement.style.transform = 'scaleX(1)';
+      } else {
+        let equation =
+          1 - (width - newX) / parseInt(i.style.width.replace('px', ''));
+        chapterElement.style.transform =
+          'scaleX(' + (equation > 0 ? equation : 0) + ')';
       }
     }
   }
@@ -330,7 +639,13 @@ MiniPlayer = () => {
     if (currentURL.pathname.startsWith('/watch')) {
       Helper.onElementLoad(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
         doPlayer();
+        createChapters();
       });
+    } else {
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().setAttribute(
+        'hidden',
+        ''
+      );
     }
   });
 
@@ -349,6 +664,52 @@ MiniPlayer = () => {
         SELECTORS.PLAYER.VIDEO().offsetHeight;
     }
   });
+
+  Helper.onElementLoad(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
+    createProgressBar();
+
+    SELECTORS.PLAYER.VIDEO().addEventListener('timeupdate', () => {
+      if (
+        SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER()
+      ) {
+        SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().setAttribute(
+          'aria-valuemin',
+          0
+        );
+        SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().setAttribute(
+          'aria-valuemax',
+          SELECTORS.PLAYER.VIDEO().duration
+        );
+        SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().setAttribute(
+          'aria-valuenow',
+          SELECTORS.PLAYER.VIDEO().currentTime
+        );
+
+        updateProgressBar();
+      }
+    });
+  });
+
+  Helper.onAttributeChangeSubtree(
+    SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
+    (_, e) => {
+      let toUpdate = false;
+      for (const i of e) {
+        if (
+          i.attributeName === 'style' &&
+          i.target.classList[0].includes('chapter') &&
+          i.target.style.width !== '100%'
+        ) {
+          toUpdate = true;
+        }
+      }
+
+      if (toUpdate) {
+        doPlayer();
+        createChapters();
+      }
+    }
+  );
 };
 
 NewComments = () => {
