@@ -7,8 +7,8 @@ class Helper {
 
       const observer = new MutationObserver(() => {
         if (document.querySelector(selectorRaw)) {
-          resolve(document.querySelector(selectorRaw));
           observer.disconnect();
+          resolve(document.querySelector(selectorRaw));
         }
       });
 
@@ -16,6 +16,37 @@ class Helper {
         childList: true,
         subtree: true,
       });
+    });
+  }
+
+  static onElementsLoad(selectorList) {
+    let ready = 0;
+    return new Promise((resolve) => {
+      function isReady() {
+        if (ready === selectorList.length) {
+          resolve();
+        }
+      }
+
+      for (const selectorRaw of selectorList) {
+        if (document.querySelector(selectorRaw)) {
+          ready++;
+          isReady();
+        } else {
+          const observer = new MutationObserver(() => {
+            if (document.querySelector(selectorRaw)) {
+              observer.disconnect();
+              ready++;
+              isReady();
+            }
+          });
+
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+          });
+        }
+      }
     });
   }
 
@@ -175,6 +206,7 @@ SELECTORS = {
             },
           },
         },
+        GRADIENT_BOTTOM: '.betteryt.ytp-gradient-bottom',
       },
     },
   },
@@ -288,6 +320,10 @@ SELECTORS = {
           },
         },
       },
+      GRADIENT_BOTTOM: () =>
+        document.querySelector(
+          SELECTORS.RAW.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM
+        ),
     },
   },
 };
@@ -342,6 +378,17 @@ MiniPlayer = () => {
       'hidden'
     );
 
+    SELECTORS.PLAYER.GRADIENT_TOP().setAttribute('hidden', '');
+    SELECTORS.PLAYER.GRADIENT_BOTTOM().setAttribute('hidden', '');
+    if (
+      SELECTORS.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM() &&
+      SELECTORS.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM().hasAttribute('hidden')
+    ) {
+      SELECTORS.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM().removeAttribute(
+        'hidden'
+      );
+    }
+
     if (
       !SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
         'ytp-player-minimized'
@@ -350,12 +397,10 @@ MiniPlayer = () => {
     ) {
       SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-player-minimized');
       SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-small-mode');
+    }
 
-      if (SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-big-mode')) {
-        SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-big-mode');
-        SELECTORS.PLAYER.GRADIENT_TOP().setAttribute('hidden', '');
-        SELECTORS.PLAYER.GRADIENT_BOTTOM().setAttribute('hidden', '');
-      }
+    if (SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-big-mode')) {
+      SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-big-mode');
     }
   }
 
@@ -392,6 +437,30 @@ MiniPlayer = () => {
     SELECTORS.MINI_PLAYER.ROOT().removeAttribute('enabled');
     SELECTORS.PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
 
+    // this check is to fit visual bug with time bar when toggling theater mode (using 't') in miniplayer
+    if (
+      SELECTORS.PLAYER.CONTROLS.CONTAINER().offsetWidth <
+        SELECTORS.PLAYER.CONTROLS.CONTROLS().offsetWidth &&
+      !SELECTORS.PLAYER.MOVIE_PLAYER().ariaLabel.includes('Fullscreen')
+    ) {
+      // we delay the event to try to prevent an infinite loop if computer is not fast enough
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      });
+    }
+
+    if (SELECTORS.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM())
+      SELECTORS.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM().setAttribute(
+        'hidden',
+        ''
+      );
+
+    if (SELECTORS.PLAYER.GRADIENT_TOP().hasAttribute('hidden'))
+      SELECTORS.PLAYER.GRADIENT_TOP().removeAttribute('hidden');
+
+    if (SELECTORS.PLAYER.GRADIENT_BOTTOM().hasAttribute('hidden'))
+      SELECTORS.PLAYER.GRADIENT_BOTTOM().removeAttribute('hidden');
+
     if (
       SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
         'ytp-player-minimized'
@@ -406,13 +475,6 @@ MiniPlayer = () => {
         !SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-big-mode')
       ) {
         SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-big-mode');
-        if (
-          SELECTORS.PLAYER.GRADIENT_TOP().hasAttribute('hidden') ||
-          SELECTORS.PLAYER.GRADIENT_BOTTOM().hasAttribute('hidden')
-        ) {
-          SELECTORS.PLAYER.GRADIENT_TOP().removeAttribute('hidden');
-          SELECTORS.PLAYER.GRADIENT_BOTTOM().removeAttribute('hidden');
-        }
       }
 
       SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().setAttribute(
@@ -436,8 +498,8 @@ MiniPlayer = () => {
     }
   }
 
-  var pointerDown = false;
-  function createProgressBar() {
+  function createMiniPlayer() {
+    // progress bar for miniplayer
     var progressBarContainer = document.createElement('div');
     progressBarContainer.classList = 'betteryt ytp-progress-bar-container';
     progressBarContainer.setAttribute('hidden', '');
@@ -447,6 +509,7 @@ MiniPlayer = () => {
     progressBar.classList = 'betteryt ytp-progress-bar';
     progressBar.setAttribute('role', 'slider');
 
+    var pointerDown = false;
     progressBar.addEventListener('pointerup', () => {
       pointerDown = false;
     });
@@ -502,6 +565,13 @@ MiniPlayer = () => {
     SELECTORS.PLAYER.MOVIE_PLAYER().appendChild(progressBarContainer);
 
     createChapters();
+
+    // gradient for controls in miniplayer
+    var gradientBottom = document.createElement('div');
+    gradientBottom.classList = 'betteryt ytp-gradient-bottom';
+    gradientBottom.setAttribute('hidden', '');
+
+    SELECTORS.PLAYER.MOVIE_PLAYER().appendChild(gradientBottom);
   }
 
   function createChapters() {
@@ -524,9 +594,7 @@ MiniPlayer = () => {
       chapter.style.width =
         Math.round(
           (parseInt(i.style.width.replace('px', '')) /
-            parseInt(
-              SELECTORS.PLAYER.CONTROLS.CONTROLS().style.width.replace('px', '')
-            )) *
+            SELECTORS.PLAYER.CONTROLS.CONTAINER().offsetWidth) *
             SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth
         ) + 'px';
 
@@ -582,6 +650,19 @@ MiniPlayer = () => {
     }
 
     findWidth();
+
+    // check if createChapters() was called before chapters were ready for inspection and if so, call it again until it is ready
+    for (const i of SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
+      .children) {
+      if (!i.hasAttribute('style')) {
+        // could also maybe use i.offsetWidth === 0
+        setTimeout(() => {
+          createChapters();
+        });
+
+        break;
+      }
+    }
   }
 
   function updateProgressBar() {
@@ -637,7 +718,12 @@ MiniPlayer = () => {
   // this is needed to solve strange bug where sometimes video does not maximize fully when expanding from mini player
   window.addEventListener('onUrlChange', () => {
     if (currentURL.pathname.startsWith('/watch')) {
-      Helper.onElementLoad(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
+      Helper.onElementsLoad([
+        SELECTORS.RAW.PLAYER.VIDEO,
+        SELECTORS.RAW.MINI_PLAYER.CONTAINER,
+        SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
+        SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
+      ]).then(() => {
         doPlayer();
         createChapters();
       });
@@ -665,8 +751,13 @@ MiniPlayer = () => {
     }
   });
 
-  Helper.onElementLoad(SELECTORS.RAW.PLAYER.VIDEO).then(() => {
-    createProgressBar();
+  Helper.onElementsLoad([
+    SELECTORS.RAW.PLAYER.VIDEO,
+    SELECTORS.RAW.MINI_PLAYER.CONTAINER,
+    SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
+    SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
+  ]).then(() => {
+    createMiniPlayer();
 
     SELECTORS.PLAYER.VIDEO().addEventListener('timeupdate', () => {
       if (
@@ -688,28 +779,29 @@ MiniPlayer = () => {
         updateProgressBar();
       }
     });
-  });
 
-  Helper.onAttributeChangeSubtree(
-    SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
-    (_, e) => {
-      let toUpdate = false;
-      for (const i of e) {
-        if (
-          i.attributeName === 'style' &&
-          i.target.classList[0].includes('chapter') &&
-          i.target.style.width !== '100%'
-        ) {
-          toUpdate = true;
+    // this is used to update mini player chapters as the chapters on progress bar take a second to appear
+    Helper.onAttributeChangeSubtree(
+      SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
+      (_, e) => {
+        let toUpdate = false;
+        for (const i of e) {
+          if (
+            i.attributeName === 'style' &&
+            i.target.classList[0].includes('chapter') &&
+            i.target.style.width !== '100%'
+          ) {
+            toUpdate = true;
+          }
+        }
+
+        if (toUpdate) {
+          doPlayer();
+          createChapters();
         }
       }
-
-      if (toUpdate) {
-        doPlayer();
-        createChapters();
-      }
-    }
-  );
+    );
+  });
 };
 
 NewComments = () => {
@@ -852,7 +944,7 @@ setInterval(() => {
           detail: { url: currentURL },
         })
       );
-    }, 0);
+    });
   }
 }, 50);
 
@@ -862,7 +954,7 @@ Helper.onChildElementChange(SELECTORS.RAW.PLAYER.BOUNDS, () => {
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('onToggleTheater'));
       window.dispatchEvent(new CustomEvent('onViewModeChange'));
-    }, 0);
+    });
   }
 });
 
@@ -880,11 +972,12 @@ Helper.onAttributeChange(SELECTORS.RAW.PLAYER.MOVIE_PLAYER, (_, e) => {
         );
 
         window.dispatchEvent(new CustomEvent('onViewModeChange'));
-      }, 0);
+      });
     }
   }
 });
 
+// check what is enabled
 chrome.storage.sync.get((data) => {
   if (data.miniPlayer) {
     MiniPlayer();

@@ -1,14 +1,18 @@
 {
   "name": "BetterYT - Better YouTube",
-  "description": "Add useful changes to YouTube, such as showing mini player when scrolling away from video and option to change comments to stay to the right of the video.",
+  "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
   "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
+    "32": "images/icon-32.png",
     "48": "images/icon-48.png",
+    "64": "images/icon-64.png",
     "96": "images/icon-96.png",
     "128": "images/icon-128.png",
     "256": "images/icon-256.png",
-    "512": "images/icon-512.png"
+    "512": "images/icon-512.png",
+    "1024": "images/icon-1024.png",
+    "2048": "images/icon-2048.png"
   },
   "content_scripts": [
     {
@@ -21,12 +25,13 @@
     "default_icon": {
       "16": "images/toolbar-icon-16.png",
       "19": "images/toolbar-icon-19.png",
+      "24": "images/toolbar-icon-24.png",
       "32": "images/toolbar-icon-32.png",
       "38": "images/toolbar-icon-38.png",
       "48": "images/toolbar-icon-48.png",
       "72": "images/toolbar-icon-72.png"
     }
   },
-  "permissions": ["activeTab", "scripting", "tabs", "storage"],
-  "host_permissions": ["*://*/*"]
+  "permissions": ["storage"],
+  "host_permissions": ["*://*.youtube.com/*"]
 }
