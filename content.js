@@ -381,6 +381,8 @@ MiniPlayer = () => {
 
   function showFullPlayer() {
     document.body.removeAttribute('betteryt-mini');
+    SELECTORS.MINI_PLAYER.ROOT().removeAttribute('has-no-data');
+    SELECTORS.MINI_PLAYER.ROOT().removeAttribute('closed');
 
     if (
       SELECTORS.PLAYER.PLAYER().parentElement !== SELECTORS.PLAYER.CONTAINER()
