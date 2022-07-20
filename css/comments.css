@@ -3,7 +3,7 @@
     overflow-x: hidden !important;
     overflow-y: auto !important;
     position: fixed !important;
-    width: calc(var(--ytd-watch-flexy-sidebar-width)) !important;
+    width: var(--ytd-watch-flexy-sidebar-width);
     height: calc(100vh - 100px);
   }
 }

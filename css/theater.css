@@ -6,7 +6,7 @@
     position: fixed;
     top: 0px;
     right: 0px;
-    z-index: 9999 !important;
+    z-index: var(--ytd-z-index-masthead) !important;
   }
 
   body[betteryt-theater] #player-theater-container.ytd-watch-flexy {
@@ -17,7 +17,7 @@
     max-width: calc(100vw - var(--ytd-watch-flexy-sidebar-width)) !important;
     height: calc(100vh) !important;
     max-height: calc(100vh) !important;
-    z-index: 9999 !important;
+    z-index: var(--ytd-z-index-masthead) !important;
   }
 
   body[betteryt-theater] #show-hide-button {

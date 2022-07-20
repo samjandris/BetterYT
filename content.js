@@ -81,10 +81,10 @@ class Helper {
   }
 
   static fitResolution(boundingElement, aspectRatio) {
-    var top = 0;
-    var left = 0;
-    var width = boundingElement.offsetHeight * aspectRatio;
-    var height = boundingElement.offsetHeight;
+    let top = 0;
+    let left = 0;
+    let width = boundingElement.offsetHeight * aspectRatio;
+    let height = boundingElement.offsetHeight;
     if (width > boundingElement.offsetWidth) {
       const ratio = width / boundingElement.offsetWidth;
       width = width / ratio;
@@ -101,12 +101,12 @@ class Helper {
     const abbrev = ['K', 'M', 'B', 'T'];
 
     function round(n, precision) {
-      var prec = Math.pow(10, precision);
+      const prec = Math.pow(10, precision);
       return Math.round(n * prec) / prec;
     }
 
-    var base = Math.floor(Math.log(Math.abs(num)) / Math.log(1000));
-    var suffix = abbrev[Math.min(2, base - 1)];
+    let base = Math.floor(Math.log(Math.abs(num)) / Math.log(1000));
+    const suffix = abbrev[Math.min(2, base - 1)];
     base = abbrev.indexOf(suffix) + 1;
     return suffix ? round(num / Math.pow(1000, base), 0) + suffix : '' + num;
   }
@@ -123,7 +123,10 @@ class Helper {
   }
 
   static isLive() {
-    return SELECTORS.CHAT.SHOW_HIDE() !== null;
+    return (
+      SELECTORS.CHAT.SHOW_HIDE() !== null &&
+      SELECTORS.PLAYER.CONTROLS.LIVE() !== null
+    );
   }
 }
 
@@ -186,6 +189,7 @@ SELECTORS = {
         },
         FULLSCREEN: 'button[title*=" screen (f)"]',
         THEATER: 'button[aria-label*="(t)"]',
+        LIVE: '.ytp-live-badge.ytp-button',
       },
     },
     MINI_PLAYER: {
@@ -285,6 +289,7 @@ SELECTORS = {
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.FULLSCREEN),
       THEATER: () =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.THEATER),
+      LIVE: () => document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.LIVE),
     },
   },
   MINI_PLAYER: {
@@ -409,22 +414,22 @@ MiniPlayer = () => {
 
   function createMiniPlayer() {
     // progress bar for miniplayer
-    var progressBarContainer = document.createElement('div');
+    const progressBarContainer = document.createElement('div');
     progressBarContainer.classList = 'betteryt ytp-progress-bar-container';
     progressBarContainer.setAttribute('data-layer', '4');
 
-    var progressBar = document.createElement('div');
+    const progressBar = document.createElement('div');
     progressBar.classList = 'betteryt ytp-progress-bar';
     progressBar.setAttribute('role', 'slider');
 
-    var pointerDown = false;
+    let pointerDown = false;
     progressBar.addEventListener('pointerup', () => {
       pointerDown = false;
     });
     progressBar.addEventListener('pointerdown', (e) => {
       pointerDown = true;
 
-      let x =
+      const x =
         e.clientX - SELECTORS.MINI_PLAYER.CONTAINER().getBoundingClientRect().x;
 
       SELECTORS.PLAYER.VIDEO().currentTime =
@@ -438,7 +443,7 @@ MiniPlayer = () => {
     });
     progressBar.addEventListener('pointermove', (e) => {
       if (pointerDown) {
-        let x =
+        const x =
           e.clientX -
           SELECTORS.MINI_PLAYER.CONTAINER().getBoundingClientRect().x;
 
@@ -450,17 +455,17 @@ MiniPlayer = () => {
       }
     });
 
-    var chaptersContainer = document.createElement('div');
+    const chaptersContainer = document.createElement('div');
     chaptersContainer.classList = 'betteryt ytp-chapters-container';
 
-    var scrubberContainer = document.createElement('div');
+    const scrubberContainer = document.createElement('div');
     scrubberContainer.classList = 'betteryt ytp-scrubber-container';
 
-    var scrubberButton = document.createElement('div');
+    const scrubberButton = document.createElement('div');
     scrubberButton.classList =
       'betteryt ytp-scrubber-button ytp-swatch-background-color';
 
-    var scrubberIndicator = document.createElement('div');
+    const scrubberIndicator = document.createElement('div');
     scrubberIndicator.classList = 'betteryt ytp-scrubber-pull-indicator';
 
     scrubberButton.appendChild(scrubberIndicator);
@@ -475,7 +480,7 @@ MiniPlayer = () => {
     createChapters();
 
     // gradient for controls in miniplayer
-    var gradientBottom = document.createElement('div');
+    const gradientBottom = document.createElement('div');
     gradientBottom.classList = 'betteryt ytp-gradient-bottom';
 
     SELECTORS.PLAYER.MOVIE_PLAYER().appendChild(gradientBottom);
@@ -494,7 +499,7 @@ MiniPlayer = () => {
 
     for (const i of SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
       .children) {
-      let chapter = document.createElement('div');
+      const chapter = document.createElement('div');
       chapter.classList =
         'betteryt ytp-chapter-hover-container ytp-exp-chapter-hover-container';
 
@@ -509,14 +514,14 @@ MiniPlayer = () => {
         chapter.style.marginRight = '2px';
       }
 
-      let chapterProgressPadding = document.createElement('div');
+      const chapterProgressPadding = document.createElement('div');
       chapterProgressPadding.classList = 'betteryt ytp-progress-bar-padding';
       chapterProgressPadding.style.height = '5px';
 
-      let chapterProgressList = document.createElement('div');
+      const chapterProgressList = document.createElement('div');
       chapterProgressList.classList = 'betteryt ytp-progress-list';
 
-      let chapterPlayProgress = document.createElement('div');
+      const chapterPlayProgress = document.createElement('div');
       chapterPlayProgress.classList =
         'betteryt ytp-play-progress ytp-swatch-background-color';
       chapterPlayProgress.style.left = i.children[1].children[0].style.left;
@@ -559,7 +564,7 @@ MiniPlayer = () => {
       return totalWidth;
     }
 
-    let finalWidth = findWidth();
+    const finalWidth = findWidth();
 
     // check if createChapters() was called before chapters were ready for inspection and if so, call it again until it is ready
     if (
@@ -573,7 +578,7 @@ MiniPlayer = () => {
   }
 
   function updateProgressBar() {
-    let newX =
+    const newX =
       (SELECTORS.PLAYER.VIDEO().currentTime /
         SELECTORS.PLAYER.VIDEO().duration) *
       SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth;
@@ -584,7 +589,7 @@ MiniPlayer = () => {
     let width = 0;
     for (const i of SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
       .children) {
-      let chapterElement = i.children[1].children[0];
+      const chapterElement = i.children[1].children[0];
       width += parseInt(i.style.width.replace('px', ''));
 
       if (i.style.marginRight) {
@@ -594,7 +599,7 @@ MiniPlayer = () => {
       if (newX >= width) {
         chapterElement.style.transform = 'scaleX(1)';
       } else {
-        let equation =
+        const equation =
           1 - (width - newX) / parseInt(i.style.width.replace('px', ''));
         chapterElement.style.transform =
           'scaleX(' + (equation > 0 ? equation : 0) + ')';
@@ -655,14 +660,12 @@ MiniPlayer = () => {
       SELECTORS.RAW.PAGE.WATCH_FLEXY,
       () => {
         if (currentURL.pathname.startsWith('/watch')) {
-          const videoWidth =
-            SELECTORS.PAGE.WATCH_FLEXY().style.getPropertyValue(
-              '--ytd-watch-flexy-width-ratio'
-            );
-          const videoHeight =
-            SELECTORS.PAGE.WATCH_FLEXY().style.getPropertyValue(
-              '--ytd-watch-flexy-height-ratio'
-            );
+          const videoWidth = getComputedStyle(
+            SELECTORS.PAGE.WATCH_FLEXY()
+          ).getPropertyValue('--ytd-watch-flexy-width-ratio');
+          const videoHeight = getComputedStyle(
+            SELECTORS.PAGE.WATCH_FLEXY()
+          ).getPropertyValue('--ytd-watch-flexy-height-ratio');
 
           const [top, left, width, height] = Helper.fitResolution(
             SELECTORS.MINI_PLAYER.CONTAINER(),
