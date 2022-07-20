@@ -1,0 +1,30 @@
+@media screen and (min-width: 1014px) {
+  body[betteryt-theater] #chat.ytd-watch-flexy,
+  body[betteryt-theater] #chatframe {
+    height: calc(100vh) !important;
+    width: var(--ytd-watch-flexy-sidebar-width);
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    z-index: 9999 !important;
+  }
+
+  body[betteryt-theater] #player-theater-container.ytd-watch-flexy {
+    position: fixed !important;
+    top: 0px;
+    left: 0px;
+    width: calc(100vw - var(--ytd-watch-flexy-sidebar-width)) !important;
+    max-width: calc(100vw - var(--ytd-watch-flexy-sidebar-width)) !important;
+    height: calc(100vh) !important;
+    max-height: calc(100vh) !important;
+    z-index: 9999 !important;
+  }
+
+  body[betteryt-theater] #show-hide-button {
+    display: none;
+  }
+
+  body[betteryt-theater] {
+    overflow: hidden;
+  }
+}

@@ -3,6 +3,7 @@ chrome.storage.sync.get((data) => {
   document.getElementById('returnDislikes').checked = data.returnDislikes;
   document.getElementById('experimentalComments').checked =
     data.experimentalComments;
+  document.getElementById('twitchTheater').checked = data.twitchTheater;
 });
 
 document.getElementById('miniPlayer').addEventListener('change', () => {
@@ -25,3 +26,9 @@ document
         .checked,
     });
   });
+
+document.getElementById('twitchTheater').addEventListener('change', () => {
+  chrome.storage.sync.set({
+    twitchTheater: document.getElementById('twitchTheater').checked,
+  });
+});

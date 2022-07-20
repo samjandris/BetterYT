@@ -17,6 +17,7 @@
   "content_scripts": [
     {
       "js": ["content.js"],
+      "css": ["css/mini.css", "css/theater.css", "css/comments.css"],
       "matches": ["*://*.youtube.com/*"]
     }
   ],
