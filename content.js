@@ -50,41 +50,33 @@ class Helper {
     });
   }
 
-  static onAttributeChange(selectorRaw, callback) {
+  static onAttributeChange(
+    selectorRaw,
+    callback,
+    settings = { attributes: true }
+  ) {
     Helper.onElementLoad(selectorRaw).then(() => {
       const observer = new MutationObserver((mutationsList) => {
         callback(observer, mutationsList);
       });
 
-      observer.observe(document.querySelector(selectorRaw), {
-        attributes: true,
-      });
+      observer.observe(document.querySelector(selectorRaw), settings);
     });
   }
 
-  static onAttributeChangeSubtree(selectorRaw, callback) {
+  static onChildElementChange(
+    selectorRaw,
+    callback,
+    settings = {
+      childList: true,
+    }
+  ) {
     Helper.onElementLoad(selectorRaw).then(() => {
       const observer = new MutationObserver((mutationsList) => {
         callback(observer, mutationsList);
       });
 
-      observer.observe(document.querySelector(selectorRaw), {
-        childList: true,
-        subtree: true,
-        attributes: true,
-      });
-    });
-  }
-
-  static onChildElementChange(selectorRaw, callback) {
-    Helper.onElementLoad(selectorRaw).then(() => {
-      const observer = new MutationObserver((mutationsList) => {
-        callback(observer, mutationsList);
-      });
-
-      observer.observe(document.querySelector(selectorRaw), {
-        childList: true,
-      });
+      observer.observe(document.querySelector(selectorRaw), settings);
     });
   }
 
@@ -563,21 +555,20 @@ MiniPlayer = () => {
       if (totalWidth > SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) {
         findWidth();
       }
+
+      return totalWidth;
     }
 
-    findWidth();
+    let finalWidth = findWidth();
 
     // check if createChapters() was called before chapters were ready for inspection and if so, call it again until it is ready
-    for (const i of SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
-      .children) {
-      if (!i.hasAttribute('style')) {
-        // could also maybe use i.offsetWidth === 0
-        setTimeout(() => {
-          createChapters();
-        });
-
-        break;
-      }
+    if (
+      isNaN(finalWidth) ||
+      finalWidth < SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth
+    ) {
+      setTimeout(() => {
+        createChapters();
+      });
     }
   }
 
@@ -657,23 +648,35 @@ MiniPlayer = () => {
 
   // wait for changes to the video so we can check if video aspect ratio changes
   Helper.onElementsLoad([
-    SELECTORS.RAW.PLAYER.VIDEO,
+    SELECTORS.RAW.PAGE.WATCH_FLEXY,
     SELECTORS.RAW.MINI_PLAYER.CONTAINER,
   ]).then(() => {
-    Helper.onAttributeChange(SELECTORS.RAW.PLAYER.VIDEO, () => {
-      if (currentURL.pathname.startsWith('/watch')) {
-        const [top, left, width, height] = Helper.fitResolution(
-          SELECTORS.MINI_PLAYER.CONTAINER(),
-          SELECTORS.PLAYER.VIDEO().offsetWidth /
-            SELECTORS.PLAYER.VIDEO().offsetHeight
-        );
+    Helper.onAttributeChange(
+      SELECTORS.RAW.PAGE.WATCH_FLEXY,
+      () => {
+        if (currentURL.pathname.startsWith('/watch')) {
+          const videoWidth =
+            SELECTORS.PAGE.WATCH_FLEXY().style.getPropertyValue(
+              '--ytd-watch-flexy-width-ratio'
+            );
+          const videoHeight =
+            SELECTORS.PAGE.WATCH_FLEXY().style.getPropertyValue(
+              '--ytd-watch-flexy-height-ratio'
+            );
 
-        document.body.style.setProperty('--mini-video-top', top + 'px');
-        document.body.style.setProperty('--mini-video-left', left + 'px');
-        document.body.style.setProperty('--mini-video-width', width + 'px');
-        document.body.style.setProperty('--mini-video-height', height + 'px');
-      }
-    });
+          const [top, left, width, height] = Helper.fitResolution(
+            SELECTORS.MINI_PLAYER.CONTAINER(),
+            videoWidth / videoHeight
+          );
+
+          document.body.style.setProperty('--mini-video-top', top + 'px');
+          document.body.style.setProperty('--mini-video-left', left + 'px');
+          document.body.style.setProperty('--mini-video-width', width + 'px');
+          document.body.style.setProperty('--mini-video-height', height + 'px');
+        }
+      },
+      { attributes: true, attributeFilter: ['style'] }
+    );
   });
 
   Helper.onElementsLoad([
@@ -706,24 +709,11 @@ MiniPlayer = () => {
     });
 
     // this is used to update mini player chapters as the chapters on progress bar take a second to appear
-    Helper.onAttributeChangeSubtree(
+    Helper.onChildElementChange(
       SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
-      (_, e) => {
-        let toUpdate = false;
-        for (const i of e) {
-          if (
-            i.attributeName === 'style' &&
-            i.target.classList[0].includes('chapter') &&
-            i.target.style.width !== '100%'
-          ) {
-            toUpdate = true;
-          }
-        }
-
-        if (toUpdate) {
-          doPlayer();
-          createChapters();
-        }
+      () => {
+        doPlayer();
+        createChapters();
       }
     );
   });
@@ -903,22 +893,22 @@ setInterval(() => {
 }, 50);
 
 // create miniplayer mode event
-Helper.onAttributeChange('body', (_, e) => {
-  for (const i of e) {
-    if (i.attributeName === 'betteryt-mini') {
-      window.dispatchEvent(
-        new CustomEvent('onToggleMiniplayer', {
-          detail: {
-            isMiniplayer: i.target.hasAttribute('betteryt-mini'),
-          },
-        })
-      );
+Helper.onAttributeChange(
+  'body',
+  () => {
+    window.dispatchEvent(
+      new CustomEvent('onToggleMiniplayer', {
+        detail: {
+          isMiniplayer: document.body.hasAttribute('betteryt-mini'),
+        },
+      })
+    );
 
-      window.dispatchEvent(new CustomEvent('onViewModeChange'));
-      window.dispatchEvent(new Event('resize'));
-    }
-  }
-});
+    window.dispatchEvent(new CustomEvent('onViewModeChange'));
+    window.dispatchEvent(new Event('resize'));
+  },
+  { attributes: true, attributeFilter: ['betteryt-mini'] }
+);
 
 // create theater mode event
 Helper.onChildElementChange(SELECTORS.RAW.PLAYER.BOUNDS, () => {
@@ -937,22 +927,22 @@ Helper.onChildElementChange(SELECTORS.RAW.PLAYER.BOUNDS, () => {
 });
 
 // create fullscreen mode event
-Helper.onAttributeChange(SELECTORS.RAW.PLAYER.MOVIE_PLAYER, (_, e) => {
-  for (const i of e) {
-    if (i.attributeName === 'aria-label') {
-      window.dispatchEvent(
-        new CustomEvent('onToggleFullscreen', {
-          detail: {
-            isFullscreen: i.target.ariaLabel.includes('Fullscreen'),
-          },
-        })
-      );
+Helper.onAttributeChange(
+  SELECTORS.RAW.PLAYER.MOVIE_PLAYER,
+  () => {
+    window.dispatchEvent(
+      new CustomEvent('onToggleFullscreen', {
+        detail: {
+          isFullscreen: Helper.isFullscreen(),
+        },
+      })
+    );
 
-      window.dispatchEvent(new CustomEvent('onViewModeChange'));
-      window.dispatchEvent(new Event('resize'));
-    }
-  }
-});
+    window.dispatchEvent(new CustomEvent('onViewModeChange'));
+    window.dispatchEvent(new Event('resize'));
+  },
+  { attributes: true, attributeFilter: ['aria-label'] }
+);
 
 // check what is enabled
 chrome.storage.sync.get((data) => {
