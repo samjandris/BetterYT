@@ -1,7 +1,7 @@
 {
   "name": "BetterYT - Better YouTube",
   "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "manifest_version": 3,
   "default_locale": "en",
   "icons": {
@@ -11,9 +11,7 @@
     "96": "images/icon-96.png",
     "128": "images/icon-128.png",
     "256": "images/icon-256.png",
-    "512": "images/icon-512.png",
-    "1024": "images/icon-1024.png",
-    "2048": "images/icon-2048.png"
+    "512": "images/icon-512.png"
   },
   "content_scripts": [
     {
