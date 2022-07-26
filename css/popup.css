@@ -1,0 +1,41 @@
+body {
+  width: 350px;
+  background-color: #282828;
+  color: white;
+}
+
+.logo {
+  display: flex;
+  margin-left: 3px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.selector {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  font-size: x-large;
+  margin-left: 10px;
+  margin-bottom: 1px;
+}
+
+.label {
+  font-size: large;
+  margin-left: 5px;
+}
+
+.sub-label {
+  display: flex;
+  margin-bottom: 20px;
+  font-size: small;
+  margin-left: 20px;
+  width: calc(100% - 40px);
+  color: lightgray;
+}
+
+:root:not([refresh]) .refresh {
+  display: none;
+}

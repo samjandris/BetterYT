@@ -1,0 +1,46 @@
+{
+  "settingsTitle": {
+    "message": "BetterYT Settings",
+    "description": "Title for popup window"
+  },
+  "settingsRefresh": {
+    "message": "*Changes require a refresh",
+    "description": "Text for when changing a setting requires a refresh"
+  },
+
+  "settingsMiniLabel": {
+    "message": "Mini player",
+    "description": "Label for checkbox for mini player"
+  },
+  "settingsMiniDesc": {
+    "message": "Shows a mini player when scrolling.",
+    "description": "Description of mini player"
+  },
+
+  "settingsDislikeLabel": {
+    "message": "Return dislike count",
+    "description": "Label for checkbox for returning dislike count"
+  },
+  "settingsDislikeDesc": {
+    "message": "Returns the dislike counter using Return YouTube Dislike API. Disable to be compatible with native Return YouTube Dislike.",
+    "description": "Description of return dislike count"
+  },
+
+  "settingsTheaterLabel": {
+    "message": "Twitch theater mode",
+    "description": "Label for checkbox for twitch theater mode"
+  },
+  "settingsTheaterDesc": {
+    "message": "Locks chat next to livestream when in theater mode, similar to Twitch.",
+    "description": "Description of twitch theater mode"
+  },
+
+  "settingsCommentsLabel": {
+    "message": "Experimental comments (BETA)",
+    "description": "Label for checkbox for experimental comments"
+  },
+  "settingsCommentsDesc": {
+    "message": "Moves the comment section to where the related section normally is, allowing easier reading of comments while watching a video.",
+    "description": "Description of experimental comments"
+  }
+}

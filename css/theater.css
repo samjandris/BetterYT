@@ -1,11 +1,11 @@
 @media screen and (min-width: 1014px) {
   body[betteryt-theater] #chat.ytd-watch-flexy,
   body[betteryt-theater] #chatframe {
-    height: 100% !important;
-    width: var(--ytd-watch-flexy-sidebar-width);
     position: fixed;
     top: 0px;
     right: 0px;
+    width: var(--ytd-watch-flexy-sidebar-width);
+    height: 100% !important;
     z-index: var(--ytd-z-index-masthead) !important;
   }
 

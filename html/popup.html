@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/css/popup.css" />
+  </head>
+
+  <body>
+    <div class="logo">
+      <img src="/images/icon-32.png" />
+      <span class="title" data-locale="settingsTitle"></span>
+    </div>
+
+    <div class="selector">
+      <input type="checkbox" id="miniPlayer" name="miniPlayer" value="true" />
+      <label
+        class="label"
+        for="miniPlayer"
+        data-locale="settingsMiniLabel"
+      ></label>
+    </div>
+
+    <span class="sub-label" data-locale="settingsMiniDesc"></span>
+
+    <div class="selector">
+      <input
+        type="checkbox"
+        id="returnDislikes"
+        name="returnDislikes"
+        value="true"
+      />
+      <label
+        class="label"
+        for="returnDislikes"
+        data-locale="settingsDislikeLabel"
+      ></label>
+    </div>
+
+    <span class="sub-label" data-locale="settingsDislikeDesc"></span>
+
+    <div class="selector">
+      <input
+        type="checkbox"
+        id="twitchTheater"
+        name="twitchTheater"
+        value="true"
+      />
+      <label
+        class="label"
+        for="twitchTheater"
+        data-locale="settingsTheaterLabel"
+      ></label>
+    </div>
+
+    <span class="sub-label" data-locale="settingsTheaterDesc"></span>
+
+    <div class="selector">
+      <input
+        type="checkbox"
+        id="experimentalComments"
+        name="experimentalComments"
+        value="true"
+      />
+      <label
+        class="label"
+        for="experimentalComments"
+        data-locale="settingsCommentsLabel"
+      ></label>
+    </div>
+
+    <span class="sub-label" data-locale="settingsCommentsDesc"></span>
+
+    <p class="sub-label refresh" data-locale="settingsRefresh"></p>
+
+    <script src="/js/popup.js"></script>
+  </body>
+</html>
