@@ -113,19 +113,24 @@ class Helper {
 
   static isTheater() {
     return (
-      SELECTORS.PLAYER.CONTAINER().parentElement ===
-        SELECTORS.PLAYER.THEATER_CONTAINER() && !this.isFullscreen()
+      SELECTORS.PAGE.WATCH_FLEXY().hasAttribute('theater') &&
+      !this.isFullscreen() &&
+      currentURL.pathname.startsWith('/watch')
     );
   }
 
   static isFullscreen() {
-    return SELECTORS.PLAYER.MOVIE_PLAYER().ariaLabel.includes('Fullscreen');
+    return (
+      SELECTORS.PAGE.WATCH_FLEXY().hasAttribute('fullscreen') &&
+      currentURL.pathname.startsWith('/watch')
+    );
   }
 
   static isLive() {
     return (
       SELECTORS.CHAT.SHOW_HIDE() !== null &&
-      SELECTORS.PLAYER.CONTROLS.LIVE() !== null
+      SELECTORS.PLAYER.CONTROLS.LIVE() !== null &&
+      currentURL.pathname.startsWith('/watch')
     );
   }
 }
@@ -676,6 +681,14 @@ MiniPlayer = () => {
           document.body.style.setProperty('--mini-video-left', left + 'px');
           document.body.style.setProperty('--mini-video-width', width + 'px');
           document.body.style.setProperty('--mini-video-height', height + 'px');
+
+          // WILL NOT WORK IF MINI PLAYER IS DISABLED IN SETTINGS
+          SELECTORS.PAGE.APP().style.setProperty(
+            '--ytd-app-fullerscreen-scrollbar-width',
+            getComputedStyle(SELECTORS.PAGE.WATCH_FLEXY()).getPropertyValue(
+              '--ytd-watch-flexy-scrollbar-width'
+            )
+          );
         }
       },
       { attributes: true, attributeFilter: ['style'] }
@@ -813,14 +826,28 @@ LiveTheater = () => {
           .querySelector('#chatframe')
           .contentDocument.body.hasChildNodes()
       ) {
-        window.scrollTo(0, 0);
         if (!document.body.hasAttribute('betteryt-theater'))
           document.body.setAttribute('betteryt-theater', '');
+
+        if (
+          SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
+            'ytp-hide-info-bar'
+          )
+        )
+          SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-hide-info-bar');
 
         document
           .querySelector('#chatframe')
           .contentDocument.querySelector('html')
           .setAttribute('dark', '');
+
+        SELECTORS.PAGE.APP().setAttribute('scrolling', '');
+
+        if (SELECTORS.PAGE.APP().scrollTop === 0) {
+          SELECTORS.PAGE.APP().setAttribute('masthead-hidden', '');
+        } else {
+          SELECTORS.PAGE.APP().removeAttribute('masthead-hidden');
+        }
 
         return true;
       } else {
@@ -835,6 +862,7 @@ LiveTheater = () => {
       }
     } else {
       document.body.removeAttribute('betteryt-theater');
+
       if (
         !document.querySelector('html').hasAttribute('dark') &&
         document.querySelector('#chatframe') &&
@@ -846,6 +874,18 @@ LiveTheater = () => {
           .querySelector('#chatframe')
           .contentDocument.querySelector('html')
           .removeAttribute('dark');
+
+      if (!Helper.isFullscreen()) {
+        SELECTORS.PAGE.APP().removeAttribute('scrolling');
+        SELECTORS.PAGE.APP().removeAttribute('masthead-hidden');
+
+        if (
+          !SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
+            'ytp-hide-info-bar'
+          )
+        )
+          SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-hide-info-bar');
+      }
     }
   }
 
@@ -862,10 +902,16 @@ LiveTheater = () => {
   });
 
   window.addEventListener('onUrlChange', () => {
+    // if (currentURL.pathname.startsWith('/watch')) {
+    positionTheater();
+    // } else {
+    // document.body.removeAttribute('betteryt-theater');
+    // }
+  });
+
+  SELECTORS.PAGE.APP().addEventListener('scroll', () => {
     if (currentURL.pathname.startsWith('/watch')) {
       positionTheater();
-    } else {
-      document.body.removeAttribute('betteryt-theater');
     }
   });
 
