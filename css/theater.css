@@ -4,7 +4,7 @@
     top: 0px;
     right: 0px;
     width: var(--ytd-watch-flexy-sidebar-width);
-    height: 100% !important;
+    height: 100vh !important;
     z-index: var(--ytd-z-index-masthead) - 1 !important;
   }
 
@@ -47,5 +47,17 @@
     button[aria-label*='Scroll for details'] {
     opacity: 1 !important;
     visibility: visible;
+  }
+
+  /* check for DVH support, this fixs mobile */
+  @supports (height: 100dvh) {
+    body[betteryt-theater] #chat {
+      height: 100dvh !important;
+    }
+
+    body[betteryt-theater] #player-theater-container {
+      height: 100dvh !important;
+      max-height: 100dvh !important;
+    }
   }
 }

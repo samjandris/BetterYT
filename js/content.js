@@ -843,10 +843,10 @@ LiveTheater = () => {
 
         SELECTORS.PAGE.APP().setAttribute('scrolling', '');
 
-        if (SELECTORS.PAGE.APP().scrollTop === 0) {
-          SELECTORS.PAGE.APP().setAttribute('masthead-hidden', '');
-        } else {
+        if (SELECTORS.PAGE.APP().scrollTop > 0) {
           SELECTORS.PAGE.APP().removeAttribute('masthead-hidden');
+        } else {
+          SELECTORS.PAGE.APP().setAttribute('masthead-hidden', '');
         }
 
         return true;
