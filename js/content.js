@@ -80,23 +80,6 @@ class Helper {
     });
   }
 
-  static fitResolution(boundingElement, aspectRatio) {
-    let top = 0;
-    let left = 0;
-    let width = boundingElement.offsetHeight * aspectRatio;
-    let height = boundingElement.offsetHeight;
-    if (width > boundingElement.offsetWidth) {
-      const ratio = width / boundingElement.offsetWidth;
-      width = width / ratio;
-      height = height / ratio;
-      top = (boundingElement.offsetHeight - height) / 2;
-    } else if (width < boundingElement.offsetWidth) {
-      left = (boundingElement.offsetWidth - width) / 2;
-    }
-
-    return [top, left, width, height];
-  }
-
   static abbreviateNumber(num) {
     const abbrev = ['K', 'M', 'B', 'T'];
 
@@ -659,37 +642,6 @@ MiniPlayer = () => {
     if (currentURL.pathname.startsWith('/watch')) {
       doPlayer();
     }
-  });
-
-  // wait for changes to the video so we can check if video aspect ratio changes
-  Helper.onElementsLoad([
-    SELECTORS.RAW.PAGE.WATCH_FLEXY,
-    SELECTORS.RAW.MINI_PLAYER.CONTAINER,
-  ]).then(() => {
-    Helper.onAttributeChange(
-      SELECTORS.RAW.PAGE.WATCH_FLEXY,
-      () => {
-        if (currentURL.pathname.startsWith('/watch')) {
-          const videoWidth = getComputedStyle(
-            SELECTORS.PAGE.WATCH_FLEXY()
-          ).getPropertyValue('--ytd-watch-flexy-width-ratio');
-          const videoHeight = getComputedStyle(
-            SELECTORS.PAGE.WATCH_FLEXY()
-          ).getPropertyValue('--ytd-watch-flexy-height-ratio');
-
-          const [top, left, width, height] = Helper.fitResolution(
-            SELECTORS.MINI_PLAYER.CONTAINER(),
-            videoWidth / videoHeight
-          );
-
-          document.body.style.setProperty('--mini-video-top', top + 'px');
-          document.body.style.setProperty('--mini-video-left', left + 'px');
-          document.body.style.setProperty('--mini-video-width', width + 'px');
-          document.body.style.setProperty('--mini-video-height', height + 'px');
-        }
-      },
-      { attributes: true, attributeFilter: ['style'] }
-    );
   });
 
   Helper.onElementsLoad([

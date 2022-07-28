@@ -1,8 +1,9 @@
 body[betteryt-mini] .html5-main-video {
-  top: var(--mini-video-top) !important;
-  left: var(--mini-video-left) !important;
-  width: var(--mini-video-width) !important;
-  height: var(--mini-video-height) !important;
+  top: 0px !important;
+  left: 0px !important;
+  width: var(--ytd-miniplayer-width) !important;
+  height: var(--ytd-miniplayer-height) !important;
+  object-fit: contain !important;
 }
 
 body[betteryt-mini] .ytp-chrome-controls {
