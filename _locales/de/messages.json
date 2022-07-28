@@ -1,0 +1,46 @@
+{
+  "settingsTitle": {
+    "message": "BetterYT-Einstellungen",
+    "description": "Titel für Popup-Fenster"
+  },
+  "settingsRefresh": {
+    "message": "*Änderungen erfordern eine Aktualisierung",
+    "description": "Text, wenn eine Einstellung geändert werden muss, muss aktualisiert werden"
+  },
+
+  "settingsMiniLabel": {
+    "message": "Mini-Videoplayer",
+    "description": "Label für Kontrollkästchen für Mini-Videoplayer"
+  },
+  "settingsMiniDesc": {
+    "message": "Zeigt beim Scrollen einen Mini-Videoplayer an.",
+    "description": "Beschreibung des Mini-Videoplayers"
+  },
+
+  "settingsDislikeLabel": {
+    "message": "Anzahl der Abneigungen zurückgeben",
+    "description": "Bezeichnung für das Kontrollkästchen zum Zurückgeben der Abneigungszahl"
+  },
+  "settingsDislikeDesc": {
+    "message": "Gibt den Abneigungszähler mithilfe der Return YouTube Dislike API zurück. Deaktivieren, um mit nativem Return YouTube Dislike kompatibel zu sein.",
+    "description": "Beschreibung der Anzahl der zurückgegebenen Abneigungen"
+  },
+
+  "settingsTheaterLabel": {
+    "message": "Twitch.TV-Theatermodus",
+    "description": "Bezeichnung für das Kontrollkästchen für den Twitch.tv-Theatermodus"
+  },
+  "settingsTheaterDesc": {
+    "message": "Sperrt den Chat neben dem Livestream im Theatermodus, ähnlich wie bei Twitch.TV",
+    "description": "Beschreibung des Theatermodus von twitch.tv"
+  },
+
+  "settingsCommentsLabel": {
+    "message": "Experimentelle Kommentare (BETA)",
+    "description": "Label für Checkbox für experimentelle Kommentare"
+  },
+  "settingsCommentsDesc": {
+    "message": "Verschiebt den Kommentarabschnitt an die Stelle, an der sich normalerweise der zugehörige Abschnitt befindet, sodass Kommentare beim Ansehen eines Videos einfacher gelesen werden können.",
+    "description": "Beschreibung der experimentellen Kommentare"
+  }
+}

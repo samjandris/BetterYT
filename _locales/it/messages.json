@@ -1,0 +1,46 @@
+{
+  "settingsTitle": {
+    "message": "Impostazioni BetterYT",
+    "description": "Titolo per la finestra popup"
+  },
+  "settingsRefresh": {
+    "message": "*Le modifiche richiedono un aggiornamento",
+    "description": "Il testo per quando la modifica di un'impostazione richiede un aggiornamento"
+  },
+
+  "settingsMiniLabel": {
+    "message": "Mini lettore video",
+    "description": "Etichetta per casella di controllo per mini video player"
+  },
+  "settingsMiniDesc": {
+    "message": "Mostra un mini lettore video durante lo scorrimento.",
+    "description": "Descrizione del mini lettore video"
+  },
+
+  "settingsDislikeLabel": {
+    "message": "Restituisci il conteggio delle antipatie",
+    "description": "Etichetta per la casella di controllo per la restituzione del conteggio dei non mi piace"
+  },
+  "settingsDislikeDesc": {
+    "message": "Restituisce il contatore del non mi piace utilizzando Restituisci l'API Non mi piace di YouTube. Disattiva per essere compatibile con Restituisci non mi piace YouTube nativo.",
+    "description": "Descrizione del conteggio del non mi piace al ritorno"
+  },
+
+  "settingsTheaterLabel": {
+    "message": "Modalità Twitch.TV teatro",
+    "description": "Etichetta per la casella di controllo per la modalità teatro twitch.tv"
+  },
+  "settingsTheaterDesc": {
+    "message": "Blocca la chat accanto al live streaming in modalità cinema, in modo simile a Twitch.TV",
+    "description": "Descrizione della modalità teatro di twitch.tv"
+  },
+
+  "settingsCommentsLabel": {
+    "message": "Commenti sperimentali (BETA)",
+    "description": "Etichetta per la casella di controllo per i commenti sperimentali"
+  },
+  "settingsCommentsDesc": {
+    "message": "Sposta la sezione dei commenti dove si trova normalmente la sezione correlata, consentendo una lettura più semplice dei commenti durante la visione di un video.",
+    "description": "Descrizione dei commenti sperimentali"
+  }
+}

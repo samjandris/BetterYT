@@ -1,0 +1,46 @@
+{
+  "settingsTitle": {
+    "message": "Configuración de BetterYT",
+    "description": "Título de la ventana emergente"
+  },
+  "settingsRefresh": {
+    "message": "*Los cambios requieren una actualización",
+    "description": "Texto para cuando cambiar una configuración requiere una actualización"
+  },
+
+  "settingsMiniLabel": {
+    "message": "Mini reproductor de video",
+    "description": "Etiqueta para casilla de verificación para mini reproductor"
+  },
+  "settingsMiniDesc": {
+    "message": "Muestra un mini reproductor al desplazarse.",
+    "description": "Descripción del mini reproductor"
+  },
+
+  "settingsDislikeLabel": {
+    "message": "Devuelve el recuento de disgustos",
+    "description": "Etiqueta para la casilla de verificación para devolver el recuento de disgustos"
+  },
+  "settingsDislikeDesc": {
+    "message": "Devuelve el contador de No me gusta usando la API Return YouTube Dislike. Deshabilítelo para que sea compatible con Return YouTube Dislike nativo.",
+    "description": "Descripción del recuento de aversiones devueltas"
+  },
+
+  "settingsTheaterLabel": {
+    "message": "Modo cine de Twitch.TV",
+    "description": "Etiqueta para la casilla de verificación del modo teatro de twitch.tv"
+  },
+  "settingsTheaterDesc": {
+    "message": "Bloquea el chat junto a la transmisión en vivo cuando está en modo teatro, similar a Twitch.",
+    "description": "Descripción del modo teatro de twitch.tv"
+  },
+
+  "settingsCommentsLabel": {
+    "message": "Comentarios experimentales (BETA)",
+    "description": "Etiqueta para casilla de verificación para comentarios experimentales"
+  },
+  "settingsCommentsDesc": {
+    "message": "Mueve la sección de comentarios a donde normalmente está la sección relacionada, lo que permite una lectura más fácil de los comentarios mientras mira un video.",
+    "description": "Descripción de los comentarios experimentales"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "settingsTitle": {
+    "message": "Paramètres BetterYT",
+    "description": "Titre de la fenêtre contextuelle"
+  },
+  "settingsRefresh": {
+    "message": "*Les modifications nécessitent un rafraîchissement",
+    "description": "Texte à indiquer lorsque la modification d'un paramètre nécessite une actualisation"
+  },
+
+  "settingsMiniLabel": {
+    "message": "Mini lecteur vidéo",
+    "description": "Libellé de la case à cocher pour le mini lecteur vidéo"
+  },
+  "settingsMiniDesc": {
+    "message": "Affiche un mini lecteur vidéo lors du défilement.",
+    "description": "Description du mini lecteur vidéo"
+  },
+
+  "settingsDislikeLabel": {
+    "message": "Renvoie le nombre d'aversions",
+    "description": "Libellé de la case à cocher pour renvoyer le nombre d'aversions"
+  },
+  "settingsDislikeDesc": {
+    "message": "Renvoie le compteur d'aversion à l'aide de l'API Return YouTube Dislike. Désactiver pour être compatible avec le retour natif YouTube Dislike.",
+    "description": "Description du nombre d'aversions renvoyées"
+  },
+
+  "settingsTheaterLabel": {
+    "message": "Mode théâtre Twitch.TV",
+    "description": "Libellé de la case à cocher pour le mode théâtre de twitch.tv"
+  },
+  "settingsTheaterDesc": {
+    "message": "Verrouille le chat à côté du flux en direct en mode théâtre, similaire à Twitch.TV",
+    "description": "Description du mode théâtre de twitch.tv"
+  },
+
+  "settingsCommentsLabel": {
+    "message": "Commentaires expérimentaux (BETA)",
+    "description": "Libellé de la case à cocher pour les commentaires expérimentaux"
+  },
+  "settingsCommentsDesc": {
+    "message": "Déplace la section des commentaires là où se trouve normalement la section associée, permettant une lecture plus facile des commentaires tout en regardant une vidéo.",
+    "description": "Description des commentaires expérimentaux"
+  }
+}
