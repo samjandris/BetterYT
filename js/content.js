@@ -138,11 +138,13 @@ class Helper {
 SELECTORS = {
   RAW: {
     PAGE: {
-      WATCH_FLEXY: 'ytd-watch-flexy',
       APP: 'ytd-app',
+      WATCH_FLEXY: 'ytd-watch-flexy',
+      NAVIGATION_PROGRESS: 'yt-page-navigation-progress',
     },
     CHAT: {
       CHAT: '#chat',
+      FRAME: '#chatframe',
       SHOW_HIDE: '#show-hide-button',
       OPEN_BUTTON:
         '#show-hide-button > ytd-toggle-button-renderer > a > tp-yt-paper-button > #text',
@@ -227,11 +229,14 @@ SELECTORS = {
     },
   },
   PAGE: {
-    WATCH_FLEXY: () => document.querySelector(SELECTORS.RAW.PAGE.WATCH_FLEXY),
     APP: () => document.querySelector(SELECTORS.RAW.PAGE.APP),
+    WATCH_FLEXY: () => document.querySelector(SELECTORS.RAW.PAGE.WATCH_FLEXY),
+    NAVIGATION_PROGRESS: () =>
+      document.querySelector(SELECTORS.RAW.PAGE.NAVIGATION_PROGRESS),
   },
   CHAT: {
     CHAT: () => document.querySelector(SELECTORS.RAW.CHAT.CHAT),
+    FRAME: () => document.querySelector(SELECTORS.RAW.CHAT.FRAME),
     SHOW_HIDE: () => document.querySelector(SELECTORS.RAW.CHAT.SHOW_HIDE),
     OPEN_BUTTON: () => document.querySelector(SELECTORS.RAW.CHAT.OPEN_BUTTON),
     REPLAY: () => document.querySelector(SELECTORS.RAW.CHAT.REPLAY),
@@ -633,7 +638,7 @@ MiniPlayer = () => {
   });
 
   // this is needed to solve strange bug where sometimes video does not maximize fully when expanding from mini player
-  window.addEventListener('onUrlChange', () => {
+  window.addEventListener('onPageChange', () => {
     if (currentURL.pathname.startsWith('/watch')) {
       Helper.onElementsLoad([
         SELECTORS.RAW.PLAYER.VIDEO,
@@ -681,14 +686,6 @@ MiniPlayer = () => {
           document.body.style.setProperty('--mini-video-left', left + 'px');
           document.body.style.setProperty('--mini-video-width', width + 'px');
           document.body.style.setProperty('--mini-video-height', height + 'px');
-
-          // WILL NOT WORK IF MINI PLAYER IS DISABLED IN SETTINGS
-          SELECTORS.PAGE.APP().style.setProperty(
-            '--ytd-app-fullerscreen-scrollbar-width',
-            getComputedStyle(SELECTORS.PAGE.WATCH_FLEXY()).getPropertyValue(
-              '--ytd-watch-flexy-scrollbar-width'
-            )
-          );
         }
       },
       { attributes: true, attributeFilter: ['style'] }
@@ -806,7 +803,7 @@ ReturnDislikes = () => {
     });
   }
 
-  window.addEventListener('onUrlChange', () => {
+  window.addEventListener('onPageChange', () => {
     if (currentURL.pathname.startsWith('/watch')) {
       updateDislikes();
     }
@@ -820,60 +817,46 @@ ReturnDislikes = () => {
 LiveTheater = () => {
   function positionTheater() {
     if (Helper.isTheater() && Helper.isLive()) {
+      if (!document.body.hasAttribute('betteryt-theater'))
+        document.body.setAttribute('betteryt-theater', '');
+
       if (
-        document.querySelector('#chatframe').contentDocument.body &&
-        document
-          .querySelector('#chatframe')
-          .contentDocument.body.hasChildNodes()
-      ) {
-        if (!document.body.hasAttribute('betteryt-theater'))
-          document.body.setAttribute('betteryt-theater', '');
+        SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains('ytp-hide-info-bar')
+      )
+        SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-hide-info-bar');
 
-        if (
-          SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
-            'ytp-hide-info-bar'
-          )
-        )
-          SELECTORS.PLAYER.MOVIE_PLAYER().classList.remove('ytp-hide-info-bar');
+      SELECTORS.PAGE.APP().setAttribute('scrolling', '');
 
-        document
-          .querySelector('#chatframe')
-          .contentDocument.querySelector('html')
-          .setAttribute('dark', '');
-
-        SELECTORS.PAGE.APP().setAttribute('scrolling', '');
-
-        if (SELECTORS.PAGE.APP().scrollTop > 0) {
-          SELECTORS.PAGE.APP().removeAttribute('masthead-hidden');
-        } else {
-          SELECTORS.PAGE.APP().setAttribute('masthead-hidden', '');
-        }
-
-        return true;
+      if (SELECTORS.PAGE.APP().scrollTop > 0) {
+        SELECTORS.PAGE.APP().removeAttribute('masthead-hidden');
       } else {
-        // this is done to wait until live chat is fully loaded in as otherwise, it will not get dark mode
-        setTimeout(() => {
-          if (positionTheater()) {
-            window.dispatchEvent(new Event('resize'));
-          }
-        });
-
-        return false;
+        SELECTORS.PAGE.APP().setAttribute('masthead-hidden', '');
       }
+
+      if (
+        SELECTORS.CHAT.FRAME().contentDocument &&
+        SELECTORS.CHAT.FRAME().contentDocument.documentElement
+      ) {
+        SELECTORS.CHAT.FRAME().contentDocument.documentElement.setAttribute(
+          'dark',
+          ''
+        );
+      }
+
+      SELECTORS.CHAT.FRAME().onload = () => {
+        positionTheater();
+      };
     } else {
       document.body.removeAttribute('betteryt-theater');
 
       if (
-        !document.querySelector('html').hasAttribute('dark') &&
-        document.querySelector('#chatframe') &&
-        document
-          .querySelector('#chatframe')
-          .contentDocument.querySelector('html')
+        !document.documentElement.hasAttribute('dark') &&
+        SELECTORS.CHAT.FRAME() &&
+        SELECTORS.CHAT.FRAME().contentDocument.documentElement
       )
-        document
-          .querySelector('#chatframe')
-          .contentDocument.querySelector('html')
-          .removeAttribute('dark');
+        SELECTORS.CHAT.FRAME().contentDocument.documentElement.removeAttribute(
+          'dark'
+        );
 
       if (!Helper.isFullscreen()) {
         SELECTORS.PAGE.APP().removeAttribute('scrolling');
@@ -901,12 +884,8 @@ LiveTheater = () => {
     }
   });
 
-  window.addEventListener('onUrlChange', () => {
-    // if (currentURL.pathname.startsWith('/watch')) {
+  window.addEventListener('onPageChange', () => {
     positionTheater();
-    // } else {
-    // document.body.removeAttribute('betteryt-theater');
-    // }
   });
 
   SELECTORS.PAGE.APP().addEventListener('scroll', () => {
@@ -915,11 +894,19 @@ LiveTheater = () => {
     }
   });
 
+  Helper.onElementLoad(SELECTORS.RAW.PAGE.WATCH_FLEXY).then(() => {
+    SELECTORS.PAGE.APP().style.setProperty(
+      '--ytd-app-fullerscreen-scrollbar-width',
+      getComputedStyle(SELECTORS.PAGE.WATCH_FLEXY()).getPropertyValue(
+        '--ytd-watch-flexy-scrollbar-width'
+      )
+    );
+  });
+
   if (currentURL.pathname.startsWith('/watch')) {
     Helper.onElementsLoad([
       SELECTORS.RAW.PLAYER.VIDEO,
-      'ytd-live-chat-frame',
-      '#chatframe',
+      SELECTORS.RAW.CHAT.FRAME,
     ]).then(() => {
       positionTheater();
     });
@@ -937,9 +924,46 @@ setInterval(() => {
           detail: { url: currentURL },
         })
       );
+
+      // fix for delayed loading of navigation bar
+      if (!SELECTORS.PAGE.NAVIGATION_PROGRESS()) {
+        Helper.onElementLoad(SELECTORS.RAW.PAGE.NAVIGATION_PROGRESS).then(
+          () => {
+            window.dispatchEvent(
+              new CustomEvent('onPageChange', {
+                detail: { url: currentURL },
+              })
+            );
+
+            window.dispatchEvent(new Event('resize'));
+          }
+        );
+      }
     });
   }
 }, 50);
+
+// create page change event
+Helper.onAttributeChange(
+  SELECTORS.RAW.PAGE.NAVIGATION_PROGRESS,
+  () => {
+    if (
+      SELECTORS.PAGE.NAVIGATION_PROGRESS().getAttribute('aria-valuenow') ===
+      '100'
+    ) {
+      setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent('onPageChange', {
+            detail: { url: currentURL },
+          })
+        );
+
+        window.dispatchEvent(new Event('resize'));
+      });
+    }
+  },
+  { attributes: true, attributeFilter: ['aria-valuenow'] }
+);
 
 // create miniplayer mode event
 Helper.onAttributeChange(

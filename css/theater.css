@@ -5,7 +5,7 @@
     right: 0px;
     width: var(--ytd-watch-flexy-sidebar-width);
     height: 100vh !important;
-    z-index: var(--ytd-z-index-masthead) - 1 !important;
+    border: none;
   }
 
   body[betteryt-theater] #player-theater-container {
@@ -15,7 +15,6 @@
     max-width: calc(100% - var(--ytd-watch-flexy-sidebar-width)) !important;
     height: 100vh !important;
     max-height: 100vh !important;
-    z-index: var(--ytd-z-index-masthead) - 1 !important;
   }
 
   body[betteryt-theater] #show-hide-button {
