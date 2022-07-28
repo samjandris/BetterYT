@@ -46,8 +46,9 @@
     visibility: visible;
   }
 
+  /* CURRENTLY DISABLED AS DVH SUPPORT IS NOT GREAT AT THE MOMENT */
   /* check for DVH support, this fixs mobile */
-  @supports (height: 100dvh) {
+  /* @supports (height: 100dvh) {
     body[betteryt-theater] #chat {
       height: 100dvh !important;
     }
@@ -56,5 +57,5 @@
       height: 100dvh !important;
       max-height: 100dvh !important;
     }
-  }
+  } */
 }
