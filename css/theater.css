@@ -29,21 +29,19 @@
     --ytd-masthead-height: 0px !important;
   }
 
-  body[betteryt-theater] button[aria-label*='Scroll for details'] {
+  body[betteryt-theater] .ytp-fullerscreen-edu-button {
     display: unset !important;
     position: absolute;
     width: auto;
     left: 50%;
-    bottom: -10%;
+    text-align: center;
     transform: translateX(-50%);
     transition: all 0.25s cubic-bezier(0, 0, 0.2, 1) !important;
     opacity: 0 !important;
     visibility: hidden;
   }
 
-  body[betteryt-theater]
-    ytd-app[masthead-hidden]
-    button[aria-label*='Scroll for details'] {
+  body[betteryt-theater] ytd-app[masthead-hidden] .ytp-fullerscreen-edu-button {
     opacity: 1 !important;
     visibility: visible;
   }
