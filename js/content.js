@@ -117,6 +117,13 @@ class Helper {
     );
   }
 
+  static isChatOpen() {
+    return (
+      SELECTORS.CHAT.FRAME().offsetHeight > 0 &&
+      currentURL.pathname.startsWith('/watch')
+    );
+  }
+
   static getVideoDuration() {
     if (
       SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().getAttribute(
@@ -798,7 +805,7 @@ ReturnDislikes = () => {
 
 LiveTheater = () => {
   function positionTheater() {
-    if (Helper.isTheater() && Helper.isLive()) {
+    if (Helper.isTheater() && Helper.isLive() && Helper.isChatOpen()) {
       if (!document.body.hasAttribute('betteryt-theater'))
         document.body.setAttribute('betteryt-theater', '');
 
@@ -824,10 +831,6 @@ LiveTheater = () => {
           ''
         );
       }
-
-      SELECTORS.CHAT.FRAME().onload = () => {
-        positionTheater();
-      };
     } else {
       document.body.removeAttribute('betteryt-theater');
 
@@ -852,6 +855,12 @@ LiveTheater = () => {
           SELECTORS.PLAYER.MOVIE_PLAYER().classList.add('ytp-hide-info-bar');
       }
     }
+
+    if (SELECTORS.CHAT.FRAME())
+      SELECTORS.CHAT.FRAME().onload = () => {
+        positionTheater();
+        window.dispatchEvent(new Event('resize'));
+      };
   }
 
   window.addEventListener('resize', () => {
