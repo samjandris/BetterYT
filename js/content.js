@@ -136,9 +136,7 @@ class Helper {
     ) {
       return SELECTORS.PLAYER.VIDEO().currentTime;
     } else {
-      return SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().getAttribute(
-        'aria-valuemax'
-      );
+      return SELECTORS.PLAYER.VIDEO().duration;
     }
   }
 }
