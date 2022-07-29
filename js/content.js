@@ -503,7 +503,11 @@ MiniPlayer = () => {
             SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth
         ) + 'px';
 
-      if (i.style.marginRight) {
+      if (
+        i.style.marginRight &&
+        SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
+          .childElementCount > 1
+      ) {
         chapter.style.marginRight = '2px';
       }
 
@@ -543,7 +547,10 @@ MiniPlayer = () => {
 
       for (const i of SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER()
         .children) {
-        if (totalWidth > SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) {
+        if (
+          totalWidth > SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth &&
+          parseFloat(i.style.width.replace('px', '')) > 0
+        ) {
           i.style.width =
             parseFloat(i.style.width.replace('px', '')) - 1 + 'px';
           totalWidth -= 1;
@@ -877,8 +884,13 @@ setInterval(() => {
         })
       );
 
-      // fix for delayed loading of navigation bar
-      if (!SELECTORS.PAGE.NAVIGATION_PROGRESS()) {
+      // fix for delayed loading of navigation bar or already loaded page
+      if (
+        !SELECTORS.PAGE.NAVIGATION_PROGRESS() ||
+        (SELECTORS.PAGE.NAVIGATION_PROGRESS() &&
+          SELECTORS.PAGE.NAVIGATION_PROGRESS().getAttribute('aria-valuenow') ===
+            '100')
+      ) {
         Helper.onElementLoad(SELECTORS.RAW.PAGE.NAVIGATION_PROGRESS).then(
           () => {
             window.dispatchEvent(
