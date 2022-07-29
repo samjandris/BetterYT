@@ -29,6 +29,8 @@ body[betteryt-mini] button[aria-label*='Play on TV'],
 body[betteryt-mini] button[aria-label*='AirPlay'],
 body[betteryt-mini] button[title*='Full screen'],
 body[betteryt-mini] #ytp-caption-window-container,
+body[betteryt-mini] .ytp-ce-shadow,
+body[betteryt-mini] .ytp-ce-element,
 body[betteryt-mini] .ytp-gradient-top,
 body[betteryt-mini] .ytp-gradient-bottom:not(.betteryt) {
   display: none !important;

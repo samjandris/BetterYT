@@ -116,6 +116,24 @@ class Helper {
       currentURL.pathname.startsWith('/watch')
     );
   }
+
+  static getVideoDuration() {
+    if (
+      SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().getAttribute(
+        'aria-valuenow'
+      ) ===
+        SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().getAttribute(
+          'aria-valuemax'
+        ) &&
+      this.isLive()
+    ) {
+      return SELECTORS.PLAYER.VIDEO().currentTime;
+    } else {
+      return SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().getAttribute(
+        'aria-valuemax'
+      );
+    }
+  }
 }
 
 SELECTORS = {
@@ -170,6 +188,8 @@ SELECTORS = {
         CONTROLS: '.ytp-chrome-controls',
         PROGRESS_BAR: {
           CONTAINER: '.ytp-chrome-bottom .ytp-progress-bar-container',
+          SLIDER:
+            '.ytp-chrome-bottom .ytp-progress-bar-container .ytp-progress-bar',
           CHAPTERS: {
             CONTAINER: '.ytp-chapters-container',
           },
@@ -264,6 +284,10 @@ SELECTORS = {
         CONTAINER: () =>
           document.querySelector(
             SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER
+          ),
+        SLIDER: () =>
+          document.querySelector(
+            SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER
           ),
         CHAPTERS: {
           CONTAINER: () =>
@@ -427,7 +451,7 @@ MiniPlayer = () => {
 
       SELECTORS.PLAYER.VIDEO().currentTime =
         (x / SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) *
-        SELECTORS.PLAYER.VIDEO().duration;
+        Helper.getVideoDuration();
 
       updateProgressBar();
     });
@@ -442,7 +466,7 @@ MiniPlayer = () => {
 
         SELECTORS.PLAYER.VIDEO().currentTime =
           (x / SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) *
-          SELECTORS.PLAYER.VIDEO().duration;
+          Helper.getVideoDuration();
 
         updateProgressBar();
       }
@@ -579,8 +603,7 @@ MiniPlayer = () => {
 
   function updateProgressBar() {
     const newX =
-      (SELECTORS.PLAYER.VIDEO().currentTime /
-        SELECTORS.PLAYER.VIDEO().duration) *
+      (SELECTORS.PLAYER.VIDEO().currentTime / Helper.getVideoDuration()) *
       SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth;
 
     SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER().style.transform =
@@ -669,7 +692,7 @@ MiniPlayer = () => {
         );
         SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().setAttribute(
           'aria-valuemax',
-          SELECTORS.PLAYER.VIDEO().duration
+          Helper.getVideoDuration()
         );
         SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().setAttribute(
           'aria-valuenow',
