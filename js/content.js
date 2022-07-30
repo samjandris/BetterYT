@@ -232,6 +232,9 @@ SELECTORS = {
         GRADIENT_BOTTOM: '.betteryt.ytp-gradient-bottom',
       },
     },
+    SPONSOR_BLOCK: {
+      CONTAINER: '#previewbar',
+    },
   },
   PAGE: {
     APP: () => document.querySelector(SELECTORS.RAW.PAGE.APP),
@@ -359,6 +362,10 @@ SELECTORS = {
         ),
     },
   },
+  SPONSOR_BLOCK: {
+    CONTAINER: () =>
+      document.querySelector(SELECTORS.RAW.SPONSOR_BLOCK.CONTAINER),
+  },
 };
 
 MiniPlayer = () => {
@@ -374,6 +381,15 @@ MiniPlayer = () => {
       SELECTORS.MINI_PLAYER.CONTAINER()
     )
       SELECTORS.MINI_PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
+
+    // Sponsorblock
+    if (
+      SELECTORS.SPONSOR_BLOCK.CONTAINER().parentElement !==
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
+    )
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().appendChild(
+        SELECTORS.SPONSOR_BLOCK.CONTAINER()
+      );
 
     SELECTORS.MINI_PLAYER.TITLE().textContent =
       SELECTORS.PLAYER.TITLE().textContent;
@@ -410,6 +426,15 @@ MiniPlayer = () => {
       SELECTORS.PLAYER.PLAYER().parentElement !== SELECTORS.PLAYER.CONTAINER()
     )
       SELECTORS.PLAYER.CONTAINER().appendChild(SELECTORS.PLAYER.PLAYER());
+
+    // Sponsorblock
+    if (
+      SELECTORS.SPONSOR_BLOCK.CONTAINER().parentElement !==
+      SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
+    )
+      SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().appendChild(
+        SELECTORS.SPONSOR_BLOCK.CONTAINER()
+      );
 
     SELECTORS.MINI_PLAYER.ROOT().removeAttribute('active');
     SELECTORS.MINI_PLAYER.ROOT().removeAttribute('enabled');
