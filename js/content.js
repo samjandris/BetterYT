@@ -111,6 +111,18 @@ class Helper {
 
   static isLive() {
     return (
+      SELECTORS.PLAYER.CONTROLS.TIME_DISPLAY().classList.contains('ytp-live') &&
+      SELECTORS.CHAT.SHOW_HIDE() !== null &&
+      SELECTORS.PLAYER.CONTROLS.LIVE() !== null &&
+      currentURL.pathname.startsWith('/watch')
+    );
+  }
+
+  static isReplay() {
+    return (
+      !SELECTORS.PLAYER.CONTROLS.TIME_DISPLAY().classList.contains(
+        'ytp-live'
+      ) &&
       SELECTORS.CHAT.SHOW_HIDE() !== null &&
       SELECTORS.PLAYER.CONTROLS.LIVE() !== null &&
       currentURL.pathname.startsWith('/watch')
@@ -122,22 +134,6 @@ class Helper {
       SELECTORS.CHAT.FRAME().offsetHeight > 0 &&
       currentURL.pathname.startsWith('/watch')
     );
-  }
-
-  static getVideoDuration() {
-    if (
-      SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().getAttribute(
-        'aria-valuenow'
-      ) ===
-        SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().getAttribute(
-          'aria-valuemax'
-        ) &&
-      this.isLive()
-    ) {
-      return SELECTORS.PLAYER.VIDEO().currentTime;
-    } else {
-      return SELECTORS.PLAYER.VIDEO().duration;
-    }
   }
 }
 
@@ -205,6 +201,7 @@ SELECTORS = {
         FULLSCREEN: 'button[title*=" screen (f)"]',
         THEATER: 'button[aria-label*="(t)"]',
         LIVE: '.ytp-live-badge.ytp-button',
+        TIME_DISPLAY: '.ytp-chrome-bottom .ytp-time-display',
       },
     },
     MINI_PLAYER: {
@@ -312,6 +309,8 @@ SELECTORS = {
       THEATER: () =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.THEATER),
       LIVE: () => document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.LIVE),
+      TIME_DISPLAY: () =>
+        document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.TIME_DISPLAY),
     },
   },
   MINI_PLAYER: {
@@ -367,6 +366,9 @@ MiniPlayer = () => {
     if (!document.body.hasAttribute('betteryt-mini'))
       document.body.setAttribute('betteryt-mini', '');
 
+    if (!document.body.hasAttribute('betteryt-live') && Helper.isLive())
+      document.body.setAttribute('betteryt-live', '');
+
     if (
       SELECTORS.PLAYER.PLAYER().parentElement !==
       SELECTORS.MINI_PLAYER.CONTAINER()
@@ -400,6 +402,7 @@ MiniPlayer = () => {
 
   function showFullPlayer() {
     document.body.removeAttribute('betteryt-mini');
+    document.body.removeAttribute('betteryt-live');
     SELECTORS.MINI_PLAYER.ROOT().removeAttribute('has-no-data');
     SELECTORS.MINI_PLAYER.ROOT().removeAttribute('closed');
 
@@ -456,7 +459,7 @@ MiniPlayer = () => {
 
       SELECTORS.PLAYER.VIDEO().currentTime =
         (x / SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) *
-        Helper.getVideoDuration();
+        SELECTORS.PLAYER.VIDEO().duration;
 
       updateProgressBar();
     });
@@ -471,7 +474,7 @@ MiniPlayer = () => {
 
         SELECTORS.PLAYER.VIDEO().currentTime =
           (x / SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth) *
-          Helper.getVideoDuration();
+          SELECTORS.PLAYER.VIDEO().duration;
 
         updateProgressBar();
       }
@@ -608,7 +611,8 @@ MiniPlayer = () => {
 
   function updateProgressBar() {
     const newX =
-      (SELECTORS.PLAYER.VIDEO().currentTime / Helper.getVideoDuration()) *
+      (SELECTORS.PLAYER.VIDEO().currentTime /
+        SELECTORS.PLAYER.VIDEO().duration) *
       SELECTORS.MINI_PLAYER.CONTAINER().offsetWidth;
 
     SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER().style.transform =
@@ -697,7 +701,7 @@ MiniPlayer = () => {
         );
         SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().setAttribute(
           'aria-valuemax',
-          Helper.getVideoDuration()
+          SELECTORS.PLAYER.VIDEO().duration
         );
         SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER().setAttribute(
           'aria-valuenow',
@@ -803,7 +807,11 @@ ReturnDislikes = () => {
 
 LiveTheater = () => {
   function positionTheater() {
-    if (Helper.isTheater() && Helper.isLive() && Helper.isChatOpen()) {
+    if (
+      Helper.isTheater() &&
+      (Helper.isLive() || Helper.isReplay()) &&
+      Helper.isChatOpen()
+    ) {
       if (!document.body.hasAttribute('betteryt-theater'))
         document.body.setAttribute('betteryt-theater', '');
 
