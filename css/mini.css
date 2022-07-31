@@ -21,7 +21,9 @@ body[betteryt-mini] .ytp-right-controls > *:not(.ytp-miniplayer-button),
 body[betteryt-mini]
   #movie_player
   > *:not(.html5-video-container, .ytp-chrome-bottom, .betteryt),
-body[betteryt-mini] .ytp-chrome-bottom .ytp-progress-bar-container {
+body[betteryt-mini] .ytp-chrome-bottom .ytp-progress-bar-container,
+body[betteryt-mini] .expander.ytd-miniplayer,
+body[betteryt-mini] .index-message.ytd-miniplayer {
   display: none !important;
 }
 

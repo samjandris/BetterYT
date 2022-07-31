@@ -15,7 +15,15 @@
   },
   "content_scripts": [
     {
-      "js": ["js/utils.js", "js/content.js"],
+      "js": [
+        "js/utils.js",
+        "js/events.js",
+        "js/modules/mini_player.js",
+        "js/modules/dislikes.js",
+        "js/modules/theater.js",
+        "js/modules/pip.js",
+        "js/modules/comments.js"
+      ],
       "css": [
         "css/mini.css",
         "css/theater.css",

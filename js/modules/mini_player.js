@@ -31,6 +31,10 @@ miniPlayer = () => {
       SELECTORS.MINI_PLAYER.ROOT().setAttribute('enabled', '');
     if (!SELECTORS.MINI_PLAYER.ROOT().hasAttribute('active'))
       SELECTORS.MINI_PLAYER.ROOT().setAttribute('active', '');
+    if (SELECTORS.MINI_PLAYER.ROOT().hasAttribute('has-playlist-data'))
+      SELECTORS.MINI_PLAYER.ROOT().removeAttribute('has-playlist-data');
+    if (SELECTORS.MINI_PLAYER.ROOT().hasAttribute('expanded'))
+      SELECTORS.MINI_PLAYER.ROOT().removeAttribute('expanded');
 
     if (
       !SELECTORS.PLAYER.MOVIE_PLAYER().classList.contains(
@@ -169,8 +173,10 @@ miniPlayer = () => {
 
     // scroll up when clicking info bar
     SELECTORS.MINI_PLAYER.INFO_BAR().addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      SELECTORS.PAGE.APP().scrollTo({ top: 0, behavior: 'smooth' });
+      if (currentURL.pathname.startsWith('/watch')) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        SELECTORS.PAGE.APP().scrollTo({ top: 0, behavior: 'smooth' });
+      }
     });
   }
 
