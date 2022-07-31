@@ -15,8 +15,13 @@
   },
   "content_scripts": [
     {
-      "js": ["js/content.js"],
-      "css": ["css/mini.css", "css/theater.css", "css/comments.css"],
+      "js": ["js/utils.js", "js/content.js"],
+      "css": [
+        "css/mini.css",
+        "css/theater.css",
+        "css/pip.css",
+        "css/comments.css"
+      ],
       "matches": ["*://*.youtube.com/*"]
     }
   ],

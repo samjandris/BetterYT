@@ -35,6 +35,15 @@
     "description": "Descripción del modo teatro de twitch.tv"
   },
 
+  "settingsPipLabel": {
+    "message": "Botón de imagen en imagen",
+    "description": "Etiqueta para la casilla de verificación del botón de imagen en imagen"
+  },
+  "settingsPipDesc": {
+    "message": "Muestra un botón en el reproductor de video que ingresa al modo de imagen en imagen, lo que crea un video flotante en la pantalla.",
+    "description": "Descripción del botón de imagen en imagen"
+  },
+
   "settingsCommentsLabel": {
     "message": "Comentarios experimentales (BETA)",
     "description": "Etiqueta para casilla de verificación para comentarios experimentales"

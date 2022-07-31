@@ -10,67 +10,89 @@
       <span class="title" data-locale="settingsTitle"></span>
     </div>
 
-    <div class="selector">
-      <input type="checkbox" id="miniPlayer" name="miniPlayer" value="true" />
-      <label
-        class="label"
-        for="miniPlayer"
-        data-locale="settingsMiniLabel"
-      ></label>
+    <div id="miniDiv">
+      <div class="selector">
+        <input type="checkbox" id="miniPlayer" name="miniPlayer" value="true" />
+        <label
+          class="label"
+          for="miniPlayer"
+          data-locale="settingsMiniLabel"
+        ></label>
+      </div>
+
+      <span class="sub-label" data-locale="settingsMiniDesc"></span>
     </div>
 
-    <span class="sub-label" data-locale="settingsMiniDesc"></span>
+    <div id="dislikesDiv">
+      <div class="selector">
+        <input
+          type="checkbox"
+          id="returnDislikes"
+          name="returnDislikes"
+          value="true"
+        />
+        <label
+          class="label"
+          for="returnDislikes"
+          data-locale="settingsDislikeLabel"
+        ></label>
+      </div>
 
-    <div class="selector">
-      <input
-        type="checkbox"
-        id="returnDislikes"
-        name="returnDislikes"
-        value="true"
-      />
-      <label
-        class="label"
-        for="returnDislikes"
-        data-locale="settingsDislikeLabel"
-      ></label>
+      <span class="sub-label" data-locale="settingsDislikeDesc"></span>
     </div>
 
-    <span class="sub-label" data-locale="settingsDislikeDesc"></span>
+    <div id="theaterDiv">
+      <div class="selector">
+        <input
+          type="checkbox"
+          id="twitchTheater"
+          name="twitchTheater"
+          value="true"
+        />
+        <label
+          class="label"
+          for="twitchTheater"
+          data-locale="settingsTheaterLabel"
+        ></label>
+      </div>
 
-    <div class="selector">
-      <input
-        type="checkbox"
-        id="twitchTheater"
-        name="twitchTheater"
-        value="true"
-      />
-      <label
-        class="label"
-        for="twitchTheater"
-        data-locale="settingsTheaterLabel"
-      ></label>
+      <span class="sub-label" data-locale="settingsTheaterDesc"></span>
     </div>
 
-    <span class="sub-label" data-locale="settingsTheaterDesc"></span>
+    <div id="pipDiv">
+      <div class="selector">
+        <input type="checkbox" id="pipButton" name="pipButton" value="true" />
+        <label
+          class="label"
+          for="pipButton"
+          data-locale="settingsPipLabel"
+        ></label>
+      </div>
 
-    <div class="selector">
-      <input
-        type="checkbox"
-        id="experimentalComments"
-        name="experimentalComments"
-        value="true"
-      />
-      <label
-        class="label"
-        for="experimentalComments"
-        data-locale="settingsCommentsLabel"
-      ></label>
+      <span class="sub-label" data-locale="settingsPipDesc"></span>
     </div>
 
-    <span class="sub-label" data-locale="settingsCommentsDesc"></span>
+    <div id="commentsDiv">
+      <div class="selector">
+        <input
+          type="checkbox"
+          id="experimentalComments"
+          name="experimentalComments"
+          value="true"
+        />
+        <label
+          class="label"
+          for="experimentalComments"
+          data-locale="settingsCommentsLabel"
+        ></label>
+      </div>
+
+      <span class="sub-label" data-locale="settingsCommentsDesc"></span>
+    </div>
 
     <p class="sub-label refresh" data-locale="settingsRefresh"></p>
 
+    <script src="/js/utils.js"></script>
     <script src="/js/popup.js"></script>
   </body>
 </html>

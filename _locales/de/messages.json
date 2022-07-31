@@ -35,6 +35,15 @@
     "description": "Beschreibung des Theatermodus von twitch.tv"
   },
 
+  "settingsPipLabel": {
+    "message": "Bild-in-Bild-Schaltfläche",
+    "description": "Bezeichnung für das Kontrollkästchen für die Bild-in-Bild-Schaltfläche"
+  },
+  "settingsPipDesc": {
+    "message": "Zeigt eine Schaltfläche auf dem Videoplayer an, die in den Bild-in-Bild-Modus wechselt, wodurch ein schwebendes Video auf dem Bildschirm erstellt wird.",
+    "description": "Beschreibung der Bild-in-Bild-Schaltfläche"
+  },
+
   "settingsCommentsLabel": {
     "message": "Experimentelle Kommentare (BETA)",
     "description": "Label für Checkbox für experimentelle Kommentare"

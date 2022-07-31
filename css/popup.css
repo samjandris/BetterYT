@@ -36,6 +36,7 @@ body {
   color: lightgray;
 }
 
-:root:not([refresh]) .refresh {
+:root:not([refresh]) .refresh,
+:root:not([pip]) #pipDiv {
   display: none;
 }

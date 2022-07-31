@@ -35,6 +35,15 @@
     "description": "Descrizione della modalità teatro di twitch.tv"
   },
 
+  "settingsPipLabel": {
+    "message": "Pulsante immagine nell'immagine",
+    "description": "Etichetta per casella di controllo per pulsante immagine nell'immagine"
+  },
+  "settingsPipDesc": {
+    "message": "Mostra un pulsante sul lettore video che accede alla modalità immagine in modalità immagine, creando un video fluttuante sullo schermo.",
+    "description": "Descrizione del pulsante immagine nell'immagine"
+  },
+
   "settingsCommentsLabel": {
     "message": "Commenti sperimentali (BETA)",
     "description": "Etichetta per la casella di controllo per i commenti sperimentali"

@@ -35,6 +35,15 @@
     "description": "Description du mode théâtre de twitch.tv"
   },
 
+  "settingsPipLabel": {
+    "message": "Bouton image dans l'image",
+    "description": "Libellé de la case à cocher pour le bouton image dans l'image"
+  },
+  "settingsPipDesc": {
+    "message": "Affiche un bouton sur le lecteur vidéo qui entre en mode image dans l'image, ce qui crée une vidéo flottante à l'écran.",
+    "description": "Description du bouton image dans l'image"
+  },
+
   "settingsCommentsLabel": {
     "message": "Commentaires expérimentaux (BETA)",
     "description": "Libellé de la case à cocher pour les commentaires expérimentaux"

@@ -207,6 +207,7 @@ SELECTORS = {
     MINI_PLAYER: {
       ROOT: 'ytd-miniplayer',
       CONTAINER: '#player-container.ytd-miniplayer',
+      INFO_BAR: '#info-bar',
       TITLE: '.miniplayer-title',
       CHANNEL: '#owner-name.ytd-miniplayer',
     },
@@ -320,6 +321,7 @@ SELECTORS = {
     ROOT: () => document.querySelector(SELECTORS.RAW.MINI_PLAYER.ROOT),
     CONTAINER: () =>
       document.querySelector(SELECTORS.RAW.MINI_PLAYER.CONTAINER),
+    INFO_BAR: () => document.querySelector(SELECTORS.RAW.MINI_PLAYER.INFO_BAR),
     TITLE: () => document.querySelector(SELECTORS.RAW.MINI_PLAYER.TITLE),
     CHANNEL: () => document.querySelector(SELECTORS.RAW.MINI_PLAYER.CHANNEL),
   },
@@ -384,8 +386,9 @@ MiniPlayer = () => {
 
     // Sponsorblock
     if (
+      SELECTORS.SPONSOR_BLOCK.CONTAINER() &&
       SELECTORS.SPONSOR_BLOCK.CONTAINER().parentElement !==
-      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
+        SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
     )
       SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().appendChild(
         SELECTORS.SPONSOR_BLOCK.CONTAINER()
@@ -429,8 +432,9 @@ MiniPlayer = () => {
 
     // Sponsorblock
     if (
+      SELECTORS.SPONSOR_BLOCK.CONTAINER() &&
       SELECTORS.SPONSOR_BLOCK.CONTAINER().parentElement !==
-      SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
+        SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
     )
       SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER().appendChild(
         SELECTORS.SPONSOR_BLOCK.CONTAINER()
@@ -534,6 +538,12 @@ MiniPlayer = () => {
     gradientBottom.classList = 'betteryt ytp-gradient-bottom';
 
     SELECTORS.PLAYER.MOVIE_PLAYER().appendChild(gradientBottom);
+
+    // scroll up when clicking info bar
+    SELECTORS.MINI_PLAYER.INFO_BAR().addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      SELECTORS.PAGE.APP().scrollTo({ top: 0, behavior: 'smooth' });
+    });
   }
 
   function createChapters() {
@@ -698,6 +708,7 @@ MiniPlayer = () => {
       });
     } else {
       document.body.removeAttribute('betteryt-mini');
+      document.body.removeAttribute('betteryt-live');
     }
   });
 
@@ -935,6 +946,12 @@ LiveTheater = () => {
   }
 };
 
+PiP = () => {
+  const testVideo = document.createElement('video');
+  if (testVideo.requestPictureInPicture)
+    document.body.setAttribute('betteryt-pip', '');
+};
+
 // create url event
 var currentURL = new URL(window.location.href);
 setInterval(() => {
@@ -1045,7 +1062,7 @@ Helper.onAttributeChange(
 );
 
 // check what is enabled
-chrome.storage.sync.get((data) => {
+chrome.storage.sync.get(STORAGE_DEFAULT, (data) => {
   if (data.miniPlayer) {
     MiniPlayer();
   }
@@ -1054,11 +1071,15 @@ chrome.storage.sync.get((data) => {
     ReturnDislikes();
   }
 
-  if (data.experimentalComments) {
-    NewComments();
-  }
-
   if (data.twitchTheater) {
     LiveTheater();
+  }
+
+  if (data.pipButton) {
+    PiP();
+  }
+
+  if (data.experimentalComments) {
+    NewComments();
   }
 });

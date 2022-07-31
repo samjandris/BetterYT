@@ -35,6 +35,15 @@
     "description": "Description of twitch theater mode"
   },
 
+  "settingsPipLabel": {
+    "message": "Picture in picture button",
+    "description": "Label for checkbox for picture in picture button"
+  },
+  "settingsPipDesc": {
+    "message": "Shows a button on the video player that enters picture in picture mode, which creates a floating video on the screen.",
+    "description": "Description of picture in picture button"
+  },
+
   "settingsCommentsLabel": {
     "message": "Experimental comments (BETA)",
     "description": "Label for checkbox for experimental comments"
