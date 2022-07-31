@@ -239,6 +239,7 @@ const STORAGE_DEFAULT = {
   experimentalComments: false,
 };
 
+var currentURL = new URL(window.location.href);
 class Helper {
   static onElementLoad(selectorRaw) {
     return new Promise((resolve) => {
@@ -335,6 +336,14 @@ class Helper {
     return suffix ? round(num / Math.pow(1000, base), 0) + suffix : '' + num;
   }
 
+  static getUrl() {
+    return currentURL;
+  }
+
+  static setUrl(newUrl) {
+    currentURL = newUrl;
+  }
+
   static isTheater() {
     return (
       SELECTORS.PAGE.WATCH_FLEXY().hasAttribute('theater') &&
@@ -377,3 +386,5 @@ class Helper {
     );
   }
 }
+
+export { SELECTORS, STORAGE_DEFAULT, Helper };

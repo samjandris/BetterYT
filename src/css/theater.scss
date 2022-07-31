@@ -1,0 +1,65 @@
+@media screen and (min-width: 1014px) {
+  body[betteryt-theater] {
+    #chat {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      width: var(--ytd-watch-flexy-sidebar-width);
+      height: 100vh !important;
+      border: none;
+    }
+
+    #player-theater-container {
+      top: 0px;
+      left: 0px;
+      width: calc(100% - var(--ytd-watch-flexy-sidebar-width)) !important;
+      max-width: calc(100% - var(--ytd-watch-flexy-sidebar-width)) !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+    }
+
+    #show-hide-button {
+      display: none;
+    }
+
+    & {
+      overflow: hidden;
+    }
+
+    ytd-app {
+      --ytd-masthead-height: 0px !important;
+    }
+
+    .ytp-fullerscreen-edu-button {
+      display: unset !important;
+      position: absolute;
+      width: auto;
+      left: 50%;
+      text-align: center;
+      transform: translateX(-50%);
+      transition: all 0.25s cubic-bezier(0, 0, 0.2, 1) !important;
+      opacity: 0 !important;
+      visibility: hidden;
+    }
+
+    ytd-app[masthead-hidden] {
+      .ytp-fullerscreen-edu-button {
+        opacity: 1 !important;
+        visibility: visible;
+      }
+    }
+  }
+
+  /* CURRENTLY DISABLED AS DVH SUPPORT IS NOT GREAT AT THE MOMENT */
+  /* check for DVH support, this fixs mobile */
+  /* @supports (height: 100dvh) {
+    body[betteryt-theater] #chat {
+      height: 100dvh !important;
+    }
+
+    body[betteryt-theater] #player-theater-container {
+      height: 100dvh !important;
+      max-height: 100dvh !important;
+    }
+  } */
+}

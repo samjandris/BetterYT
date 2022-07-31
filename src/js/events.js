@@ -1,12 +1,14 @@
+import { SELECTORS, Helper } from './utils';
+
 // create url event
-var currentURL = new URL(window.location.href);
+// var Helper.getUrl() = new URL(window.location.href);
 setInterval(() => {
-  if (currentURL.href !== window.location.href) {
-    currentURL = new URL(window.location.href);
+  if (Helper.getUrl().href !== window.location.href) {
+    Helper.setUrl(new URL(window.location.href));
     setTimeout(() => {
       window.dispatchEvent(
         new CustomEvent('onUrlChange', {
-          detail: { url: currentURL },
+          detail: { url: Helper.getUrl() },
         })
       );
 
@@ -21,7 +23,7 @@ setInterval(() => {
           () => {
             window.dispatchEvent(
               new CustomEvent('onPageChange', {
-                detail: { url: currentURL },
+                detail: { url: Helper.getUrl() },
               })
             );
 
@@ -44,7 +46,7 @@ Helper.onAttributeChange(
       setTimeout(() => {
         window.dispatchEvent(
           new CustomEvent('onPageChange', {
-            detail: { url: currentURL },
+            detail: { url: Helper.getUrl() },
           })
         );
 
