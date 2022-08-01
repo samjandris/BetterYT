@@ -18,7 +18,8 @@ body[betteryt-mini] {
   .ytp-left-controls
     > *:not(.ytp-play-button, .ytp-volume-area, .ytp-time-display),
   .ytp-right-controls > *:not(.ytp-miniplayer-button),
-  #movie_player > *:not(.html5-video-container, .ytp-chrome-bottom, .betteryt),
+  #movie_player
+    > *:not(.html5-video-container, .ytp-spinner, .ytp-chrome-bottom, .betteryt),
   .ytp-chrome-bottom .ytp-progress-bar-container,
   .expander.ytd-miniplayer,
   .index-message.ytd-miniplayer {
