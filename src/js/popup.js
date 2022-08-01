@@ -1,3 +1,6 @@
+import '../css/popup.scss';
+import { STORAGE_DEFAULT } from './utils';
+
 document.querySelectorAll('[data-locale]').forEach((element) => {
   element.innerText = chrome.i18n.getMessage(element.dataset.locale);
 });

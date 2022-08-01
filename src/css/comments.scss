@@ -1,0 +1,11 @@
+@media screen and (min-width: 1014px) {
+  body[betteryt-comments-fixed] {
+    ytd-comments {
+      position: fixed !important;
+      width: var(--ytd-watch-flexy-sidebar-width);
+      height: calc(100% - 100px);
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+    }
+  }
+}

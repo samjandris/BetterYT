@@ -1,8 +1,8 @@
 {
   "name": "BetterYT - Better YouTube",
   "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
-  "version": "0.0.6",
-  "manifest_version": 2,
+  "version": "0.0.7",
+  "manifest_version": 3,
   "default_locale": "en",
   "icons": {
     "32": "images/icon-32.png",
@@ -15,17 +15,12 @@
   },
   "content_scripts": [
     {
-      "js": ["js/utils.js", "js/content.js"],
-      "css": [
-        "css/mini.css",
-        "css/theater.css",
-        "css/pip.css",
-        "css/comments.css"
-      ],
+      "js": ["js/content.js"],
+      "css": ["css/content.css"],
       "matches": ["*://*.youtube.com/*"]
     }
   ],
-  "browser_action": {
+  "action": {
     "default_popup": "html/popup.html",
     "default_icon": {
       "16": "images/toolbar-icon-16.png",
@@ -37,10 +32,6 @@
       "72": "images/toolbar-icon-72.png"
     }
   },
-  "permissions": ["storage", "https://returnyoutubedislikeapi.com/"],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{fe1efc84-ba8a-4b97-9f91-88991d3a52c2}"
-    }
-  }
+  "permissions": ["storage"],
+  "host_permissions": ["https://returnyoutubedislikeapi.com/"]
 }
