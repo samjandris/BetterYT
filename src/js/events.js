@@ -1,7 +1,6 @@
 import { SELECTORS, Helper } from './utils';
 
 // create url event
-// var Helper.getUrl() = new URL(window.location.href);
 setInterval(() => {
   if (Helper.getUrl().href !== window.location.href) {
     Helper.setUrl(new URL(window.location.href));
