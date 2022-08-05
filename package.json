@@ -1,7 +1,7 @@
 {
   "name": "betteryt",
-  "version": "0.0.7",
-  "description": "",
+  "version": "0.0.8",
+  "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

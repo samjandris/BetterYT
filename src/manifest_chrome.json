@@ -1,7 +1,7 @@
 {
   "name": "BetterYT - Better YouTube",
   "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "manifest_version": 3,
   "default_locale": "en",
   "icons": {
