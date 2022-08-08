@@ -18,9 +18,10 @@ const SELECTORS = {
     PLAYER: {
       PLAYER: '#ytd-player',
       MOVIE_PLAYER: '#movie_player',
-      TITLE: 'h1.title.ytd-video-primary-info-renderer > yt-formatted-string',
+      TITLE:
+        'ytd-watch-flexy h1.title.ytd-video-primary-info-renderer > yt-formatted-string',
       CHANNEL:
-        '#channel-name.ytd-video-owner-renderer > #container > #text-container > #text > a',
+        'ytd-watch-flexy #channel-name.ytd-video-owner-renderer > #container > #text-container > #text > a',
       DISLIKE: 'yt-formatted-string.ytd-toggle-button-renderer',
       CONTAINER: '#player-container.ytd-watch-flexy',
       DEFAULT_CONTAINER: '#player-container-inner',

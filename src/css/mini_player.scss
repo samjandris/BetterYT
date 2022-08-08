@@ -29,6 +29,14 @@ body[betteryt-mini] {
   .ytp-miniplayer-button {
     display: unset !important;
   }
+
+  #info-bar {
+    cursor: pointer;
+
+    *:not(.metadata) {
+      pointer-events: none;
+    }
+  }
 }
 
 body:not([betteryt-mini]) {

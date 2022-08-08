@@ -388,8 +388,10 @@ Helper.onElementsLoad([
   Helper.onChildElementChange(
     SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
     () => {
-      doPlayer();
-      createChapters();
+      if (Helper.getUrl().pathname.startsWith('/watch')) {
+        doPlayer();
+        createChapters();
+      }
     }
   );
 
@@ -408,4 +410,18 @@ Helper.onElementsLoad([
         SELECTORS.MINI_PLAYER.CHANNEL().lastChild.textContent;
     }
   });
+
+  // this is to stop the playlist from showing up in the mini player
+  Helper.onAttributeChange(
+    SELECTORS.RAW.MINI_PLAYER.ROOT,
+    () => {
+      if (Helper.getUrl().pathname.startsWith('/watch')) {
+        doPlayer();
+      }
+    },
+    {
+      attributes: true,
+      attributeFilter: ['has-playlist-data', 'expanded'],
+    }
+  );
 });
