@@ -23,10 +23,18 @@ function showMiniPlayer() {
       SELECTORS.SPONSOR_BLOCK.CONTAINER()
     );
 
-  SELECTORS.MINI_PLAYER.TITLE().textContent =
-    SELECTORS.PLAYER.TITLE().textContent;
-  SELECTORS.MINI_PLAYER.CHANNEL().textContent =
-    SELECTORS.PLAYER.CHANNEL().textContent;
+  if (
+    SELECTORS.MINI_PLAYER.TITLE().textContent !==
+    SELECTORS.PLAYER.TITLE().textContent
+  )
+    SELECTORS.MINI_PLAYER.TITLE().textContent =
+      SELECTORS.PLAYER.TITLE().textContent;
+  if (
+    SELECTORS.MINI_PLAYER.CHANNEL().textContent !==
+    SELECTORS.PLAYER.CHANNEL().textContent
+  )
+    SELECTORS.MINI_PLAYER.CHANNEL().textContent =
+      SELECTORS.PLAYER.CHANNEL().textContent;
 
   if (!SELECTORS.MINI_PLAYER.ROOT().hasAttribute('enabled'))
     SELECTORS.MINI_PLAYER.ROOT().setAttribute('enabled', '');
@@ -384,4 +392,20 @@ Helper.onElementsLoad([
       createChapters();
     }
   );
+
+  // this is to fix mini player title as on first load it will add another string node
+  Helper.onChildElementChange(SELECTORS.RAW.MINI_PLAYER.TITLE, () => {
+    if (SELECTORS.MINI_PLAYER.TITLE().childNodes.length >= 2) {
+      SELECTORS.MINI_PLAYER.TITLE().textContent =
+        SELECTORS.MINI_PLAYER.TITLE().lastChild.textContent;
+    }
+  });
+
+  // this is to fix mini player channel as on first load it will add another string node
+  Helper.onChildElementChange(SELECTORS.RAW.MINI_PLAYER.CHANNEL, () => {
+    if (SELECTORS.MINI_PLAYER.CHANNEL().childNodes.length >= 2) {
+      SELECTORS.MINI_PLAYER.CHANNEL().textContent =
+        SELECTORS.MINI_PLAYER.CHANNEL().lastChild.textContent;
+    }
+  });
 });
