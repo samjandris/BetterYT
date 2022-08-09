@@ -1,4 +1,13 @@
 {
+  "extensionName": {
+    "message": "BetterYT - YouTube migliore",
+    "description": "Nome dell'estensione"
+  },
+  "extensionDesc": {
+    "message": "Aggiunge modifiche utili a YouTube, come mostrare il mini lettore video durante lo scorrimento.",
+    "description": "Descrizione dell'estensione"
+  },
+
   "settingsTitle": {
     "message": "Impostazioni BetterYT",
     "description": "Titolo per la finestra popup"

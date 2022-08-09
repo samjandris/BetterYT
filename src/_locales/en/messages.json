@@ -1,4 +1,13 @@
 {
+  "extensionName": {
+    "message": "BetterYT - Better YouTube",
+    "description": "Name of the extension"
+  },
+  "extensionDesc": {
+    "message": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
+    "description": "Description of the extension"
+  },
+
   "settingsTitle": {
     "message": "BetterYT Settings",
     "description": "Title for popup window"

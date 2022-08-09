@@ -1,4 +1,13 @@
 {
+  "extensionName": {
+    "message": "BetterYT - Mejor YouTube",
+    "description": "Nombre de la extensión"
+  },
+  "extensionDesc": {
+    "message": "Agrega cambios útiles a YouTube, como mostrar el mini reproductor de video al desplazarse.",
+    "description": "Descripción de la extensión"
+  },
+
   "settingsTitle": {
     "message": "Configuración de BetterYT",
     "description": "Título de la ventana emergente"

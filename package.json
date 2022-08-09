@@ -1,6 +1,6 @@
 {
   "name": "betteryt",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
   "private": true,
   "scripts": {

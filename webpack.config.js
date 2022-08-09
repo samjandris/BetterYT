@@ -3,6 +3,8 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const packageJson = require('./package.json');
+
 module.exports = (env) => {
   return {
     mode: 'production',
@@ -32,6 +34,11 @@ module.exports = (env) => {
           {
             from: './src/manifest_' + env.browser + '.json',
             to: './manifest.json',
+            transform(content) {
+              return content
+                .toString()
+                .replace('__VERSION__', packageJson.version);
+            },
           },
           {
             from: './src/_locales',

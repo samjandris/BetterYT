@@ -1,4 +1,13 @@
 {
+  "extensionName": {
+    "message": "BetterYT - Meilleur YouTube",
+    "description": "Nom de l'extension"
+  },
+  "extensionDesc": {
+    "message": "Ajoute des modifications utiles à YouTube, telles que l'affichage du mini lecteur vidéo lors du défilement.",
+    "description": "Descriptif de l'extension"
+  },
+
   "settingsTitle": {
     "message": "Paramètres BetterYT",
     "description": "Titre de la fenêtre contextuelle"
