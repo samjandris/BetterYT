@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "localize": "node ./scripts/localize",
     "start": "npm run start:chrome",
     "start:chrome": "npx webpack --env browser=chrome --mode=development --devtool=inline-source-map --watch",
     "start:firefox": "npx webpack --env browser=firefox --mode=development --devtool=inline-source-map --watch",
@@ -16,8 +17,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@google-cloud/translate": "^7.0.1",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
+    "dotenv": "^16.0.1",
     "mini-css-extract-plugin": "^2.6.1",
     "sass": "^1.54.0",
     "sass-loader": "^13.0.2",
