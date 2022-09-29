@@ -51,3 +51,9 @@ body[betteryt-live] {
     display: none;
   }
 }
+
+// This is needed to fix youtube update hiding title when first showing miniplayer and actually activating miniplayer
+yt-formatted-string.miniplayer-title,
+yt-formatted-string #owner-name {
+  display: unset !important;
+}
