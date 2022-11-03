@@ -48,6 +48,11 @@
         visibility: visible;
       }
     }
+
+    // Fixes update where #secondary has a position below the video player when in theater mode, breaking theater mode chat
+    #secondary {
+      position: unset !important;
+    }
   }
 
   /* CURRENTLY DISABLED AS DVH SUPPORT IS NOT GREAT AT THE MOMENT */
