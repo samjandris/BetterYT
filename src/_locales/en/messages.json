@@ -36,12 +36,12 @@
   },
 
   "settingsTheaterLabel": {
-    "message": "Twitch theater mode",
-    "description": "Label for checkbox for twitch theater mode"
+    "message": "Chat theater mode",
+    "description": "Label for checkbox for chat theater mode"
   },
   "settingsTheaterDesc": {
     "message": "Locks chat next to livestream when in theater mode, similar to Twitch.",
-    "description": "Description of twitch theater mode"
+    "description": "Description of chat theater mode"
   },
 
   "settingsPipLabel": {
@@ -54,11 +54,11 @@
   },
 
   "settingsCommentsLabel": {
-    "message": "Experimental comments (BETA)",
-    "description": "Label for checkbox for experimental comments"
+    "message": "Right-side comments",
+    "description": "Label for checkbox for right-side comments"
   },
   "settingsCommentsDesc": {
     "message": "Moves the comment section to where the related section normally is, allowing easier reading of comments while watching a video.",
-    "description": "Description of experimental comments"
+    "description": "Description of right-side comments"
   }
 }

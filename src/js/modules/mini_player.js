@@ -324,7 +324,10 @@ SELECTORS.PAGE.APP().addEventListener('scroll', () => {
 
 window.addEventListener('resize', () => {
   if (Helper.getUrl().pathname.startsWith('/watch')) {
-    if (!SELECTORS.PLAYER.MOVIE_PLAYER().ariaLabel.includes('Fullscreen')) {
+    if (
+      SELECTORS.PLAYER.MOVIE_PLAYER().ariaLabel &&
+      !SELECTORS.PLAYER.MOVIE_PLAYER().ariaLabel.includes('Fullscreen')
+    ) {
       doPlayer();
     }
   }

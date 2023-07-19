@@ -7,9 +7,10 @@ chrome.storage.sync.get(STORAGE_DEFAULT, (data) => {
     import('./modules/mini_player');
   }
 
-  if (data.returnDislikes) {
-    import('./modules/dislikes');
-  }
+  // Dislikes are broken at the moment, so they're disabled
+  // if (data.returnDislikes) {
+  //   import('./modules/dislikes');
+  // }
 
   if (data.twitchTheater) {
     import('../css/theater.scss');

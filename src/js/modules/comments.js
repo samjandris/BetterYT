@@ -17,15 +17,15 @@ function handleComments() {
     ) {
       if (!document.body.hasAttribute('betteryt-comments-fixed'))
         document.body.setAttribute('betteryt-comments-fixed', '');
-
-      if (SELECTORS.COMMENTS().parentElement !== SELECTORS.COLUMN_RIGHT())
-        SELECTORS.COLUMN_RIGHT().appendChild(SELECTORS.COMMENTS());
-
-      if (SELECTORS.RELATED().parentElement !== SELECTORS.COLUMN_LEFT())
-        SELECTORS.COLUMN_LEFT().appendChild(SELECTORS.RELATED());
     } else {
       document.body.removeAttribute('betteryt-comments-fixed');
     }
+
+    if (SELECTORS.COMMENTS().parentElement !== SELECTORS.COLUMN_RIGHT())
+      SELECTORS.COLUMN_RIGHT().appendChild(SELECTORS.COMMENTS());
+
+    if (SELECTORS.RELATED().parentElement !== SELECTORS.COLUMN_LEFT())
+      SELECTORS.COLUMN_LEFT().appendChild(SELECTORS.RELATED());
   }
 }
 

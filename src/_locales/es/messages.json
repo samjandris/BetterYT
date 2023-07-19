@@ -36,12 +36,12 @@
   },
 
   "settingsTheaterLabel": {
-    "message": "Modo cine de Twitch.TV",
-    "description": "Etiqueta para la casilla de verificación del modo teatro de twitch.tv"
+    "message": "Modo de teatro de chat",
+    "description": "Etiqueta para la casilla de verificación del modo de sala de chat"
   },
   "settingsTheaterDesc": {
     "message": "Bloquea el chat junto a la transmisión en vivo cuando está en modo teatro, similar a Twitch.",
-    "description": "Descripción del modo teatro de twitch.tv"
+    "description": "Descripción del modo de teatro de chat"
   },
 
   "settingsPipLabel": {
@@ -54,11 +54,11 @@
   },
 
   "settingsCommentsLabel": {
-    "message": "Comentarios experimentales (BETA)",
-    "description": "Etiqueta para casilla de verificación para comentarios experimentales"
+    "message": "Comentarios del lado derecho",
+    "description": "Etiqueta para casilla de verificación para comentarios del lado derecho"
   },
   "settingsCommentsDesc": {
     "message": "Mueve la sección de comentarios a donde normalmente está la sección relacionada, lo que permite una lectura más fácil de los comentarios mientras mira un video.",
-    "description": "Descripción de los comentarios experimentales"
+    "description": "Descripción de los comentarios del lado derecho"
   }
 }

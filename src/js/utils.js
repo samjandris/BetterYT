@@ -382,6 +382,7 @@ class Helper {
 
   static isChatOpen() {
     return (
+      SELECTORS.CHAT.FRAME() !== null &&
       SELECTORS.CHAT.FRAME().offsetHeight > 0 &&
       currentURL.pathname.startsWith('/watch')
     );

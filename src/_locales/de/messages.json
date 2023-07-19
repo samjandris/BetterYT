@@ -36,12 +36,12 @@
   },
 
   "settingsTheaterLabel": {
-    "message": "Twitch.TV-Theatermodus",
-    "description": "Bezeichnung für das Kontrollkästchen für den Twitch.tv-Theatermodus"
+    "message": "Chat-Theater-Modus",
+    "description": "Beschriftung für Kontrollkästchen für den Chat-Theater-Modus"
   },
   "settingsTheaterDesc": {
     "message": "Sperrt den Chat neben dem Livestream im Theatermodus, ähnlich wie bei Twitch.TV",
-    "description": "Beschreibung des Theatermodus von twitch.tv"
+    "description": "Beschreibung des Chat-Theater-Modus"
   },
 
   "settingsPipLabel": {
@@ -54,11 +54,11 @@
   },
 
   "settingsCommentsLabel": {
-    "message": "Experimentelle Kommentare (BETA)",
-    "description": "Label für Checkbox für experimentelle Kommentare"
+    "message": "Kommentare auf der rechten Seite",
+    "description": "Beschriftung für Kontrollkästchen für Kommentare auf der rechten Seite"
   },
   "settingsCommentsDesc": {
-    "message": "Verschiebt den Kommentarabschnitt an die Stelle, an der sich normalerweise der zugehörige Abschnitt befindet, sodass Kommentare beim Ansehen eines Videos einfacher gelesen werden können.",
-    "description": "Beschreibung der experimentellen Kommentare"
+    "message": "Verschiebt den Kommentarbereich an die Stelle, an der sich normalerweise der zugehörige Abschnitt befindet, um das Lesen von Kommentaren beim Ansehen eines Videos zu erleichtern.",
+    "description": "Beschreibung der Kommentare auf der rechten Seite"
   }
 }

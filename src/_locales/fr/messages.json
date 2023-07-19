@@ -36,12 +36,12 @@
   },
 
   "settingsTheaterLabel": {
-    "message": "Mode théâtre Twitch.TV",
-    "description": "Libellé de la case à cocher pour le mode théâtre de twitch.tv"
+    "message": "Mode théâtre de chat",
+    "description": "Libellé de la case à cocher pour le mode théâtre de chat"
   },
   "settingsTheaterDesc": {
     "message": "Verrouille le chat à côté du flux en direct en mode théâtre, similaire à Twitch.TV",
-    "description": "Description du mode théâtre de twitch.tv"
+    "description": "Description du mode théâtre de chat"
   },
 
   "settingsPipLabel": {
@@ -54,11 +54,11 @@
   },
 
   "settingsCommentsLabel": {
-    "message": "Commentaires expérimentaux (BETA)",
-    "description": "Libellé de la case à cocher pour les commentaires expérimentaux"
+    "message": "Commentaires de droite",
+    "description": "Libellé de la case à cocher pour les commentaires de droite"
   },
   "settingsCommentsDesc": {
     "message": "Déplace la section des commentaires là où se trouve normalement la section associée, permettant une lecture plus facile des commentaires tout en regardant une vidéo.",
-    "description": "Description des commentaires expérimentaux"
+    "description": "Description des commentaires de droite"
   }
 }

@@ -57,6 +57,12 @@ function positionTheater() {
       positionTheater();
       window.dispatchEvent(new Event('resize'));
     };
+
+  if (Helper.isChatOpen()) {
+    document.body.setAttribute('betteryt-theater-button', '');
+  } else {
+    document.body.removeAttribute('betteryt-theater-button');
+  }
 }
 
 window.addEventListener('resize', () => {

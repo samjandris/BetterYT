@@ -7,6 +7,11 @@
       width: var(--ytd-watch-flexy-sidebar-width);
       height: 100vh !important;
       border: none;
+      border-radius: 0px;
+    }
+
+    #chatframe {
+      border-radius: 0px;
     }
 
     #player-wide-container {
@@ -18,8 +23,19 @@
       max-height: 100vh !important;
     }
 
-    #show-hide-button {
-      display: none;
+    // Change chat button text to "Exit theater mode"
+    #show-hide-button
+      > ytd-toggle-button-renderer
+      > yt-button-shape
+      > button
+      > div {
+      span::before {
+        content: 'Exit chat theater mode (';
+      }
+
+      span::after {
+        content: ')';
+      }
     }
 
     & {
@@ -53,6 +69,35 @@
     #secondary {
       position: unset !important;
     }
+  }
+
+  // Change chat button text to "Enter theater mode"
+  body:not([betteryt-theater]) ytd-watch-flexy[theater] {
+    #show-hide-button
+      > ytd-toggle-button-renderer
+      > yt-button-shape
+      > button
+      > div {
+      span::before {
+        content: 'Enter chat theater mode (';
+      }
+
+      span::after {
+        content: ')';
+      }
+    }
+  }
+
+  // Rotates the theater button when chat is open
+  body[betteryt-theater-button] {
+    button[aria-keyshortcuts='t'] {
+      transform: rotate(90deg);
+    }
+  }
+
+  // Base case for the theater button rotation animation, if left inside of the above case it will not animate
+  button[aria-keyshortcuts='t'] {
+    transition: all 0.5s cubic-bezier(0, 0, 0.2, 1) !important;
   }
 
   /* CURRENTLY DISABLED AS DVH SUPPORT IS NOT GREAT AT THE MOMENT */
