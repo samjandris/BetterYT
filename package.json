@@ -1,16 +1,17 @@
 {
   "name": "betteryt",
-  "version": "0.0.14",
+  "version": "0.0.16",
   "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "npm audit fix",
     "start": "npm run start:chrome",
     "start:chrome": "npx webpack --env browser=chrome --mode=development --devtool=inline-source-map --watch",
     "start:firefox": "npx webpack --env browser=firefox --mode=development --devtool=inline-source-map --watch",
     "build": "npm run build:chrome",
-    "build:chrome": "npx webpack --env browser=chrome",
-    "build:firefox": "npx webpack --env browser=firefox"
+    "build:chrome": "npm run clean && npx webpack --env browser=chrome",
+    "build:firefox": "npm run clean && npx webpack --env browser=firefox"
   },
   "keywords": [],
   "author": "",

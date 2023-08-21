@@ -14,7 +14,8 @@
       border-radius: 0px;
     }
 
-    #player-wide-container {
+    #player-wide-container,
+    #player-full-bleed-container {
       top: 0px;
       left: 0px;
       width: calc(100% - var(--ytd-watch-flexy-sidebar-width)) !important;
@@ -24,17 +25,17 @@
     }
 
     // Change chat button text to "Exit theater mode"
-    #show-hide-button
-      > ytd-toggle-button-renderer
-      > yt-button-shape
-      > button
-      > div {
-      span::before {
-        content: 'Exit chat theater mode (';
-      }
+    #show-hide-button > ytd-toggle-button-renderer {
+      border-radius: 0px !important;
 
-      span::after {
-        content: ')';
+      yt-button-shape > button > div {
+        span::before {
+          content: 'Exit chat theater mode (';
+        }
+
+        span::after {
+          content: ')';
+        }
       }
     }
 

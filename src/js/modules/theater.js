@@ -28,6 +28,8 @@ function positionTheater() {
         'dark',
         ''
       );
+
+      SELECTORS.CHAT.CHAT().setAttribute('dark', '');
     }
   } else {
     document.body.removeAttribute('betteryt-theater');
@@ -36,10 +38,13 @@ function positionTheater() {
       !document.documentElement.hasAttribute('dark') &&
       SELECTORS.CHAT.FRAME() &&
       SELECTORS.CHAT.FRAME().contentDocument.documentElement
-    )
+    ) {
       SELECTORS.CHAT.FRAME().contentDocument.documentElement.removeAttribute(
         'dark'
       );
+
+      SELECTORS.CHAT.CHAT().removeAttribute('dark');
+    }
 
     if (!Helper.isFullscreen()) {
       SELECTORS.PAGE.APP().removeAttribute('scrolling');
