@@ -1,39 +1,58 @@
 body {
   width: 350px;
-  background-color: #282828;
-  color: white;
+  background-color: #1f1f1f;
+  color: #f2f2f2;
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .logo {
   display: flex;
-  margin-left: 3px;
-  margin-bottom: 10px;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 .selector {
   display: flex;
   align-items: center;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+  }
 }
 
 .title {
-  font-size: x-large;
   margin-left: 10px;
-  margin-bottom: 1px;
+  font-size: 1.5em;
 }
 
 .label {
-  font-size: large;
   margin-left: 5px;
+  font-size: 1.2em;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .sub-label {
-  display: flex;
-  margin-bottom: 20px;
-  font-size: small;
+  display: block;
   margin-left: 20px;
-  width: calc(100% - 40px);
-  color: lightgray;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+  color: #a9a9a9;
+}
+
+input[type='checkbox'] {
+  accent-color: #4caf50;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 :root:not([refresh]) .refresh,
