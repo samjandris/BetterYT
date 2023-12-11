@@ -1,13 +1,26 @@
 import { SELECTORS, Helper } from '../utils';
 
 function handleComments() {
+  const relatedElement = SELECTORS.RELATED();
+  const commentsElement = SELECTORS.COMMENTS();
+  const columnLeftElement = SELECTORS.COLUMN_LEFT();
+  const columnRightElement = SELECTORS.COLUMN_RIGHT();
+
   if (window.innerWidth < 1014) {
     document.body.removeAttribute('betteryt-comments-fixed');
-    if (SELECTORS.RELATED()?.parentElement !== SELECTORS.COLUMN_LEFT())
-      SELECTORS.COLUMN_LEFT()?.appendChild(SELECTORS.RELATED()!);
+    if (
+      relatedElement &&
+      columnLeftElement &&
+      relatedElement.parentElement !== columnLeftElement
+    )
+      columnLeftElement.appendChild(relatedElement);
 
-    if (SELECTORS.COMMENTS()?.parentElement !== SELECTORS.COLUMN_LEFT())
-      SELECTORS.COLUMN_LEFT()?.appendChild(SELECTORS.COMMENTS()!);
+    if (
+      commentsElement &&
+      columnLeftElement &&
+      commentsElement.parentElement !== columnLeftElement
+    )
+      columnLeftElement.appendChild(commentsElement);
   } else {
     if (
       !Helper.isTheater() &&
@@ -21,11 +34,19 @@ function handleComments() {
       document.body.removeAttribute('betteryt-comments-fixed');
     }
 
-    if (SELECTORS.COMMENTS()?.parentElement !== SELECTORS.COLUMN_RIGHT())
-      SELECTORS.COLUMN_RIGHT()?.appendChild(SELECTORS.COMMENTS()!);
+    if (
+      commentsElement &&
+      columnRightElement &&
+      commentsElement.parentElement !== columnRightElement
+    )
+      columnRightElement.appendChild(commentsElement);
 
-    if (SELECTORS.RELATED()?.parentElement !== SELECTORS.COLUMN_LEFT())
-      SELECTORS.COLUMN_LEFT()?.appendChild(SELECTORS.RELATED()!);
+    if (
+      relatedElement &&
+      columnLeftElement &&
+      relatedElement.parentElement !== columnLeftElement
+    )
+      columnLeftElement.appendChild(relatedElement);
   }
 }
 
