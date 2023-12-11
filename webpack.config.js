@@ -9,8 +9,8 @@ module.exports = (env) => {
   return {
     mode: 'production',
     entry: {
-      content: './src/js/content.js',
-      popup: './src/js/popup.js',
+      content: './src/js/content',
+      popup: './src/js/popup',
     },
     output: {
       filename: 'js/[name].js',
@@ -19,6 +19,10 @@ module.exports = (env) => {
     },
     module: {
       rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+        },
         {
           test: /\.s[ac]ss$/i,
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
@@ -58,5 +62,8 @@ module.exports = (env) => {
         filename: `css/[name].css`,
       }),
     ],
+    resolve: {
+      extensions: ['.js', 'jsx', '.ts', '.tsx'],
+    },
   };
 };

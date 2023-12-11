@@ -3,11 +3,11 @@ import { SELECTORS, Helper } from '../utils';
 function handleComments() {
   if (window.innerWidth < 1014) {
     document.body.removeAttribute('betteryt-comments-fixed');
-    if (SELECTORS.RELATED().parentElement !== SELECTORS.COLUMN_LEFT())
-      SELECTORS.COLUMN_LEFT().appendChild(SELECTORS.RELATED());
+    if (SELECTORS.RELATED()?.parentElement !== SELECTORS.COLUMN_LEFT())
+      SELECTORS.COLUMN_LEFT()?.appendChild(SELECTORS.RELATED()!);
 
-    if (SELECTORS.COMMENTS().parentElement !== SELECTORS.COLUMN_LEFT())
-      SELECTORS.COLUMN_LEFT().appendChild(SELECTORS.COMMENTS());
+    if (SELECTORS.COMMENTS()?.parentElement !== SELECTORS.COLUMN_LEFT())
+      SELECTORS.COLUMN_LEFT()?.appendChild(SELECTORS.COMMENTS()!);
   } else {
     if (
       !Helper.isTheater() &&
@@ -21,11 +21,11 @@ function handleComments() {
       document.body.removeAttribute('betteryt-comments-fixed');
     }
 
-    if (SELECTORS.COMMENTS().parentElement !== SELECTORS.COLUMN_RIGHT())
-      SELECTORS.COLUMN_RIGHT().appendChild(SELECTORS.COMMENTS());
+    if (SELECTORS.COMMENTS()?.parentElement !== SELECTORS.COLUMN_RIGHT())
+      SELECTORS.COLUMN_RIGHT()?.appendChild(SELECTORS.COMMENTS()!);
 
-    if (SELECTORS.RELATED().parentElement !== SELECTORS.COLUMN_LEFT())
-      SELECTORS.COLUMN_LEFT().appendChild(SELECTORS.RELATED());
+    if (SELECTORS.RELATED()?.parentElement !== SELECTORS.COLUMN_LEFT())
+      SELECTORS.COLUMN_LEFT()?.appendChild(SELECTORS.RELATED()!);
   }
 }
 

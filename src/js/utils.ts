@@ -101,119 +101,147 @@ const SELECTORS = {
     },
   },
   PAGE: {
-    APP: () => document.querySelector(SELECTORS.RAW.PAGE.APP),
-    WATCH_FLEXY: () => document.querySelector(SELECTORS.RAW.PAGE.WATCH_FLEXY),
-    NAVIGATION_PROGRESS: () =>
+    APP: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.PAGE.APP),
+    WATCH_FLEXY: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.PAGE.WATCH_FLEXY),
+    NAVIGATION_PROGRESS: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.PAGE.NAVIGATION_PROGRESS),
   },
   CHAT: {
-    CHAT: () => document.querySelector(SELECTORS.RAW.CHAT.CHAT),
-    FRAME: () => document.querySelector(SELECTORS.RAW.CHAT.FRAME),
-    SHOW_HIDE: () => document.querySelector(SELECTORS.RAW.CHAT.SHOW_HIDE),
-    OPEN_BUTTON: () => document.querySelector(SELECTORS.RAW.CHAT.OPEN_BUTTON),
-    REPLAY: () => document.querySelector(SELECTORS.RAW.CHAT.REPLAY),
-    BODY: () =>
-      document
-        .querySelector(SELECTORS.RAW.CHAT.BODY[0])
-        .contentDocument.querySelector(SELECTORS.RAW.CHAT.BODY[1]),
+    CHAT: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.CHAT.CHAT),
+    FRAME: (): HTMLIFrameElement | null =>
+      document.querySelector(SELECTORS.RAW.CHAT.FRAME),
+    SHOW_HIDE: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.CHAT.SHOW_HIDE),
+    OPEN_BUTTON: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.CHAT.OPEN_BUTTON),
+    REPLAY: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.CHAT.REPLAY),
+    BODY: (): HTMLElement | null =>
+      // document
+      //   .querySelector(SELECTORS.RAW.CHAT.BODY[0])
+      SELECTORS.CHAT.FRAME()?.contentDocument?.querySelector(
+        SELECTORS.RAW.CHAT.BODY[1]
+      ) || null,
   },
   PLAYER: {
-    PLAYER: () => document.querySelector(SELECTORS.RAW.PLAYER.PLAYER),
-    MOVIE_PLAYER: () =>
+    PLAYER: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.PLAYER.PLAYER),
+    MOVIE_PLAYER: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.PLAYER.MOVIE_PLAYER),
-    TITLE: () => document.querySelector(SELECTORS.RAW.PLAYER.TITLE),
-    CHANNEL: () => document.querySelector(SELECTORS.RAW.PLAYER.CHANNEL),
-    DISLIKE: () => document.querySelectorAll(SELECTORS.RAW.PLAYER.DISLIKE)[1],
-    CONTAINER: () => document.querySelector(SELECTORS.RAW.PLAYER.CONTAINER),
-    DEFAULT_CONTAINER: () =>
+    TITLE: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.PLAYER.TITLE),
+    CHANNEL: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.PLAYER.CHANNEL),
+    DISLIKE: (): HTMLElement | null =>
+      document.querySelectorAll(SELECTORS.RAW.PLAYER.DISLIKE)[1] as HTMLElement,
+    CONTAINER: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.PLAYER.CONTAINER),
+    DEFAULT_CONTAINER: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.PLAYER.DEFAULT_CONTAINER),
-    THEATER_CONTAINER: () =>
+    THEATER_CONTAINER: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.PLAYER.THEATER_CONTAINER),
-    BOUNDS: () => {
-      for (const selector of document.querySelectorAll(
-        SELECTORS.RAW.PLAYER.BOUNDS
-      )) {
-        if (selector.offsetHeight > 0) {
-          return selector;
-        }
-      }
+    BOUNDS: (): HTMLElement | null => {
+      let selectedElement: HTMLElement | null = null;
+      document
+        .querySelectorAll(SELECTORS.RAW.PLAYER.BOUNDS)
+        .forEach((selector: Element) => {
+          if ((selector as HTMLElement).offsetHeight > 0 && !selectedElement) {
+            selectedElement = selector as HTMLElement;
+          }
+        });
+
+      return selectedElement!;
     },
-    VIDEO: () => document.querySelector(SELECTORS.RAW.PLAYER.VIDEO),
-    GRADIENT_TOP: () =>
+    VIDEO: (): HTMLVideoElement | null =>
+      document.querySelector(SELECTORS.RAW.PLAYER.VIDEO),
+    GRADIENT_TOP: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.PLAYER.GRADIENT_TOP),
-    GRADIENT_BOTTOM: () =>
+    GRADIENT_BOTTOM: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.PLAYER.GRADIENT_BOTTOM),
     CONTROLS: {
       TO_HIDE: () => SELECTORS.RAW.PLAYER.CONTROLS.TO_HIDE,
-      CONTAINER: () =>
+      CONTAINER: (): HTMLElement | null =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.CONTAINER),
-      CONTROLS: () =>
+      CONTROLS: (): HTMLElement | null =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.CONTROLS),
       PROGRESS_BAR: {
-        CONTAINER: () =>
+        CONTAINER: (): HTMLElement | null =>
           document.querySelector(
             SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER
           ),
-        SLIDER: () =>
+        SLIDER: (): HTMLElement | null =>
           document.querySelector(
             SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER
           ),
         CHAPTERS: {
-          CONTAINER: () =>
+          CONTAINER: (): HTMLElement | null =>
             document.querySelector(
               SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER
             ),
         },
         SCRUBBER: {
-          CONTAINER: () =>
+          CONTAINER: (): HTMLElement | null =>
             document.querySelector(
               SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER
             ),
         },
       },
-      FULLSCREEN: () =>
+      FULLSCREEN: (): HTMLElement | null =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.FULLSCREEN),
-      THEATER: () =>
+      THEATER: (): HTMLElement | null =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.THEATER),
-      LIVE: () => document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.LIVE),
-      TIME_DISPLAY: () =>
+      LIVE: (): HTMLElement | null =>
+        document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.LIVE),
+      TIME_DISPLAY: (): HTMLElement | null =>
         document.querySelector(SELECTORS.RAW.PLAYER.CONTROLS.TIME_DISPLAY),
     },
   },
   MINI_PLAYER: {
-    ROOT: () => document.querySelector(SELECTORS.RAW.MINI_PLAYER.ROOT),
-    CONTAINER: () =>
+    ROOT: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.MINI_PLAYER.ROOT),
+    CONTAINER: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.MINI_PLAYER.CONTAINER),
-    INFO_BAR: () => document.querySelector(SELECTORS.RAW.MINI_PLAYER.INFO_BAR),
-    TITLE: () => document.querySelector(SELECTORS.RAW.MINI_PLAYER.TITLE),
-    CHANNEL: () => document.querySelector(SELECTORS.RAW.MINI_PLAYER.CHANNEL),
+    INFO_BAR: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.MINI_PLAYER.INFO_BAR),
+    TITLE: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.MINI_PLAYER.TITLE),
+    CHANNEL: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.MINI_PLAYER.CHANNEL),
   },
-  RELATED: () => document.querySelector(SELECTORS.RAW.RELATED),
-  COMMENTS: () => document.querySelector(SELECTORS.RAW.COMMENTS),
-  PLAYLIST: () => document.querySelector(SELECTORS.RAW.PLAYLIST),
-  COLUMN_LEFT: () => document.querySelector(SELECTORS.RAW.COLUMN_LEFT),
-  COLUMN_RIGHT: () => document.querySelector(SELECTORS.RAW.COLUMN_RIGHT),
+  RELATED: (): HTMLElement | null =>
+    document.querySelector(SELECTORS.RAW.RELATED),
+  COMMENTS: (): HTMLElement | null =>
+    document.querySelector(SELECTORS.RAW.COMMENTS),
+  PLAYLIST: (): HTMLElement | null =>
+    document.querySelector(SELECTORS.RAW.PLAYLIST),
+  COLUMN_LEFT: (): HTMLElement | null =>
+    document.querySelector(SELECTORS.RAW.COLUMN_LEFT),
+  COLUMN_RIGHT: (): HTMLElement | null =>
+    document.querySelector(SELECTORS.RAW.COLUMN_RIGHT),
   BETTERYT: {
     MINI_PLAYER: {
       CONTROLS: {
         PROGRESS_BAR: {
-          CONTAINER: () =>
+          CONTAINER: (): HTMLElement | null =>
             document.querySelector(
               SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER
             ),
-          SLIDER: () =>
+          SLIDER: (): HTMLElement | null =>
             document.querySelector(
               SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER
             ),
           CHAPTERS: {
-            CONTAINER: () =>
+            CONTAINER: (): HTMLElement | null =>
               document.querySelector(
                 SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR
                   .CHAPTERS.CONTAINER
               ),
           },
           SCRUBBER: {
-            CONTAINER: () =>
+            CONTAINER: (): HTMLElement | null =>
               document.querySelector(
                 SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR
                   .SCRUBBER.CONTAINER
@@ -221,14 +249,14 @@ const SELECTORS = {
           },
         },
       },
-      GRADIENT_BOTTOM: () =>
+      GRADIENT_BOTTOM: (): HTMLElement | null =>
         document.querySelector(
           SELECTORS.RAW.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM
         ),
     },
   },
   SPONSOR_BLOCK: {
-    CONTAINER: () =>
+    CONTAINER: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.SPONSOR_BLOCK.CONTAINER),
   },
 };
@@ -243,7 +271,7 @@ const STORAGE_DEFAULT = {
 
 var currentURL = new URL(window.location.href);
 class Helper {
-  static onElementLoad(selectorRaw) {
+  static onElementLoad(selectorRaw: string) {
     return new Promise((resolve) => {
       if (document.querySelector(selectorRaw)) {
         return resolve(document.querySelector(selectorRaw));
@@ -263,9 +291,9 @@ class Helper {
     });
   }
 
-  static onElementsLoad(selectorList) {
+  static onElementsLoad(selectorList: string[]) {
     let ready = 0;
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       function isReady() {
         if (ready === selectorList.length) {
           resolve();
@@ -295,39 +323,51 @@ class Helper {
   }
 
   static onAttributeChange(
-    selectorRaw,
-    callback,
-    settings = { attributes: true }
+    selectorRaw: string,
+    callback: (
+      observer: MutationObserver,
+      mutationsList: MutationRecord[]
+    ) => void,
+    settings = { attributes: true, attributeFilter: [] as string[] }
   ) {
     Helper.onElementLoad(selectorRaw).then(() => {
-      const observer = new MutationObserver((mutationsList) => {
-        callback(observer, mutationsList);
-      });
+      const element = document.querySelector(selectorRaw);
+      if (element) {
+        const observer = new MutationObserver((mutationsList) => {
+          callback(observer, mutationsList);
+        });
 
-      observer.observe(document.querySelector(selectorRaw), settings);
+        observer.observe(element, settings);
+      }
     });
   }
 
   static onChildElementChange(
-    selectorRaw,
-    callback,
+    selectorRaw: string,
+    callback: (
+      observer: MutationObserver,
+      mutationsList: MutationRecord[]
+    ) => void,
     settings = {
       childList: true,
     }
   ) {
     Helper.onElementLoad(selectorRaw).then(() => {
-      const observer = new MutationObserver((mutationsList) => {
-        callback(observer, mutationsList);
-      });
+      const element = document.querySelector(selectorRaw);
+      if (element) {
+        const observer = new MutationObserver((mutationsList) => {
+          callback(observer, mutationsList);
+        });
 
-      observer.observe(document.querySelector(selectorRaw), settings);
+        observer.observe(element, settings);
+      }
     });
   }
 
-  static abbreviateNumber(num) {
+  static abbreviateNumber(num: number) {
     const abbrev = ['K', 'M', 'B', 'T'];
 
-    function round(n, precision) {
+    function round(n: number, precision: number) {
       const prec = Math.pow(10, precision);
       return Math.round(n * prec) / prec;
     }
@@ -342,28 +382,34 @@ class Helper {
     return currentURL;
   }
 
-  static setUrl(newUrl) {
+  static setUrl(newUrl: URL) {
     currentURL = newUrl;
   }
 
   static isTheater() {
+    const pageWatchFlexyElement = SELECTORS.PAGE.WATCH_FLEXY();
     return (
-      SELECTORS.PAGE.WATCH_FLEXY().hasAttribute('theater') &&
+      pageWatchFlexyElement &&
+      pageWatchFlexyElement.hasAttribute('theater') &&
       !this.isFullscreen() &&
       currentURL.pathname.startsWith('/watch')
     );
   }
 
   static isFullscreen() {
+    const pageWatchFlexyElement = SELECTORS.PAGE.WATCH_FLEXY();
     return (
-      SELECTORS.PAGE.WATCH_FLEXY().hasAttribute('fullscreen') &&
+      pageWatchFlexyElement &&
+      pageWatchFlexyElement.hasAttribute('fullscreen') &&
       currentURL.pathname.startsWith('/watch')
     );
   }
 
   static isLive() {
+    const playerTimeDisplayElement = SELECTORS.PLAYER.CONTROLS.TIME_DISPLAY();
     return (
-      SELECTORS.PLAYER.CONTROLS.TIME_DISPLAY().classList.contains('ytp-live') &&
+      playerTimeDisplayElement &&
+      playerTimeDisplayElement.classList.contains('ytp-live') &&
       SELECTORS.CHAT.SHOW_HIDE() !== null &&
       SELECTORS.PLAYER.CONTROLS.LIVE() !== null &&
       currentURL.pathname.startsWith('/watch')
@@ -371,10 +417,10 @@ class Helper {
   }
 
   static isReplay() {
+    const playerTimeDisplayElement = SELECTORS.PLAYER.CONTROLS.TIME_DISPLAY();
     return (
-      !SELECTORS.PLAYER.CONTROLS.TIME_DISPLAY().classList.contains(
-        'ytp-live'
-      ) &&
+      playerTimeDisplayElement &&
+      !playerTimeDisplayElement.classList.contains('ytp-live') &&
       SELECTORS.CHAT.SHOW_HIDE() !== null &&
       SELECTORS.PLAYER.CONTROLS.LIVE() !== null &&
       currentURL.pathname.startsWith('/watch')
@@ -382,9 +428,10 @@ class Helper {
   }
 
   static isChatOpen() {
+    const chatFrameElement = SELECTORS.CHAT.FRAME();
     return (
-      SELECTORS.CHAT.FRAME() !== null &&
-      SELECTORS.CHAT.FRAME().offsetHeight > 0 &&
+      chatFrameElement &&
+      chatFrameElement.offsetHeight > 0 &&
       currentURL.pathname.startsWith('/watch')
     );
   }

@@ -8,9 +8,11 @@ function updateDislikes() {
     )
       .then((response) => response.json())
       .then((data) => {
-        SELECTORS.PLAYER.DISLIKE().textContent = Helper.abbreviateNumber(
-          data.dislikes
-        );
+        const playerDislikeElement = SELECTORS.PLAYER.DISLIKE();
+        if (playerDislikeElement)
+          playerDislikeElement.textContent = Helper.abbreviateNumber(
+            data.dislikes
+          );
       });
   });
 }
