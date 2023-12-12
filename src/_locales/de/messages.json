@@ -4,61 +4,61 @@
     "description": "Name der Erweiterung"
   },
   "extensionDesc": {
-    "message": "Fügt YouTube nützliche Änderungen hinzu, z. B. das Anzeigen des Mini-Videoplayers beim Scrollen.",
+    "message": "Fügt nützliche Änderungen zu YouTube hinzu, wie das Anzeigen des Mini-Players beim Scrollen.",
     "description": "Beschreibung der Erweiterung"
   },
 
   "settingsTitle": {
-    "message": "BetterYT-Einstellungen",
+    "message": "BetterYT Einstellungen",
     "description": "Titel für Popup-Fenster"
   },
   "settingsRefresh": {
     "message": "*Änderungen erfordern eine Aktualisierung",
-    "description": "Text, wenn eine Einstellung geändert werden muss, muss aktualisiert werden"
+    "description": "Text, wenn eine Änderung eine Aktualisierung erfordert"
   },
 
   "settingsMiniLabel": {
-    "message": "Mini-Videoplayer",
-    "description": "Label für Kontrollkästchen für Mini-Videoplayer"
+    "message": "Mini-Player",
+    "description": "Beschriftung für das Kontrollkästchen für den Mini-Player"
   },
   "settingsMiniDesc": {
-    "message": "Zeigt beim Scrollen einen Mini-Videoplayer an.",
-    "description": "Beschreibung des Mini-Videoplayers"
+    "message": "Zeigt beim Scrollen einen Mini-Player an.",
+    "description": "Beschreibung des Mini-Players"
   },
 
   "settingsDislikeLabel": {
-    "message": "Anzahl der Abneigungen zurückgeben",
-    "description": "Bezeichnung für das Kontrollkästchen zum Zurückgeben der Abneigungszahl"
+    "message": "Dislike-Zähler zurückbringen",
+    "description": "Beschriftung für das Kontrollkästchen, um den Dislike-Zähler zurückzubringen"
   },
   "settingsDislikeDesc": {
-    "message": "Gibt den Abneigungszähler mithilfe der Return YouTube Dislike API zurück. Deaktivieren, um mit nativem Return YouTube Dislike kompatibel zu sein.",
-    "description": "Beschreibung der Anzahl der zurückgegebenen Abneigungen"
+    "message": "Stellt den Dislike-Zähler mit der Return YouTube Dislike API wieder her. Deaktivieren für Kompatibilität mit nativem Return YouTube Dislike.",
+    "description": "Beschreibung des Zurückbringens des Dislike-Zählers"
   },
 
   "settingsTheaterLabel": {
-    "message": "Chat-Theater-Modus",
-    "description": "Beschriftung für Kontrollkästchen für den Chat-Theater-Modus"
+    "message": "Chat-Theatermodus",
+    "description": "Beschriftung für das Kontrollkästchen für den Chat-Theatermodus"
   },
   "settingsTheaterDesc": {
-    "message": "Sperrt den Chat neben dem Livestream im Theatermodus, ähnlich wie bei Twitch.TV",
-    "description": "Beschreibung des Chat-Theater-Modus"
+    "message": "Sperrt den Chat neben dem Livestream im Theatermodus, ähnlich wie bei Twitch.",
+    "description": "Beschreibung des Chat-Theatermodus"
   },
 
   "settingsPipLabel": {
-    "message": "Bild-in-Bild-Schaltfläche",
-    "description": "Bezeichnung für das Kontrollkästchen für die Bild-in-Bild-Schaltfläche"
+    "message": "Bild-im-Bild-Knopf",
+    "description": "Beschriftung für das Kontrollkästchen für den Bild-im-Bild-Knopf"
   },
   "settingsPipDesc": {
-    "message": "Zeigt eine Schaltfläche auf dem Videoplayer an, die in den Bild-in-Bild-Modus wechselt, wodurch ein schwebendes Video auf dem Bildschirm erstellt wird.",
-    "description": "Beschreibung der Bild-in-Bild-Schaltfläche"
+    "message": "Zeigt einen Knopf auf dem Videoplayer an, der in den Bild-im-Bild-Modus wechselt, wodurch ein schwebendes Video auf dem Bildschirm erstellt wird.",
+    "description": "Beschreibung des Bild-im-Bild-Knopfes"
   },
 
   "settingsCommentsLabel": {
     "message": "Kommentare auf der rechten Seite",
-    "description": "Beschriftung für Kontrollkästchen für Kommentare auf der rechten Seite"
+    "description": "Beschriftung für das Kontrollkästchen für Kommentare auf der rechten Seite"
   },
   "settingsCommentsDesc": {
-    "message": "Verschiebt den Kommentarbereich an die Stelle, an der sich normalerweise der zugehörige Abschnitt befindet, um das Lesen von Kommentaren beim Ansehen eines Videos zu erleichtern.",
+    "message": "Verschiebt den Kommentarbereich dorthin, wo normalerweise der Verwandte-Bereich ist, um das Lesen von Kommentaren beim Anschauen eines Videos zu erleichtern.",
     "description": "Beschreibung der Kommentare auf der rechten Seite"
   }
 }

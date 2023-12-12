@@ -1,64 +1,64 @@
 {
   "extensionName": {
-    "message": "BetterYT - Meilleur YouTube",
+    "message": "BetterYT - YouTube Amélioré",
     "description": "Nom de l'extension"
   },
   "extensionDesc": {
-    "message": "Ajoute des modifications utiles à YouTube, telles que l'affichage du mini lecteur vidéo lors du défilement.",
-    "description": "Descriptif de l'extension"
+    "message": "Ajoute des changements utiles à YouTube, comme l'affichage du mini-lecteur lors du défilement.",
+    "description": "Description de l'extension"
   },
 
   "settingsTitle": {
-    "message": "Paramètres BetterYT",
-    "description": "Titre de la fenêtre contextuelle"
+    "message": "Paramètres de BetterYT",
+    "description": "Titre pour la fenêtre popup"
   },
   "settingsRefresh": {
-    "message": "*Les modifications nécessitent un rafraîchissement",
-    "description": "Texte à indiquer lorsque la modification d'un paramètre nécessite une actualisation"
+    "message": "*Les changements nécessitent un rafraîchissement",
+    "description": "Texte pour quand changer un paramètre nécessite un rafraîchissement"
   },
 
   "settingsMiniLabel": {
-    "message": "Mini lecteur vidéo",
-    "description": "Libellé de la case à cocher pour le mini lecteur vidéo"
+    "message": "Mini lecteur",
+    "description": "Étiquette pour la case à cocher du mini-lecteur"
   },
   "settingsMiniDesc": {
-    "message": "Affiche un mini lecteur vidéo lors du défilement.",
-    "description": "Description du mini lecteur vidéo"
+    "message": "Affiche un mini-lecteur lors du défilement.",
+    "description": "Description du mini-lecteur"
   },
 
   "settingsDislikeLabel": {
-    "message": "Renvoie le nombre d'aversions",
-    "description": "Libellé de la case à cocher pour renvoyer le nombre d'aversions"
+    "message": "Retour du compteur de dislikes",
+    "description": "Étiquette pour la case à cocher pour retourner le compteur de dislikes"
   },
   "settingsDislikeDesc": {
-    "message": "Renvoie le compteur d'aversion à l'aide de l'API Return YouTube Dislike. Désactiver pour être compatible avec le retour natif YouTube Dislike.",
-    "description": "Description du nombre d'aversions renvoyées"
+    "message": "Restitue le compteur de dislikes en utilisant l'API Return YouTube Dislike. Désactiver pour être compatible avec Return YouTube Dislike natif.",
+    "description": "Description du retour du compteur de dislikes"
   },
 
   "settingsTheaterLabel": {
     "message": "Mode théâtre de chat",
-    "description": "Libellé de la case à cocher pour le mode théâtre de chat"
+    "description": "Étiquette pour la case à cocher du mode théâtre de chat"
   },
   "settingsTheaterDesc": {
-    "message": "Verrouille le chat à côté du flux en direct en mode théâtre, similaire à Twitch.TV",
+    "message": "Verrouille le chat à côté de la diffusion en direct en mode théâtre, similaire à Twitch.",
     "description": "Description du mode théâtre de chat"
   },
 
   "settingsPipLabel": {
-    "message": "Bouton image dans l'image",
-    "description": "Libellé de la case à cocher pour le bouton image dans l'image"
+    "message": "Bouton d'image dans l'image",
+    "description": "Étiquette pour la case à cocher du bouton d'image dans l'image"
   },
   "settingsPipDesc": {
-    "message": "Affiche un bouton sur le lecteur vidéo qui entre en mode image dans l'image, ce qui crée une vidéo flottante à l'écran.",
-    "description": "Description du bouton image dans l'image"
+    "message": "Affiche un bouton sur le lecteur vidéo qui active le mode image dans l'image, créant ainsi une vidéo flottante à l'écran.",
+    "description": "Description du bouton d'image dans l'image"
   },
 
   "settingsCommentsLabel": {
-    "message": "Commentaires de droite",
-    "description": "Libellé de la case à cocher pour les commentaires de droite"
+    "message": "Commentaires sur le côté droit",
+    "description": "Étiquette pour la case à cocher des commentaires sur le côté droit"
   },
   "settingsCommentsDesc": {
-    "message": "Déplace la section des commentaires là où se trouve normalement la section associée, permettant une lecture plus facile des commentaires tout en regardant une vidéo.",
-    "description": "Description des commentaires de droite"
+    "message": "Déplace la section des commentaires à l'endroit où se trouve normalement la section connexe, permettant une lecture plus aisée des commentaires tout en regardant une vidéo.",
+    "description": "Description des commentaires sur le côté droit"
   }
 }
