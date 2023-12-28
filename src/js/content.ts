@@ -3,27 +3,27 @@ import { STORAGE_DEFAULT } from './utils';
 
 chrome.storage.sync.get(STORAGE_DEFAULT, (data) => {
   if (data.miniPlayer) {
-    import('../css/mini_player.scss');
-    import('./modules/mini_player');
+    require('../css/mini_player.scss');
+    require('./modules/mini_player');
   }
 
   // Dislikes are broken at the moment, so they're disabled
   // if (data.returnDislikes) {
-  //   import('./modules/dislikes');
+  //   require('./modules/dislikes');
   // }
 
   if (data.twitchTheater) {
-    import('../css/theater.scss');
-    import('./modules/theater');
+    require('../css/theater.scss');
+    require('./modules/theater');
   }
 
   if (data.pipButton) {
-    import('../css/pip.scss');
-    import('./modules/pip');
+    require('../css/pip.scss');
+    require('./modules/pip');
   }
 
   if (data.experimentalComments) {
-    import('../css/comments.scss');
-    import('./modules/comments');
+    require('../css/comments.scss');
+    require('./modules/comments');
   }
 });

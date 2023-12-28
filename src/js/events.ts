@@ -12,11 +12,12 @@ setInterval(() => {
       );
 
       // fix for delayed loading of navigation bar or already loaded page
+      const pageNavigationProgressElement =
+        SELECTORS.PAGE.NAVIGATION_PROGRESS();
       if (
-        !SELECTORS.PAGE.NAVIGATION_PROGRESS() ||
-        (SELECTORS.PAGE.NAVIGATION_PROGRESS() &&
-          SELECTORS.PAGE.NAVIGATION_PROGRESS().getAttribute('aria-valuenow') ===
-            '100')
+        !pageNavigationProgressElement ||
+        (pageNavigationProgressElement &&
+          pageNavigationProgressElement.getAttribute('aria-valuenow') === '100')
       ) {
         Helper.onElementLoad(SELECTORS.RAW.PAGE.NAVIGATION_PROGRESS).then(
           () => {
@@ -38,9 +39,10 @@ setInterval(() => {
 Helper.onAttributeChange(
   SELECTORS.RAW.PAGE.NAVIGATION_PROGRESS,
   () => {
+    const pageNavigationProgressElement = SELECTORS.PAGE.NAVIGATION_PROGRESS();
     if (
-      SELECTORS.PAGE.NAVIGATION_PROGRESS().getAttribute('aria-valuenow') ===
-      '100'
+      pageNavigationProgressElement &&
+      pageNavigationProgressElement.getAttribute('aria-valuenow') === '100'
     ) {
       setTimeout(() => {
         window.dispatchEvent(
