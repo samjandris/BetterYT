@@ -30,3 +30,5 @@ Runs the extension in the development mode.
 
 Load `build` as the folder for the unpacked extension.\
 The `build` folder will update as you save changes.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C5VAY15)

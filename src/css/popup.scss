@@ -27,12 +27,12 @@ body {
 
 .title {
   margin-left: 10px;
-  font-size: 1.5em;
+  font-size: 1.7em;
 }
 
 .label {
   margin-left: 5px;
-  font-size: 1.2em;
+  font-size: 1.3em;
 
   &:hover {
     cursor: pointer;
@@ -58,4 +58,9 @@ input[type='checkbox'] {
 :root:not([refresh]) .refresh,
 :root:not([pip]) #pipDiv {
   display: none;
+}
+
+.donate {
+  display: flex;
+  justify-content: center;
 }
