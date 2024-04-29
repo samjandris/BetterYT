@@ -1,8 +1,8 @@
 @media screen and (min-width: 1014px) {
   body[betteryt-theater] {
     #chat {
-      position: absolute;
-      top: 0px;
+      position: absolute !important;
+      top: 0px !important;
       right: 0px;
       width: var(--ytd-watch-flexy-sidebar-width);
       height: 100vh !important;
@@ -18,10 +18,14 @@
     #full-bleed-container {
       top: 0px;
       left: 0px;
-      width: calc(100% - var(--ytd-watch-flexy-sidebar-width)) !important;
-      max-width: calc(100% - var(--ytd-watch-flexy-sidebar-width)) !important;
+      // width: calc(100% - var(--ytd-watch-flexy-sidebar-width)) !important;
+      // max-width: calc(100% - var(--ytd-watch-flexy-sidebar-width)) !important;
       height: 100vh !important;
       max-height: 100vh !important;
+    }
+
+    #columns {
+      width: 100% !important;
     }
 
     // Change chat button text to "Exit theater mode"
@@ -45,6 +49,7 @@
 
     ytd-app {
       --ytd-masthead-height: 0px !important;
+      overflow-x: hidden;
     }
 
     .ytp-fullerscreen-edu-button {
