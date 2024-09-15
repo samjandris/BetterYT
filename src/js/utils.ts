@@ -73,6 +73,12 @@ const SELECTORS = {
       INFO_BAR: '#info-bar',
       TITLE: '.miniplayer-title',
       CHANNEL: '#owner-name.ytd-miniplayer',
+      MODERN: {
+        CONTAINER: '#modern-player-container.ytd-miniplayer',
+        INFO_BAR: '#modern-info-bar',
+        TITLE: '#modern-info-bar .miniplayer-title',
+        CHANNEL: '#modern-owner-name.ytd-miniplayer',
+      },
     },
     RELATED: '#related',
     COMMENTS: '#comments',
@@ -210,6 +216,16 @@ const SELECTORS = {
       document.querySelector(SELECTORS.RAW.MINI_PLAYER.TITLE),
     CHANNEL: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.MINI_PLAYER.CHANNEL),
+    MODERN: {
+      CONTAINER: (): HTMLElement | null =>
+        document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER),
+      INFO_BAR: (): HTMLElement | null =>
+        document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.INFO_BAR),
+      TITLE: (): HTMLElement | null =>
+        document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.TITLE),
+      CHANNEL: (): HTMLElement | null =>
+        document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.CHANNEL),
+    },
   },
   RELATED: (): HTMLElement | null =>
     document.querySelector(SELECTORS.RAW.RELATED),

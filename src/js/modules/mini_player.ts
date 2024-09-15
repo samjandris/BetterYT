@@ -8,8 +8,21 @@ function showMiniPlayer() {
     document.body.setAttribute('betteryt-live', '');
 
   const playerElement = SELECTORS.PLAYER.PLAYER();
-  const miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
+  const playerTitleElement = SELECTORS.PLAYER.TITLE();
+  const playerChannelElement = SELECTORS.PLAYER.CHANNEL();
 
+  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
+  let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
+  let miniPlayerTitleElement = SELECTORS.MINI_PLAYER.TITLE();
+  let miniPlayerChannelElement = SELECTORS.MINI_PLAYER.CHANNEL();
+
+  if (miniPlayerRootElement?.hasAttribute('modern')) {
+    miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
+    miniPlayerTitleElement = SELECTORS.MINI_PLAYER.MODERN.TITLE();
+    miniPlayerChannelElement = SELECTORS.MINI_PLAYER.MODERN.CHANNEL();
+  }
+
+  // Mini player video
   if (
     playerElement &&
     miniPlayerContainerElement &&
@@ -17,27 +30,7 @@ function showMiniPlayer() {
   )
     miniPlayerContainerElement.appendChild(playerElement);
 
-  // Sponsorblock
-  const sponsorBlockContainerElement = SELECTORS.SPONSOR_BLOCK.CONTAINER();
-  const miniPlayerProgressBarContainerElement =
-    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER();
-
-  if (
-    sponsorBlockContainerElement &&
-    miniPlayerProgressBarContainerElement &&
-    sponsorBlockContainerElement.parentElement !==
-      miniPlayerProgressBarContainerElement
-  )
-    miniPlayerProgressBarContainerElement.appendChild(
-      sponsorBlockContainerElement
-    );
-
   // Mini player title and channel
-  const miniPlayerTitleElement = SELECTORS.MINI_PLAYER.TITLE();
-  const miniPlayerChannelElement = SELECTORS.MINI_PLAYER.CHANNEL();
-  const playerTitleElement = SELECTORS.PLAYER.TITLE();
-  const playerChannelElement = SELECTORS.PLAYER.CHANNEL();
-
   if (
     miniPlayerTitleElement &&
     playerTitleElement &&
@@ -52,7 +45,6 @@ function showMiniPlayer() {
     miniPlayerChannelElement.textContent = playerChannelElement.textContent;
 
   // Mini player enabled and active
-  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
   if (miniPlayerRootElement) {
     if (!miniPlayerRootElement.hasAttribute('enabled'))
       miniPlayerRootElement.setAttribute('enabled', '');
@@ -76,6 +68,21 @@ function showMiniPlayer() {
       playerMoviePlayerElement.classList.remove('ytp-big-mode');
     }
   }
+
+  // Sponsorblock
+  const sponsorBlockContainerElement = SELECTORS.SPONSOR_BLOCK.CONTAINER();
+  const miniPlayerProgressBarContainerElement =
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER();
+
+  if (
+    sponsorBlockContainerElement &&
+    miniPlayerProgressBarContainerElement &&
+    sponsorBlockContainerElement.parentElement !==
+      miniPlayerProgressBarContainerElement
+  )
+    miniPlayerProgressBarContainerElement.appendChild(
+      sponsorBlockContainerElement
+    );
 }
 
 function showFullPlayer() {
@@ -159,8 +166,12 @@ function createMiniPlayer() {
   progressBar.addEventListener('pointerdown', (e) => {
     pointerDown = true;
 
-    const miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
+    const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
+    let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
     const playerVideoElement = SELECTORS.PLAYER.VIDEO();
+
+    if (miniPlayerRootElement?.hasAttribute('modern'))
+      miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
 
     if (miniPlayerContainerElement && playerVideoElement) {
       const x =
@@ -179,8 +190,12 @@ function createMiniPlayer() {
   });
 
   progressBar.addEventListener('pointermove', (e) => {
-    const miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
+    const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
+    let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
     const playerVideoElement = SELECTORS.PLAYER.VIDEO();
+
+    if (miniPlayerRootElement?.hasAttribute('modern'))
+      miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
 
     if (pointerDown && miniPlayerContainerElement && playerVideoElement) {
       const x =
@@ -227,8 +242,13 @@ function createMiniPlayer() {
   createChapters();
 
   // scroll up when clicking info bar
-  const miniPlayerInfoBarElement = SELECTORS.MINI_PLAYER.INFO_BAR();
+  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
+  let miniPlayerInfoBarElement = SELECTORS.MINI_PLAYER.INFO_BAR();
   const pageAppElement = SELECTORS.PAGE.APP();
+
+  if (miniPlayerRootElement?.hasAttribute('modern'))
+    miniPlayerInfoBarElement = SELECTORS.MINI_PLAYER.MODERN.INFO_BAR();
+
   if (miniPlayerInfoBarElement && pageAppElement) {
     miniPlayerInfoBarElement.addEventListener('click', () => {
       if (Helper.getUrl().pathname.startsWith('/watch')) {
@@ -245,7 +265,12 @@ function createChapters() {
   const playerChaptersContainerElement =
     SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
   const playerControlsContainerElement = SELECTORS.PLAYER.CONTROLS.CONTAINER();
-  const miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
+
+  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
+  let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
+
+  if (miniPlayerRootElement?.hasAttribute('modern'))
+    miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
 
   if (
     !betterMiniPlayerChaptersContainerElement ||
@@ -355,11 +380,15 @@ function createChapters() {
 
 function updateProgressBar() {
   const playerVideoElement = SELECTORS.PLAYER.VIDEO();
-  const miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
+  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
+  let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
   const betterMiniPlayerScrubberContainerElement =
     SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER();
   const betterMiniPlayerChaptersContainerElement =
     SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
+
+  if (miniPlayerRootElement?.hasAttribute('modern'))
+    miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
 
   if (
     !playerVideoElement ||
@@ -431,6 +460,7 @@ window.addEventListener('onPageChange', () => {
     Helper.onElementsLoad([
       SELECTORS.RAW.PLAYER.VIDEO,
       SELECTORS.RAW.MINI_PLAYER.CONTAINER,
+      SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER,
       SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
       SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
     ]).then(() => {
@@ -453,6 +483,7 @@ window.addEventListener('onViewModeChange', () => {
 Helper.onElementsLoad([
   SELECTORS.RAW.PLAYER.VIDEO,
   SELECTORS.RAW.MINI_PLAYER.CONTAINER,
+  SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER,
   SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
   SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
 ]).then(() => {
