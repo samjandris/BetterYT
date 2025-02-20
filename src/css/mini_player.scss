@@ -65,7 +65,8 @@ yt-formatted-string #owner-name {
   display: unset !important;
 }
 
+// TODO: Animations temporarily disabled, need to fix weird behavior when dragging mini player
 // Animate miniplayer opening/closing
-ytd-miniplayer {
-  transition: all 0.25s cubic-bezier(0, 0, 0.2, 1) !important;
-}
+// ytd-miniplayer {
+//   transition: all 0.25s cubic-bezier(0, 0, 0.2, 1) !important;
+// }

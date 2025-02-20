@@ -73,6 +73,7 @@ const SELECTORS = {
       INFO_BAR: '#info-bar',
       TITLE: '.miniplayer-title',
       CHANNEL: '#owner-name.ytd-miniplayer',
+      // TODO: Modern container is deprecated now (could be removed)
       MODERN: {
         CONTAINER: '#modern-player-container.ytd-miniplayer',
         INFO_BAR: '#modern-info-bar',
