@@ -483,7 +483,8 @@ window.addEventListener('onViewModeChange', () => {
 Helper.onElementsLoad([
   SELECTORS.RAW.PLAYER.VIDEO,
   SELECTORS.RAW.MINI_PLAYER.CONTAINER,
-  SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER,
+  // TODO: Modern player seems to be renamed to normal container now, could most likely remove
+  // SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER,
   SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
   SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
 ]).then(() => {
