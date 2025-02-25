@@ -12,6 +12,7 @@ body[betteryt-mini] {
   }
 
   .ytp-chrome-bottom {
+    display: unset !important;
     left: 1px !important;
     margin-bottom: 5px;
   }
@@ -30,6 +31,10 @@ body[betteryt-mini] {
   .expander.ytd-miniplayer,
   .index-message.ytd-miniplayer {
     display: none !important;
+  }
+
+  ytd-miniplayer {
+    display: unset !important;
   }
 
   .ytp-miniplayer-button {
