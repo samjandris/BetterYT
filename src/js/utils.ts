@@ -69,10 +69,11 @@ const SELECTORS = {
     },
     MINI_PLAYER: {
       ROOT: 'ytd-miniplayer',
-      CONTAINER: '#player-container.ytd-miniplayer',
-      INFO_BAR: '#info-bar',
-      TITLE: '.miniplayer-title',
-      CHANNEL: '#owner-name.ytd-miniplayer',
+      CONTAINER: '.ytDraggableComponentHost',
+      INFO_BAR: 'ytd-miniplayer-info-bar',
+      TITLE: '.ytdMiniplayerInfoBarTitle',
+      CHANNEL: '.ytdMiniplayerInfoBarSubtitle',
+      RESIZERS: '.ytdMiniplayerComponentResizers',
       // TODO: Modern container is deprecated now (could be removed)
       MODERN: {
         CONTAINER: '#modern-player-container.ytd-miniplayer',
@@ -217,6 +218,8 @@ const SELECTORS = {
       document.querySelector(SELECTORS.RAW.MINI_PLAYER.TITLE),
     CHANNEL: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.MINI_PLAYER.CHANNEL),
+    RESIZERS: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.MINI_PLAYER.RESIZERS),
     MODERN: {
       CONTAINER: (): HTMLElement | null =>
         document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER),

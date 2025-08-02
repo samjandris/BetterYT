@@ -5,6 +5,7 @@ body[betteryt-mini] {
     width: var(--ytd-miniplayer-width) !important;
     height: var(--ytd-miniplayer-height) !important;
     object-fit: contain !important;
+    background: black;
   }
 
   .ytp-chrome-controls {
@@ -15,6 +16,11 @@ body[betteryt-mini] {
     display: unset !important;
     left: 1px !important;
     margin-bottom: 5px;
+  }
+
+  // Hide resizeres as we don't want users to resize the miniplayer
+  .ytdMiniplayerComponentResizers {
+    display: none !important;
   }
 
   .ytp-left-controls
@@ -35,13 +41,19 @@ body[betteryt-mini] {
 
   ytd-miniplayer {
     display: unset !important;
+    width: var(--ytd-miniplayer-width) !important;
+    height: calc(
+      var(--ytd-miniplayer-height) + var(--ytd-miniplayer-info-bar-height)
+    ) !important;
   }
 
   .ytp-miniplayer-button {
     display: unset !important;
   }
 
-  #info-bar {
+  // This is the info bar that shows the title and channel
+  .ytdMiniplayerInfoBarHost {
+    align-items: center;
     cursor: pointer;
 
     *:not(.metadata) {
