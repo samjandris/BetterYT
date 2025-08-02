@@ -28,7 +28,7 @@ function showMiniPlayer() {
     miniPlayerContainerElement &&
     playerElement.parentElement !== miniPlayerContainerElement
   )
-    miniPlayerContainerElement.appendChild(playerElement);
+    miniPlayerContainerElement.prepend(playerElement);
 
   // Mini player title and channel
   if (
@@ -222,12 +222,13 @@ function createMiniPlayer() {
   const scrubberIndicator = document.createElement('div');
   scrubberIndicator.className = 'betteryt ytp-scrubber-pull-indicator';
 
-  scrubberButton.appendChild(scrubberIndicator);
-  scrubberContainer.appendChild(scrubberButton);
+  // TODO: Disabled for now as it's not working
+  // scrubberButton.appendChild(scrubberIndicator);
+  // scrubberContainer.appendChild(scrubberButton);
 
-  progressBar.appendChild(chaptersContainer);
-  progressBar.appendChild(scrubberContainer);
-  progressBarContainer.appendChild(progressBar);
+  // progressBar.appendChild(chaptersContainer);
+  // progressBar.appendChild(scrubberContainer);
+  // progressBarContainer.appendChild(progressBar);
 
   // gradient for controls in miniplayer
   const gradientBottom = document.createElement('div');
@@ -239,7 +240,7 @@ function createMiniPlayer() {
     playerMoviePlayerElement.appendChild(gradientBottom);
   }
 
-  createChapters();
+  // createChapters();
 
   // scroll up when clicking info bar
   const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
@@ -259,124 +260,125 @@ function createMiniPlayer() {
   }
 }
 
-function createChapters() {
-  const betterMiniPlayerChaptersContainerElement =
-    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
-  const playerChaptersContainerElement =
-    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
-  const playerControlsContainerElement = SELECTORS.PLAYER.CONTROLS.CONTAINER();
+// TODO: Disabled for now as it needs a refactor
+// function createChapters() {
+//   const betterMiniPlayerChaptersContainerElement =
+//     SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
+//   const playerChaptersContainerElement =
+//     SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
+//   const playerControlsContainerElement = SELECTORS.PLAYER.CONTROLS.CONTAINER();
 
-  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
-  let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
+//   const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
+//   let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
 
-  if (miniPlayerRootElement?.hasAttribute('modern'))
-    miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
+//   if (miniPlayerRootElement?.hasAttribute('modern'))
+//     miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
 
-  if (
-    !betterMiniPlayerChaptersContainerElement ||
-    !playerChaptersContainerElement ||
-    !playerControlsContainerElement ||
-    !miniPlayerContainerElement
-  )
-    return;
+//   if (
+//     !betterMiniPlayerChaptersContainerElement ||
+//     !playerChaptersContainerElement ||
+//     !playerControlsContainerElement ||
+//     !miniPlayerContainerElement
+//   )
+//     return;
 
-  while (betterMiniPlayerChaptersContainerElement.firstChild) {
-    betterMiniPlayerChaptersContainerElement.removeChild(
-      betterMiniPlayerChaptersContainerElement.firstChild
-    );
-  }
+//   while (betterMiniPlayerChaptersContainerElement.firstChild) {
+//     betterMiniPlayerChaptersContainerElement.removeChild(
+//       betterMiniPlayerChaptersContainerElement.firstChild
+//     );
+//   }
 
-  for (const i of Array.from(
-    playerChaptersContainerElement.children
-  ) as HTMLElement[]) {
-    const chapter = document.createElement('div');
-    chapter.className =
-      'betteryt ytp-chapter-hover-container ytp-exp-chapter-hover-container';
+//   for (const i of Array.from(
+//     playerChaptersContainerElement.children
+//   ) as HTMLElement[]) {
+//     const chapter = document.createElement('div');
+//     chapter.className =
+//       'betteryt ytp-chapter-hover-container ytp-exp-chapter-hover-container';
 
-    chapter.style.width =
-      Math.round(
-        (parseInt(i.style.width.replace('px', '')) /
-          playerControlsContainerElement.offsetWidth) *
-          miniPlayerContainerElement.offsetWidth
-      ) + 'px';
+//     chapter.style.width =
+//       Math.round(
+//         (parseInt(i.style.width.replace('px', '')) /
+//           playerControlsContainerElement.offsetWidth) *
+//           miniPlayerContainerElement.offsetWidth
+//       ) + 'px';
 
-    if (
-      i.style.marginRight &&
-      playerChaptersContainerElement.childElementCount > 1
-    ) {
-      chapter.style.marginRight = '2px';
-    }
+//     if (
+//       i.style.marginRight &&
+//       playerChaptersContainerElement.childElementCount > 1
+//     ) {
+//       chapter.style.marginRight = '2px';
+//     }
 
-    const chapterProgressPadding = document.createElement('div');
-    chapterProgressPadding.className = 'betteryt ytp-progress-bar-padding';
-    chapterProgressPadding.style.height = '5px';
+//     const chapterProgressPadding = document.createElement('div');
+//     chapterProgressPadding.className = 'betteryt ytp-progress-bar-padding';
+//     chapterProgressPadding.style.height = '5px';
 
-    const chapterProgressList = document.createElement('div');
-    chapterProgressList.className = 'betteryt ytp-progress-list';
+//     const chapterProgressList = document.createElement('div');
+//     chapterProgressList.className = 'betteryt ytp-progress-list';
 
-    const chapterPlayProgress = document.createElement('div');
-    chapterPlayProgress.className =
-      'betteryt ytp-play-progress ytp-swatch-background-color';
-    chapterPlayProgress.style.left = (
-      i.children[1].children[0] as HTMLElement
-    ).style.left;
-    chapterPlayProgress.style.transform = (
-      i.children[1].children[0] as HTMLElement
-    ).style.transform;
+//     const chapterPlayProgress = document.createElement('div');
+//     chapterPlayProgress.className =
+//       'betteryt ytp-play-progress ytp-swatch-background-color';
+//     chapterPlayProgress.style.left = (
+//       i.children[1].children[0] as HTMLElement
+//     ).style.left;
+//     chapterPlayProgress.style.transform = (
+//       i.children[1].children[0] as HTMLElement
+//     ).style.transform;
 
-    chapterProgressList.appendChild(chapterPlayProgress);
-    chapter.appendChild(chapterProgressPadding);
-    chapter.appendChild(chapterProgressList);
-    betterMiniPlayerChaptersContainerElement.appendChild(chapter);
-  }
+//     chapterProgressList.appendChild(chapterPlayProgress);
+//     chapter.appendChild(chapterProgressPadding);
+//     chapter.appendChild(chapterProgressList);
+//     betterMiniPlayerChaptersContainerElement.appendChild(chapter);
+//   }
 
-  function findWidth() {
-    let totalWidth = 0;
+//   function findWidth() {
+//     let totalWidth = 0;
 
-    if (
-      !betterMiniPlayerChaptersContainerElement ||
-      !miniPlayerContainerElement
-    )
-      return;
+//     if (
+//       !betterMiniPlayerChaptersContainerElement ||
+//       !miniPlayerContainerElement
+//     )
+//       return;
 
-    for (const i of Array.from(
-      betterMiniPlayerChaptersContainerElement.children
-    ) as HTMLElement[]) {
-      totalWidth += parseFloat(i.style.width.replace('px', ''));
+//     for (const i of Array.from(
+//       betterMiniPlayerChaptersContainerElement.children
+//     ) as HTMLElement[]) {
+//       totalWidth += parseFloat(i.style.width.replace('px', ''));
 
-      if (i.style.marginRight) {
-        totalWidth += parseInt(i.style.marginRight.replace('px', ''));
-      }
-    }
+//       if (i.style.marginRight) {
+//         totalWidth += parseInt(i.style.marginRight.replace('px', ''));
+//       }
+//     }
 
-    for (const i of Array.from(
-      betterMiniPlayerChaptersContainerElement.children
-    ) as HTMLElement[]) {
-      if (
-        totalWidth > miniPlayerContainerElement.offsetWidth &&
-        parseFloat(i.style.width.replace('px', '')) > 0
-      ) {
-        i.style.width = parseFloat(i.style.width.replace('px', '')) - 1 + 'px';
-        totalWidth -= 1;
-      }
-    }
+//     for (const i of Array.from(
+//       betterMiniPlayerChaptersContainerElement.children
+//     ) as HTMLElement[]) {
+//       if (
+//         totalWidth > miniPlayerContainerElement.offsetWidth &&
+//         parseFloat(i.style.width.replace('px', '')) > 0
+//       ) {
+//         i.style.width = parseFloat(i.style.width.replace('px', '')) - 1 + 'px';
+//         totalWidth -= 1;
+//       }
+//     }
 
-    if (totalWidth > miniPlayerContainerElement.offsetWidth) {
-      findWidth();
-    }
+//     if (totalWidth > miniPlayerContainerElement.offsetWidth) {
+//       findWidth();
+//     }
 
-    return totalWidth;
-  }
+//     return totalWidth;
+//   }
 
-  const finalWidth = findWidth() ?? 0;
+//   const finalWidth = findWidth() ?? 0;
 
-  // check if createChapters() was called before chapters were ready for inspection and if so, call it again until it is ready
-  if (finalWidth < miniPlayerContainerElement.offsetWidth) {
-    setTimeout(() => {
-      createChapters();
-    });
-  }
-}
+//   // check if createChapters() was called before chapters were ready for inspection and if so, call it again until it is ready
+//   if (finalWidth < miniPlayerContainerElement.offsetWidth) {
+//     setTimeout(() => {
+//       // createChapters();
+//     });
+//   }
+// }
 
 function updateProgressBar() {
   const playerVideoElement = SELECTORS.PLAYER.VIDEO();
@@ -465,7 +467,7 @@ window.addEventListener('onPageChange', () => {
       SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
     ]).then(() => {
       doPlayer();
-      createChapters();
+      // createChapters();
     });
   } else {
     document.body.removeAttribute('betteryt-mini');
@@ -522,7 +524,7 @@ Helper.onElementsLoad([
     () => {
       if (Helper.getUrl().pathname.startsWith('/watch')) {
         doPlayer();
-        createChapters();
+        // createChapters();
       }
     }
   );
