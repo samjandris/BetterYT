@@ -4,7 +4,10 @@
   "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && playwright test",
+    "test:headed": "npm run build && playwright test --headed",
+    "test:ui": "npm run build && playwright test --ui",
+    "test:debug": "npm run build && playwright test --debug",
     "clean": "npm audit fix",
     "start": "npm run start:chrome",
     "start:chrome": "npx webpack --env browser=chrome --mode=development --devtool=inline-source-map --watch",
@@ -17,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "^1.48.0",
     "@types/chrome": "^0.1.1",
     "copy-webpack-plugin": "^13.0.0",
     "css-loader": "^7.1.2",
