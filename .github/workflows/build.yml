@@ -1,0 +1,100 @@
+name: Build and Package Extensions
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine version
+        id: vars
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build Chrome
+        run: npm run build:chrome
+
+      - name: Stage Chrome build
+        run: |
+          mkdir -p dist/chrome
+          rsync -a --delete build/ dist/chrome/
+
+      - name: Build Firefox
+        run: npm run build:firefox
+
+      - name: Stage Firefox build
+        run: |
+          mkdir -p dist/firefox
+          rsync -a --delete build/ dist/firefox/
+
+      - name: Create artifacts directory
+        run: mkdir -p artifacts
+
+      - name: Zip Chrome package
+        run: |
+          cd dist/chrome
+          zip -r ../../artifacts/betteryt-chrome-v${{ steps.vars.outputs.version }}.zip .
+
+      - name: Zip Firefox package
+        run: |
+          cd dist/firefox
+          zip -r ../../artifacts/betteryt-firefox-v${{ steps.vars.outputs.version }}.zip .
+
+      - name: Zip source code
+        run: |
+          zip -r artifacts/betteryt-source-v${{ steps.vars.outputs.version }}.zip \
+            src \
+            package.json \
+            package-lock.json \
+            tsconfig.json \
+            webpack.config.js \
+            README.md || true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: betteryt-packages
+          path: artifacts/*.zip
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: betteryt-packages
+          path: dist_release
+
+      - name: Create GitHub Release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist_release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
