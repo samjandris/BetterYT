@@ -2,14 +2,14 @@ body[betteryt-mini] {
   .html5-main-video {
     top: 0px !important;
     left: 0px !important;
-    width: var(--ytd-miniplayer-width) !important;
-    height: var(--ytd-miniplayer-height) !important;
+    width: var(--ytd-miniplayer-width, 400px) !important;
+    height: var(--ytd-miniplayer-height, 225px) !important;
     object-fit: contain !important;
     background: black;
   }
 
   .ytp-chrome-controls {
-    width: calc(var(--ytd-miniplayer-width) - 2px);
+    width: calc(var(--ytd-miniplayer-width, 400px) - 2px);
   }
 
   .ytp-chrome-bottom {
@@ -41,9 +41,10 @@ body[betteryt-mini] {
 
   ytd-miniplayer {
     display: unset !important;
-    width: var(--ytd-miniplayer-width) !important;
+    width: var(--ytd-miniplayer-width, 400px) !important;
     height: calc(
-      var(--ytd-miniplayer-height) + var(--ytd-miniplayer-info-bar-height)
+      var(--ytd-miniplayer-height, 225px) +
+        var(--ytd-miniplayer-info-bar-height, 76px)
     ) !important;
   }
 
