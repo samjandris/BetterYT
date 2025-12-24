@@ -1,80 +1,167 @@
-import '../css/popup.scss';
-import { STORAGE_DEFAULT } from './utils';
+import "../css/popup.scss";
 
-document.querySelectorAll('[data-locale]').forEach((rawElem: Element) => {
-  const element = rawElem as HTMLElement;
+const STORAGE_KEYS = [
+  "miniPlayer",
+  "returnDislikes",
+  "twitchTheater",
+  "pipButton",
+  "experimentalComments",
+] as const;
 
-  if (element.dataset.locale)
-    element.innerText = chrome.i18n.getMessage(element.dataset.locale);
+type SettingKey = (typeof STORAGE_KEYS)[number];
+
+const DEFAULTS: Record<SettingKey, boolean> = {
+  miniPlayer: true,
+  returnDislikes: true,
+  twitchTheater: true,
+  pipButton: true,
+  experimentalComments: false,
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  initLocalization();
+  initThemeDetection();
+  initSettings();
+  initPiPCheck();
+  initResetButton();
 });
 
-chrome.storage.sync.get(STORAGE_DEFAULT, (data) => {
-  (document.getElementById('miniPlayer') as HTMLInputElement).checked =
-    data.miniPlayer;
-  (document.getElementById('returnDislikes') as HTMLInputElement).checked =
-    data.returnDislikes;
-  (document.getElementById('twitchTheater') as HTMLInputElement).checked =
-    data.twitchTheater;
-  (document.getElementById('pipButton') as HTMLInputElement).checked =
-    data.pipButton;
-  (
-    document.getElementById('experimentalComments') as HTMLInputElement
-  ).checked = data.experimentalComments;
-});
-
-const miniPlayerElement = document.getElementById('miniPlayer');
-if (miniPlayerElement)
-  miniPlayerElement.addEventListener('change', () => {
-    chrome.storage.sync.set({
-      miniPlayer: (miniPlayerElement as HTMLInputElement).checked,
-    });
-
-    document.documentElement.setAttribute('refresh', '');
+function initLocalization(): void {
+  document.querySelectorAll("[data-locale]").forEach((rawElem: Element) => {
+    const element = rawElem as HTMLElement;
+    if (element.dataset.locale) {
+      element.innerText = chrome.i18n.getMessage(element.dataset.locale);
+    }
   });
 
-const returnDislikesElement = document.getElementById('returnDislikes');
-if (returnDislikesElement)
-  returnDislikesElement.addEventListener('change', () => {
-    chrome.storage.sync.set({
-      returnDislikes: (returnDislikesElement as HTMLInputElement).checked,
-    });
+  const versionElement = document.getElementById("versionNumber");
+  if (versionElement) {
+    versionElement.textContent = VERSION;
+  }
+}
 
-    document.documentElement.setAttribute('refresh', '');
+function initThemeDetection(): void {
+  function detectSystemTheme(): "dark" | "light" {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      return "dark";
+    }
+    return "light";
+  }
+
+  function applyTheme(theme: "dark" | "light"): void {
+    document.documentElement.setAttribute("data-theme", theme);
+  }
+
+  const theme = detectSystemTheme();
+  applyTheme(theme);
+
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", (e) => {
+      applyTheme(e.matches ? "dark" : "light");
+    });
+}
+
+function initSettings(): void {
+  chrome.storage.sync.get(STORAGE_KEYS, (data) => {
+    STORAGE_KEYS.forEach((key) => {
+      const checkbox = document.getElementById(key) as HTMLInputElement | null;
+      const card = document.querySelector(
+        `[data-feature="${key}"]`
+      ) as HTMLElement | null;
+
+      if (checkbox && data[key] !== undefined) {
+        checkbox.checked = data[key];
+
+        if (card) {
+          if (data[key]) {
+            card.classList.add("active");
+          } else {
+            card.classList.remove("active");
+          }
+        }
+      }
+    });
   });
 
-const twitchTheaterElement = document.getElementById('twitchTheater');
-if (twitchTheaterElement)
-  twitchTheaterElement.addEventListener('change', () => {
-    chrome.storage.sync.set({
-      twitchTheater: (twitchTheaterElement as HTMLInputElement).checked,
-    });
+  STORAGE_KEYS.forEach((key) => {
+    const checkbox = document.getElementById(key) as HTMLInputElement | null;
+    const card = document.querySelector(
+      `[data-feature="${key}"]`
+    ) as HTMLElement | null;
 
-    document.documentElement.setAttribute('refresh', '');
+    if (checkbox && card) {
+      checkbox.addEventListener("change", () => {
+        const isChecked = checkbox.checked;
+
+        chrome.storage.sync.set({ [key]: isChecked });
+
+        if (isChecked) {
+          card.classList.add("active");
+        } else {
+          card.classList.remove("active");
+        }
+
+        document.documentElement.setAttribute("refresh", "");
+      });
+    }
   });
+}
 
-const testVideo = document.createElement('video');
-if (testVideo.requestPictureInPicture!)
-  document.documentElement.setAttribute('pip', '');
+function initPiPCheck(): void {
+  const testVideo = document.createElement("video");
+  const supportsPip =
+    "requestPictureInPicture" in testVideo &&
+    typeof testVideo.requestPictureInPicture === "function";
+  if (supportsPip) {
+    document.documentElement.setAttribute("pip", "");
+  }
+}
 
-const pipButtonElement = document.getElementById('pipButton');
-if (pipButtonElement)
-  pipButtonElement.addEventListener('change', () => {
-    chrome.storage.sync.set({
-      pipButton: (pipButtonElement as HTMLInputElement).checked,
+function initResetButton(): void {
+  const resetButton = document.getElementById("resetDefaults");
+  const feedbackLink = document.getElementById("feedbackLink");
+
+  if (resetButton) {
+    resetButton.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      STORAGE_KEYS.forEach((key) => {
+        chrome.storage.sync.set({ [key]: DEFAULTS[key] });
+      });
+
+      document.querySelectorAll(".feature-card").forEach((card) => {
+        card.classList.remove("active");
+      });
+
+      document
+        .querySelectorAll('input[type="checkbox"]')
+        .forEach((checkbox) => {
+          (checkbox as HTMLInputElement).checked =
+            DEFAULTS[checkbox.id as SettingKey];
+          const card = document.querySelector(
+            `[data-feature="${checkbox.id}"]`
+          );
+          if (card && (checkbox as HTMLInputElement).checked) {
+            card.classList.add("active");
+          }
+        });
+
+      document.documentElement.setAttribute("refresh", "");
     });
+  }
 
-    document.documentElement.setAttribute('refresh', '');
-  });
-
-const experimentalCommentsElement = document.getElementById(
-  'experimentalComments'
-);
-if (experimentalCommentsElement)
-  experimentalCommentsElement.addEventListener('change', () => {
-    chrome.storage.sync.set({
-      experimentalComments: (experimentalCommentsElement as HTMLInputElement)
-        .checked,
+  if (feedbackLink) {
+    feedbackLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      chrome.tabs.create({
+        url: "https://github.com/samjandris/BetterYT/issues",
+      });
     });
+  }
+}
 
-    document.documentElement.setAttribute('refresh', '');
-  });
+const VERSION = "0.0.29";

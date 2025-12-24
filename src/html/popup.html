@@ -2,95 +2,286 @@
 <html>
   <head>
     <link rel="stylesheet" href="../css/popup.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
-    <div class="logo">
-      <img src="/images/icon-512.png" width="32" height="32" />
-      <span class="title" data-locale="settingsTitle"></span>
+    <div class="popup-container">
+      <!-- Header -->
+      <header class="header">
+        <div class="logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"
+            />
+          </svg>
+        </div>
+        <div class="header-content">
+          <h1 class="title" data-locale="settingsTitle">BetterYT</h1>
+          <p class="subtitle" data-locale="headerSubtitle">
+            Customize your YouTube experience
+          </p>
+        </div>
+      </header>
+
+      <!-- Features -->
+      <main class="features-section">
+        <!-- Mini Player -->
+        <div class="feature-card" data-feature="miniPlayer">
+          <div class="feature-icon">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <line x1="8" y1="21" x2="16" y2="21" />
+              <line x1="12" y1="17" x2="12" y2="21" />
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="feature-text">
+              <div class="feature-title" data-locale="settingsMiniLabel">
+                Mini player
+              </div>
+              <div class="feature-description" data-locale="settingsMiniDesc">
+                Shows a mini player when scrolling
+              </div>
+            </div>
+            <div class="feature-right">
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  id="miniPlayer"
+                  name="miniPlayer"
+                  value="true"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Return Dislikes -->
+        <div class="feature-card" data-feature="returnDislikes">
+          <div class="feature-icon">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"
+              />
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="feature-text">
+              <div class="feature-title" data-locale="settingsDislikeLabel">
+                Return dislike count
+              </div>
+              <div
+                class="feature-description"
+                data-locale="settingsDislikeDesc"
+              >
+                Shows dislike count using Return YouTube Dislike API
+              </div>
+            </div>
+            <div class="feature-right">
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  id="returnDislikes"
+                  name="returnDislikes"
+                  value="true"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Theater Mode -->
+        <div class="feature-card" data-feature="twitchTheater">
+          <div class="feature-icon">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="3" width="20" height="18" rx="2" />
+              <line x1="2" y1="8" x2="22" y2="8" />
+              <line x1="8" y1="8" x2="8" y2="21" />
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="feature-text">
+              <div class="feature-title" data-locale="settingsTheaterLabel">
+                Chat theater mode
+              </div>
+              <div
+                class="feature-description"
+                data-locale="settingsTheaterDesc"
+              >
+                Locks chat next to livestream in theater mode
+              </div>
+            </div>
+            <div class="feature-right">
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  id="twitchTheater"
+                  name="twitchTheater"
+                  value="true"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- PiP -->
+        <div class="feature-card" data-feature="pipButton" id="pipDiv">
+          <div class="feature-icon">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <rect x="12" y="10" width="8" height="6" rx="1" />
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="feature-text">
+              <div class="feature-title" data-locale="settingsPipLabel">
+                Picture in picture
+              </div>
+              <div class="feature-description" data-locale="settingsPipDesc">
+                Shows PiP button on video player
+              </div>
+            </div>
+            <div class="feature-right">
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  id="pipButton"
+                  name="pipButton"
+                  value="true"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comments -->
+        <div
+          class="feature-card"
+          data-feature="experimentalComments"
+          id="commentsDiv"
+        >
+          <div class="feature-icon">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              />
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="feature-text">
+              <div class="feature-title-row">
+                <span class="feature-title" data-locale="settingsCommentsLabel"
+                  >Right-side comments</span
+                >
+                <span class="experimental-badge" data-locale="experimentalBadge"
+                  >Experimental</span
+                >
+              </div>
+              <div
+                class="feature-description"
+                data-locale="settingsCommentsDesc"
+              >
+                Moves comments to the side for easier reading
+              </div>
+            </div>
+            <div class="feature-right">
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  id="experimentalComments"
+                  name="experimentalComments"
+                  value="true"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="refresh-notice">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+            />
+          </svg>
+          <span data-locale="requiresRefresh">Refresh required</span>
+        </div>
+        <div class="footer-row">
+          <span class="version" id="versionNumber">v0.0.29</span>
+          <div class="footer-links">
+            <button
+              class="footer-btn"
+              id="resetDefaults"
+              data-locale="resetDefaults"
+            >
+              Reset
+            </button>
+            <a
+              class="footer-link"
+              href="#"
+              id="feedbackLink"
+              data-locale="feedbackLink"
+              >Feedback</a
+            >
+          </div>
+        </div>
+      </footer>
     </div>
-
-    <div id="miniDiv">
-      <div class="selector">
-        <input type="checkbox" id="miniPlayer" name="miniPlayer" value="true" />
-        <label
-          class="label"
-          for="miniPlayer"
-          data-locale="settingsMiniLabel"
-        ></label>
-      </div>
-
-      <span class="sub-label" data-locale="settingsMiniDesc"></span>
-    </div>
-
-    <div id="dislikesDiv" hidden>
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="returnDislikes"
-          name="returnDislikes"
-          value="true"
-        />
-        <label
-          class="label"
-          for="returnDislikes"
-          data-locale="settingsDislikeLabel"
-        ></label>
-      </div>
-
-      <span class="sub-label" data-locale="settingsDislikeDesc"></span>
-    </div>
-
-    <div id="theaterDiv">
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="twitchTheater"
-          name="twitchTheater"
-          value="true"
-        />
-        <label
-          class="label"
-          for="twitchTheater"
-          data-locale="settingsTheaterLabel"
-        ></label>
-      </div>
-
-      <span class="sub-label" data-locale="settingsTheaterDesc"></span>
-    </div>
-
-    <div id="pipDiv">
-      <div class="selector">
-        <input type="checkbox" id="pipButton" name="pipButton" value="true" />
-        <label
-          class="label"
-          for="pipButton"
-          data-locale="settingsPipLabel"
-        ></label>
-      </div>
-
-      <span class="sub-label" data-locale="settingsPipDesc"></span>
-    </div>
-
-    <div id="commentsDiv">
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="experimentalComments"
-          name="experimentalComments"
-          value="true"
-        />
-        <label
-          class="label"
-          for="experimentalComments"
-          data-locale="settingsCommentsLabel"
-        ></label>
-      </div>
-
-      <span class="sub-label" data-locale="settingsCommentsDesc"></span>
-    </div>
-
-    <p class="sub-label refresh" data-locale="settingsRefresh"></p>
 
     <script src="../js/popup.js"></script>
   </body>

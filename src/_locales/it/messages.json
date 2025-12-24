@@ -60,5 +60,26 @@
   "settingsCommentsDesc": {
     "message": "Sposta la sezione dei commenti dove normalmente si trova la sezione correlata, permettendo una lettura più facile dei commenti mentre si guarda un video.",
     "description": "Descrizione dei commenti sul lato destro"
+  },
+
+  "headerSubtitle": {
+    "message": "Personalizza la tua esperienza YouTube",
+    "description": "Header subtitle"
+  },
+  "resetDefaults": {
+    "message": "Reimposta",
+    "description": "Reset button text"
+  },
+  "feedbackLink": {
+    "message": "Invia feedback",
+    "description": "Feedback link text"
+  },
+  "experimentalBadge": {
+    "message": "Sperimentale",
+    "description": "Badge for experimental features"
+  },
+  "requiresRefresh": {
+    "message": "Le modifiche richiedono un aggiornamento della pagina",
+    "description": "Refresh notice"
   }
 }

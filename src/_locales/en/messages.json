@@ -9,7 +9,7 @@
   },
 
   "settingsTitle": {
-    "message": "BetterYT Settings",
+    "message": "BetterYT",
     "description": "Title for popup window"
   },
   "settingsRefresh": {
@@ -60,5 +60,34 @@
   "settingsCommentsDesc": {
     "message": "Moves the comment section to where the related section normally is, allowing easier reading of comments while watching a video.",
     "description": "Description of right-side comments"
+  },
+
+  "headerSubtitle": {
+    "message": "Customize your YouTube experience",
+    "description": "Header subtitle"
+  },
+  "settingsSubtitle": {
+    "message": "Customize your YouTube experience",
+    "description": "Subtitle under the main title"
+  },
+  "versionLabel": {
+    "message": "Version",
+    "description": "Label for version display"
+  },
+  "resetDefaults": {
+    "message": "Reset to defaults",
+    "description": "Reset button text"
+  },
+  "feedbackLink": {
+    "message": "Send feedback",
+    "description": "Feedback link text"
+  },
+  "experimentalBadge": {
+    "message": "Experimental",
+    "description": "Badge for experimental features"
+  },
+  "requiresRefresh": {
+    "message": "Changes require a page refresh",
+    "description": "Refresh notice"
   }
 }

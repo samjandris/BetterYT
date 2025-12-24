@@ -60,5 +60,26 @@
   "settingsCommentsDesc": {
     "message": "Verschiebt den Kommentarbereich dorthin, wo normalerweise der Verwandte-Bereich ist, um das Lesen von Kommentaren beim Anschauen eines Videos zu erleichtern.",
     "description": "Beschreibung der Kommentare auf der rechten Seite"
+  },
+
+  "headerSubtitle": {
+    "message": "Passen Sie Ihr YouTube-Erlebnis an",
+    "description": "Header Untertitel"
+  },
+  "resetDefaults": {
+    "message": "Zurücksetzen",
+    "description": "Reset button text"
+  },
+  "feedbackLink": {
+    "message": "Feedback senden",
+    "description": "Feedback link text"
+  },
+  "experimentalBadge": {
+    "message": "Experimentell",
+    "description": "Badge for experimental features"
+  },
+  "requiresRefresh": {
+    "message": "Änderungen erfordern eine Seitenaktualisierung",
+    "description": "Refresh notice"
   }
 }
