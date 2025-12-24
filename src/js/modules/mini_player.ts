@@ -1,260 +1,271 @@
-import { SELECTORS, Helper } from '../utils';
+/**
+ * Mini Player Module
+ *
+ * Implements a floating mini player that appears when the user scrolls past
+ * the main video player on YouTube watch pages. The mini player stays visible
+ * in the corner while browsing comments/related videos.
+ *
+ * Key behaviors:
+ * - Activates when scrolling past the player bounds
+ * - Moves the actual video element (not a copy) between containers
+ * - Handles SponsorBlock integration by moving its overlay too
+ * - Supports both legacy and "modern" YouTube player layouts
+ */
 
+import { SELECTORS, Helper } from "../utils";
+
+function isWatchPage(): boolean {
+  return Helper.getUrl().pathname.startsWith("/watch");
+}
+
+// YouTube has two mini player layouts - legacy and "modern" (has 'modern' attribute).
+// This helper returns the correct elements for whichever layout is active.
+function getMiniPlayerElements() {
+  const root = SELECTORS.MINI_PLAYER.ROOT();
+  const isModern = root?.hasAttribute("modern");
+
+  return {
+    root,
+    container: isModern
+      ? SELECTORS.MINI_PLAYER.MODERN.CONTAINER()
+      : SELECTORS.MINI_PLAYER.CONTAINER(),
+    title: isModern
+      ? SELECTORS.MINI_PLAYER.MODERN.TITLE()
+      : SELECTORS.MINI_PLAYER.TITLE(),
+    channel: isModern
+      ? SELECTORS.MINI_PLAYER.MODERN.CHANNEL()
+      : SELECTORS.MINI_PLAYER.CHANNEL(),
+    infoBar: isModern
+      ? SELECTORS.MINI_PLAYER.MODERN.INFO_BAR()
+      : SELECTORS.MINI_PLAYER.INFO_BAR(),
+  };
+}
+
+function ensureAttr(el: HTMLElement | null, attr: string): void {
+  if (el && !el.hasAttribute(attr)) el.setAttribute(attr, "");
+}
+
+function removeAttr(el: HTMLElement | null, attr: string): void {
+  el?.removeAttribute(attr);
+}
+
+function ensureClass(el: HTMLElement | null, className: string): void {
+  if (el && !el.classList.contains(className)) el.classList.add(className);
+}
+
+function removeClass(el: HTMLElement | null, className: string): void {
+  el?.classList.remove(className);
+}
+
+function reparent(
+  el: HTMLElement | null,
+  newParent: HTMLElement | null,
+  prepend = false
+): void {
+  if (el && newParent && el.parentElement !== newParent) {
+    prepend ? newParent.prepend(el) : newParent.appendChild(el);
+  }
+}
+
+function syncText(
+  target: HTMLElement | null,
+  source: HTMLElement | null
+): void {
+  if (target && source && target.textContent !== source.textContent) {
+    target.textContent = source.textContent;
+  }
+}
+
+function calculateSeekTime(
+  clientX: number,
+  container: HTMLElement,
+  video: HTMLVideoElement
+): number {
+  const x = clientX - container.getBoundingClientRect().x;
+  return (x / container.offsetWidth) * video.duration;
+}
+
+// Activates mini player mode: moves video element to floating container,
+// syncs metadata, and configures YouTube's internal player state
 function showMiniPlayer() {
-  if (!document.body.hasAttribute('betteryt-mini'))
-    document.body.setAttribute('betteryt-mini', '');
+  ensureAttr(document.body, "betteryt-mini");
+  if (Helper.isLive()) ensureAttr(document.body, "betteryt-live");
 
-  if (!document.body.hasAttribute('betteryt-live') && Helper.isLive())
-    document.body.setAttribute('betteryt-live', '');
+  const player = SELECTORS.PLAYER.PLAYER();
+  const playerTitle = SELECTORS.PLAYER.TITLE();
+  const playerChannel = SELECTORS.PLAYER.CHANNEL();
+  const moviePlayer = SELECTORS.PLAYER.MOVIE_PLAYER();
 
-  const playerElement = SELECTORS.PLAYER.PLAYER();
-  const playerTitleElement = SELECTORS.PLAYER.TITLE();
-  const playerChannelElement = SELECTORS.PLAYER.CHANNEL();
+  const mini = getMiniPlayerElements();
 
-  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
-  let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
-  let miniPlayerTitleElement = SELECTORS.MINI_PLAYER.TITLE();
-  let miniPlayerChannelElement = SELECTORS.MINI_PLAYER.CHANNEL();
+  reparent(player, mini.container, true);
+  syncText(mini.title, playerTitle);
+  syncText(mini.channel, playerChannel);
 
-  if (miniPlayerRootElement?.hasAttribute('modern')) {
-    miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
-    miniPlayerTitleElement = SELECTORS.MINI_PLAYER.MODERN.TITLE();
-    miniPlayerChannelElement = SELECTORS.MINI_PLAYER.MODERN.CHANNEL();
+  if (mini.root) {
+    ensureAttr(mini.root, "enabled");
+    ensureAttr(mini.root, "active");
+    // Prevent YouTube's native playlist UI from appearing in mini player
+    removeAttr(mini.root, "has-playlist-data");
+    removeAttr(mini.root, "expanded");
   }
 
-  // Mini player video
-  if (
-    playerElement &&
-    miniPlayerContainerElement &&
-    playerElement.parentElement !== miniPlayerContainerElement
-  )
-    miniPlayerContainerElement.prepend(playerElement);
-
-  // Mini player title and channel
-  if (
-    miniPlayerTitleElement &&
-    playerTitleElement &&
-    miniPlayerTitleElement.textContent !== playerTitleElement.textContent
-  )
-    miniPlayerTitleElement.textContent = playerTitleElement.textContent;
-  if (
-    miniPlayerChannelElement &&
-    playerChannelElement &&
-    miniPlayerChannelElement.textContent !== playerChannelElement.textContent
-  )
-    miniPlayerChannelElement.textContent = playerChannelElement.textContent;
-
-  // Mini player enabled and active
-  if (miniPlayerRootElement) {
-    if (!miniPlayerRootElement.hasAttribute('enabled'))
-      miniPlayerRootElement.setAttribute('enabled', '');
-    if (!miniPlayerRootElement.hasAttribute('active'))
-      miniPlayerRootElement.setAttribute('active', '');
-    if (miniPlayerRootElement.hasAttribute('has-playlist-data'))
-      miniPlayerRootElement.removeAttribute('has-playlist-data');
-    if (miniPlayerRootElement.hasAttribute('expanded'))
-      miniPlayerRootElement.removeAttribute('expanded');
+  if (moviePlayer) {
+    // These classes tell YouTube's player to use compact controls
+    ensureClass(moviePlayer, "ytp-player-minimized");
+    ensureClass(moviePlayer, "ytp-small-mode");
+    removeClass(moviePlayer, "ytp-big-mode");
   }
 
-  const playerMoviePlayerElement = SELECTORS.PLAYER.MOVIE_PLAYER();
-  if (playerMoviePlayerElement) {
-    if (!playerMoviePlayerElement.classList.contains('ytp-player-minimized'))
-      playerMoviePlayerElement.classList.add('ytp-player-minimized');
-
-    if (!playerMoviePlayerElement.classList.contains('ytp-small-mode'))
-      playerMoviePlayerElement.classList.add('ytp-small-mode');
-
-    if (playerMoviePlayerElement.classList.contains('ytp-big-mode')) {
-      playerMoviePlayerElement.classList.remove('ytp-big-mode');
-    }
-  }
-
-  // Sponsorblock
-  const sponsorBlockContainerElement = SELECTORS.SPONSOR_BLOCK.CONTAINER();
-  const miniPlayerProgressBarContainerElement =
-    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER();
-
-  if (
-    sponsorBlockContainerElement &&
-    miniPlayerProgressBarContainerElement &&
-    sponsorBlockContainerElement.parentElement !==
-      miniPlayerProgressBarContainerElement
-  )
-    miniPlayerProgressBarContainerElement.appendChild(
-      sponsorBlockContainerElement
-    );
+  // Move SponsorBlock's segment overlay to our mini player progress bar
+  reparent(
+    SELECTORS.SPONSOR_BLOCK.CONTAINER(),
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
+  );
 }
 
+// Restores video to main player container and resets YouTube player state
 function showFullPlayer() {
-  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
-  const playerElement = SELECTORS.PLAYER.PLAYER();
-  const playerContainerElement = SELECTORS.PLAYER.CONTAINER();
-  const playerMoviePlayerElement = SELECTORS.PLAYER.MOVIE_PLAYER();
+  const mini = getMiniPlayerElements();
+  const player = SELECTORS.PLAYER.PLAYER();
+  const playerContainer = SELECTORS.PLAYER.CONTAINER();
+  const moviePlayer = SELECTORS.PLAYER.MOVIE_PLAYER();
 
-  document.body.removeAttribute('betteryt-mini');
-  document.body.removeAttribute('betteryt-live');
+  removeAttr(document.body, "betteryt-mini");
+  removeAttr(document.body, "betteryt-live");
 
-  if (miniPlayerRootElement) {
-    miniPlayerRootElement.removeAttribute('has-no-data');
-    miniPlayerRootElement.removeAttribute('closed');
-    miniPlayerRootElement.removeAttribute('active');
-    miniPlayerRootElement.removeAttribute('enabled');
+  if (mini.root) {
+    removeAttr(mini.root, "has-no-data");
+    removeAttr(mini.root, "closed");
+    removeAttr(mini.root, "active");
+    removeAttr(mini.root, "enabled");
   }
 
-  if (
-    playerElement &&
-    playerContainerElement &&
-    playerElement.parentElement !== playerContainerElement
-  )
-    playerContainerElement.appendChild(playerElement);
+  reparent(player, playerContainer);
+  reparent(
+    SELECTORS.SPONSOR_BLOCK.CONTAINER(),
+    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
+  );
 
-  // Sponsorblock
-  const sponsorBlockContainerElement = SELECTORS.SPONSOR_BLOCK.CONTAINER();
-  const playerProgressBarContainerElement =
-    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER();
-  if (
-    sponsorBlockContainerElement &&
-    playerProgressBarContainerElement &&
-    sponsorBlockContainerElement.parentElement !==
-      playerProgressBarContainerElement
-  )
-    playerProgressBarContainerElement.appendChild(sponsorBlockContainerElement);
+  if (moviePlayer) {
+    removeClass(moviePlayer, "ytp-player-minimized");
+    removeClass(moviePlayer, "ytp-small-mode");
 
-  if (playerMoviePlayerElement) {
-    playerMoviePlayerElement.classList.remove('ytp-player-minimized');
-    playerMoviePlayerElement.classList.remove('ytp-small-mode');
-
-    if (
-      playerMoviePlayerElement.classList.contains('ytp-fullscreen') &&
-      !playerMoviePlayerElement.classList.contains('ytp-big-mode')
-    )
-      playerMoviePlayerElement.classList.add('ytp-big-mode');
-  }
-}
-
-function doPlayer() {
-  const playerBoundsElement = SELECTORS.PLAYER.BOUNDS();
-  const pageAppElement = SELECTORS.PAGE.APP();
-
-  if (playerBoundsElement && pageAppElement) {
-    if (
-      window.scrollY >= playerBoundsElement.offsetHeight ||
-      pageAppElement.scrollTop >= playerBoundsElement.offsetHeight
-    ) {
-      showMiniPlayer();
-    } else {
-      showFullPlayer();
+    // Restore big mode only if player was in fullscreen
+    if (moviePlayer.classList.contains("ytp-fullscreen")) {
+      ensureClass(moviePlayer, "ytp-big-mode");
     }
   }
 }
 
-function createMiniPlayer() {
-  // progress bar for miniplayer
-  const progressBarContainer = document.createElement('div');
-  progressBarContainer.className = 'betteryt ytp-progress-bar-container';
-  progressBarContainer.setAttribute('data-layer', '4');
+// Main scroll handler: determines whether to show mini or full player
+// based on scroll position relative to the player bounds
+function doPlayer() {
+  const playerBounds = SELECTORS.PLAYER.BOUNDS();
+  const pageApp = SELECTORS.PAGE.APP();
 
-  const progressBar = document.createElement('div');
-  progressBar.className = 'betteryt ytp-progress-bar';
-  progressBar.setAttribute('role', 'slider');
+  if (!playerBounds || !pageApp) return;
+
+  const scrolledPastPlayer =
+    window.scrollY >= playerBounds.offsetHeight ||
+    pageApp.scrollTop >= playerBounds.offsetHeight;
+
+  scrolledPastPlayer ? showMiniPlayer() : showFullPlayer();
+}
+
+// Updates the custom progress bar position and chapter fill based on video time.
+// Each chapter is scaled proportionally to show playback progress within it.
+function updateProgressBar() {
+  const video = SELECTORS.PLAYER.VIDEO();
+  const mini = getMiniPlayerElements();
+  const scrubberContainer =
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER();
+  const chaptersContainer =
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
+
+  if (!video || !mini.container || !scrubberContainer || !chaptersContainer)
+    return;
+
+  const progress = video.currentTime / video.duration;
+  const newX = progress * mini.container.offsetWidth;
+
+  scrubberContainer.style.transform = `translateX(${newX}px)`;
+
+  let accumulatedWidth = 0;
+  for (const chapter of Array.from(
+    chaptersContainer.children
+  ) as HTMLElement[]) {
+    const chapterProgress = chapter.children[1]?.children[0] as HTMLElement;
+    if (!chapterProgress) continue;
+
+    const chapterWidth = parseInt(chapter.style.width.replace("px", "")) || 0;
+    const marginRight = parseInt(
+      chapter.style.marginRight?.replace("px", "") || "0"
+    );
+    accumulatedWidth += chapterWidth + marginRight;
+
+    if (newX >= accumulatedWidth) {
+      chapterProgress.style.transform = "scaleX(1)";
+    } else {
+      const scale = Math.max(0, 1 - (accumulatedWidth - newX) / chapterWidth);
+      chapterProgress.style.transform = `scaleX(${scale})`;
+    }
+  }
+}
+
+function handleProgressBarSeek(clientX: number) {
+  const mini = getMiniPlayerElements();
+  const video = SELECTORS.PLAYER.VIDEO();
+
+  if (mini.container && video) {
+    video.currentTime = calculateSeekTime(clientX, mini.container, video);
+    updateProgressBar();
+  }
+}
+
+// One-time setup: creates the custom progress bar and gradient overlay
+// that appear on the mini player
+function createMiniPlayer() {
+  const moviePlayer = SELECTORS.PLAYER.MOVIE_PLAYER();
+  if (!moviePlayer) return;
+
+  const progressBarContainer = document.createElement("div");
+  progressBarContainer.className = "betteryt ytp-progress-bar-container";
+  progressBarContainer.setAttribute("data-layer", "4");
+
+  const progressBar = document.createElement("div");
+  progressBar.className = "betteryt ytp-progress-bar";
+  progressBar.setAttribute("role", "slider");
 
   let pointerDown = false;
-  progressBar.addEventListener('pointerup', () => {
-    pointerDown = false;
-  });
 
-  progressBar.addEventListener('pointerdown', (e) => {
+  progressBar.addEventListener("pointerdown", (e) => {
     pointerDown = true;
-
-    const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
-    let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
-    const playerVideoElement = SELECTORS.PLAYER.VIDEO();
-
-    if (miniPlayerRootElement?.hasAttribute('modern'))
-      miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
-
-    if (miniPlayerContainerElement && playerVideoElement) {
-      const x =
-        e.clientX - miniPlayerContainerElement.getBoundingClientRect().x;
-
-      playerVideoElement.currentTime =
-        (x / miniPlayerContainerElement.offsetWidth) *
-        playerVideoElement.duration;
-    }
-
-    updateProgressBar();
+    handleProgressBarSeek(e.clientX);
   });
 
-  progressBar.addEventListener('pointerleave', () => {
-    pointerDown = false;
+  progressBar.addEventListener("pointermove", (e) => {
+    if (pointerDown) handleProgressBarSeek(e.clientX);
   });
 
-  progressBar.addEventListener('pointermove', (e) => {
-    const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
-    let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
-    const playerVideoElement = SELECTORS.PLAYER.VIDEO();
+  progressBar.addEventListener("pointerup", () => (pointerDown = false));
+  progressBar.addEventListener("pointerleave", () => (pointerDown = false));
 
-    if (miniPlayerRootElement?.hasAttribute('modern'))
-      miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
+  const gradientBottom = document.createElement("div");
+  gradientBottom.className = "betteryt ytp-gradient-bottom";
 
-    if (pointerDown && miniPlayerContainerElement && playerVideoElement) {
-      const x =
-        e.clientX - miniPlayerContainerElement.getBoundingClientRect().x;
+  moviePlayer.appendChild(progressBarContainer);
+  moviePlayer.appendChild(gradientBottom);
 
-      playerVideoElement.currentTime =
-        (x / miniPlayerContainerElement.offsetWidth) *
-        playerVideoElement.duration;
+  const mini = getMiniPlayerElements();
+  const pageApp = SELECTORS.PAGE.APP();
 
-      updateProgressBar();
-    }
-  });
-
-  const chaptersContainer = document.createElement('div');
-  chaptersContainer.className = 'betteryt ytp-chapters-container';
-
-  const scrubberContainer = document.createElement('div');
-  scrubberContainer.className = 'betteryt ytp-scrubber-container';
-
-  const scrubberButton = document.createElement('div');
-  scrubberButton.className =
-    'betteryt ytp-scrubber-button ytp-swatch-background-color';
-
-  const scrubberIndicator = document.createElement('div');
-  scrubberIndicator.className = 'betteryt ytp-scrubber-pull-indicator';
-
-  // TODO: Disabled for now as it's not working
-  // scrubberButton.appendChild(scrubberIndicator);
-  // scrubberContainer.appendChild(scrubberButton);
-
-  // progressBar.appendChild(chaptersContainer);
-  // progressBar.appendChild(scrubberContainer);
-  // progressBarContainer.appendChild(progressBar);
-
-  // gradient for controls in miniplayer
-  const gradientBottom = document.createElement('div');
-  gradientBottom.className = 'betteryt ytp-gradient-bottom';
-
-  const playerMoviePlayerElement = SELECTORS.PLAYER.MOVIE_PLAYER();
-  if (playerMoviePlayerElement) {
-    playerMoviePlayerElement.appendChild(progressBarContainer);
-    playerMoviePlayerElement.appendChild(gradientBottom);
-  }
-
-  // createChapters();
-
-  // scroll up when clicking info bar
-  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
-  let miniPlayerInfoBarElement = SELECTORS.MINI_PLAYER.INFO_BAR();
-  const pageAppElement = SELECTORS.PAGE.APP();
-
-  if (miniPlayerRootElement?.hasAttribute('modern'))
-    miniPlayerInfoBarElement = SELECTORS.MINI_PLAYER.MODERN.INFO_BAR();
-
-  if (miniPlayerInfoBarElement && pageAppElement) {
-    miniPlayerInfoBarElement.addEventListener('click', () => {
-      if (Helper.getUrl().pathname.startsWith('/watch')) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        pageAppElement.scrollTo({ top: 0, behavior: 'smooth' });
+  if (mini.infoBar && pageApp) {
+    // Clicking the info bar (title/channel area) scrolls back to main player
+    mini.infoBar.addEventListener("click", () => {
+      if (isWatchPage()) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        pageApp.scrollTo({ top: 0, behavior: "smooth" });
       }
     });
   }
@@ -380,85 +391,31 @@ function createMiniPlayer() {
 //   }
 // }
 
-function updateProgressBar() {
-  const playerVideoElement = SELECTORS.PLAYER.VIDEO();
-  const miniPlayerRootElement = SELECTORS.MINI_PLAYER.ROOT();
-  let miniPlayerContainerElement = SELECTORS.MINI_PLAYER.CONTAINER();
-  const betterMiniPlayerScrubberContainerElement =
-    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER();
-  const betterMiniPlayerChaptersContainerElement =
-    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
+function onWatchPageScroll() {
+  if (isWatchPage()) doPlayer();
+}
 
-  if (miniPlayerRootElement?.hasAttribute('modern'))
-    miniPlayerContainerElement = SELECTORS.MINI_PLAYER.MODERN.CONTAINER();
-
+function onWatchPageResize() {
+  const moviePlayer = SELECTORS.PLAYER.MOVIE_PLAYER();
+  // Don't trigger in fullscreen - the player fills the screen regardless
   if (
-    !playerVideoElement ||
-    !miniPlayerContainerElement ||
-    !betterMiniPlayerScrubberContainerElement ||
-    !betterMiniPlayerChaptersContainerElement
-  )
-    return;
-
-  const newX =
-    (playerVideoElement.currentTime / playerVideoElement.duration) *
-    miniPlayerContainerElement.offsetWidth;
-
-  betterMiniPlayerScrubberContainerElement.style.transform =
-    'translateX(' + newX + 'px)';
-
-  let width = 0;
-  for (const i of Array.from(
-    betterMiniPlayerChaptersContainerElement.children
-  ) as HTMLElement[]) {
-    const chapterElement = i.children[1].children[0] as HTMLElement;
-    width += parseInt(i.style.width.replace('px', ''));
-
-    if (i.style.marginRight) {
-      width += parseInt(i.style.marginRight.replace('px', ''));
-    }
-
-    if (newX >= width) {
-      chapterElement.style.transform = 'scaleX(1)';
-    } else {
-      const equation =
-        1 - (width - newX) / parseInt(i.style.width.replace('px', ''));
-      chapterElement.style.transform =
-        'scaleX(' + (equation > 0 ? equation : 0) + ')';
-    }
+    isWatchPage() &&
+    moviePlayer?.ariaLabel &&
+    !moviePlayer.ariaLabel.includes("Fullscreen")
+  ) {
+    doPlayer();
   }
 }
 
-window.addEventListener('scroll', () => {
-  if (Helper.getUrl().pathname.startsWith('/watch')) {
-    doPlayer();
-  }
-});
+window.addEventListener("scroll", onWatchPageScroll);
 
-const pageAppElementListener = SELECTORS.PAGE.APP();
-if (pageAppElementListener)
-  pageAppElementListener.addEventListener('scroll', () => {
-    if (Helper.getUrl().pathname.startsWith('/watch')) {
-      doPlayer();
-    }
-  });
+const pageApp = SELECTORS.PAGE.APP();
+pageApp?.addEventListener("scroll", onWatchPageScroll);
+window.addEventListener("resize", onWatchPageResize);
 
-window.addEventListener('resize', () => {
-  const playerMoviePlayerElement = SELECTORS.PLAYER.MOVIE_PLAYER();
-  if (Helper.getUrl().pathname.startsWith('/watch')) {
-    if (
-      playerMoviePlayerElement &&
-      playerMoviePlayerElement.ariaLabel &&
-      !playerMoviePlayerElement.ariaLabel.includes('Fullscreen')
-    ) {
-      doPlayer();
-    }
-  }
-});
-
-// this is needed to solve strange bug where sometimes video does not maximize fully when expanding from mini player
-window.addEventListener('onPageChange', () => {
-  if (Helper.getUrl().pathname.startsWith('/watch')) {
+// Needed to solve bug where video doesn't maximize fully when expanding from mini player
+window.addEventListener("onPageChange", () => {
+  if (isWatchPage()) {
     Helper.onElementsLoad([
       SELECTORS.RAW.PLAYER.VIDEO,
       SELECTORS.RAW.MINI_PLAYER.CONTAINER,
@@ -470,18 +427,17 @@ window.addEventListener('onPageChange', () => {
       // createChapters();
     });
   } else {
-    document.body.removeAttribute('betteryt-mini');
-    document.body.removeAttribute('betteryt-live');
+    removeAttr(document.body, "betteryt-mini");
+    removeAttr(document.body, "betteryt-live");
   }
 });
 
-// 'onViewModeChange' is needed to fix problem where exiting fullscreen when in mini player does not auto expand
-window.addEventListener('onViewModeChange', () => {
-  if (Helper.getUrl().pathname.startsWith('/watch')) {
-    doPlayer();
-  }
+// Fixes problem where exiting fullscreen when in mini player doesn't auto expand
+window.addEventListener("onViewModeChange", () => {
+  if (isWatchPage()) doPlayer();
 });
 
+// Initial setup after required elements are available
 Helper.onElementsLoad([
   SELECTORS.RAW.PLAYER.VIDEO,
   SELECTORS.RAW.MINI_PLAYER.CONTAINER,
@@ -492,80 +448,57 @@ Helper.onElementsLoad([
 ]).then(() => {
   createMiniPlayer();
 
-  const playerVideoElement = SELECTORS.PLAYER.VIDEO();
-  if (playerVideoElement)
-    playerVideoElement.addEventListener('timeupdate', () => {
-      const betterMiniPlayerScrubberContainerElement =
+  const video = SELECTORS.PLAYER.VIDEO();
+  if (video) {
+    video.addEventListener("timeupdate", () => {
+      const scrubberContainer =
         SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER();
-      const betterMiniPlayerSliderElement =
+      const slider =
         SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER();
 
-      if (
-        betterMiniPlayerScrubberContainerElement &&
-        betterMiniPlayerSliderElement
-      ) {
-        betterMiniPlayerSliderElement.setAttribute('aria-valuemin', '0');
-        betterMiniPlayerSliderElement.setAttribute(
-          'aria-valuemax',
-          playerVideoElement.duration.toString()
-        );
-        betterMiniPlayerSliderElement.setAttribute(
-          'aria-valuenow',
-          playerVideoElement.currentTime.toString()
-        );
-
+      if (scrubberContainer && slider) {
+        slider.setAttribute("aria-valuemin", "0");
+        slider.setAttribute("aria-valuemax", video.duration.toString());
+        slider.setAttribute("aria-valuenow", video.currentTime.toString());
         updateProgressBar();
       }
     });
+  }
 
-  // this is used to update mini player chapters as the chapters on progress bar take a second to appear
   Helper.onChildElementChange(
     SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
     () => {
-      if (Helper.getUrl().pathname.startsWith('/watch')) {
+      if (isWatchPage()) {
         doPlayer();
         // createChapters();
       }
     }
   );
 
-  // this is to fix mini player title as on first load it will add another string node
+  // On first load, title/channel elements add extra string nodes that need cleanup
   Helper.onChildElementChange(SELECTORS.RAW.MINI_PLAYER.TITLE, () => {
-    const miniPlayerTitleElement = SELECTORS.MINI_PLAYER.TITLE();
-    if (
-      miniPlayerTitleElement &&
-      miniPlayerTitleElement.childNodes.length >= 2 &&
-      miniPlayerTitleElement.lastChild
-    ) {
-      miniPlayerTitleElement.textContent =
-        miniPlayerTitleElement.lastChild.textContent;
+    const titleEl = SELECTORS.MINI_PLAYER.TITLE();
+    if (titleEl && titleEl.childNodes.length >= 2 && titleEl.lastChild) {
+      titleEl.textContent = titleEl.lastChild.textContent;
     }
   });
 
-  // this is to fix mini player channel as on first load it will add another string node
   Helper.onChildElementChange(SELECTORS.RAW.MINI_PLAYER.CHANNEL, () => {
-    const miniPlayerChannelElement = SELECTORS.MINI_PLAYER.CHANNEL();
-    if (
-      miniPlayerChannelElement &&
-      miniPlayerChannelElement.childNodes.length >= 2 &&
-      miniPlayerChannelElement.lastChild
-    ) {
-      miniPlayerChannelElement.textContent =
-        miniPlayerChannelElement.lastChild.textContent;
+    const channelEl = SELECTORS.MINI_PLAYER.CHANNEL();
+    if (channelEl && channelEl.childNodes.length >= 2 && channelEl.lastChild) {
+      channelEl.textContent = channelEl.lastChild.textContent;
     }
   });
 
-  // this is to stop the playlist from showing up in the mini player
   Helper.onAttributeChange(
     SELECTORS.RAW.MINI_PLAYER.ROOT,
     () => {
-      if (Helper.getUrl().pathname.startsWith('/watch')) {
-        doPlayer();
-      }
+      if (isWatchPage()) doPlayer();
     },
+    // These attributes trigger when YouTube tries to show playlist in mini player
     {
       attributes: true,
-      attributeFilter: ['has-playlist-data', 'expanded'],
+      attributeFilter: ["has-playlist-data", "expanded"],
     }
   );
 });
