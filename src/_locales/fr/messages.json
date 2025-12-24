@@ -60,5 +60,14 @@
   "settingsCommentsDesc": {
     "message": "Déplace la section des commentaires à l'endroit où se trouve normalement la section connexe, permettant une lecture plus aisée des commentaires tout en regardant une vidéo.",
     "description": "Description des commentaires sur le côté droit"
+  },
+
+  "footerFeedback": {
+    "message": "Commentaires",
+    "description": "Étiquette pour le bouton de commentaires dans le pied de page"
+  },
+  "footerRate": {
+    "message": "Évaluer",
+    "description": "Étiquette pour le bouton d'évaluation dans le pied de page"
   }
 }

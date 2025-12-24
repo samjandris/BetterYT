@@ -60,5 +60,14 @@
   "settingsCommentsDesc": {
     "message": "Moves the comment section to where the related section normally is, allowing easier reading of comments while watching a video.",
     "description": "Description of right-side comments"
+  },
+
+  "footerFeedback": {
+    "message": "Feedback",
+    "description": "Label for feedback button in footer"
+  },
+  "footerRate": {
+    "message": "Rate",
+    "description": "Label for rate button in footer"
   }
 }

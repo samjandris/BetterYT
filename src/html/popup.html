@@ -1,96 +1,143 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8" />
     <link rel="stylesheet" href="../css/popup.css" />
   </head>
 
   <body>
-    <div class="logo">
-      <img src="/images/icon-512.png" width="32" height="32" />
-      <span class="title" data-locale="settingsTitle"></span>
-    </div>
+    <header class="header">
+      <div class="logo-container">
+        <img src="/images/icon-512.png" alt="Logo" class="logo-icon" />
+        <h1 class="title" data-locale="settingsTitle"></h1>
+      </div>
+    </header>
 
-    <div id="miniDiv">
-      <div class="selector">
-        <input type="checkbox" id="miniPlayer" name="miniPlayer" value="true" />
-        <label
-          class="label"
-          for="miniPlayer"
-          data-locale="settingsMiniLabel"
-        ></label>
+    <main class="settings-list">
+      <!-- Mini Player -->
+      <div id="miniDiv" class="setting-item">
+        <label class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-locale="settingsMiniLabel"></div>
+            <div class="setting-desc" data-locale="settingsMiniDesc"></div>
+          </div>
+          <div class="setting-control">
+            <input
+              type="checkbox"
+              id="miniPlayer"
+              name="miniPlayer"
+              value="true"
+            />
+            <div class="toggle-switch"></div>
+          </div>
+        </label>
       </div>
 
-      <span class="sub-label" data-locale="settingsMiniDesc"></span>
-    </div>
-
-    <div id="dislikesDiv" hidden>
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="returnDislikes"
-          name="returnDislikes"
-          value="true"
-        />
-        <label
-          class="label"
-          for="returnDislikes"
-          data-locale="settingsDislikeLabel"
-        ></label>
+      <!-- Return Dislikes -->
+      <div id="dislikesDiv" class="setting-item" hidden>
+        <label class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-locale="settingsDislikeLabel"></div>
+            <div class="setting-desc" data-locale="settingsDislikeDesc"></div>
+          </div>
+          <div class="setting-control">
+            <input
+              type="checkbox"
+              id="returnDislikes"
+              name="returnDislikes"
+              value="true"
+            />
+            <div class="toggle-switch"></div>
+          </div>
+        </label>
       </div>
 
-      <span class="sub-label" data-locale="settingsDislikeDesc"></span>
-    </div>
-
-    <div id="theaterDiv">
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="twitchTheater"
-          name="twitchTheater"
-          value="true"
-        />
-        <label
-          class="label"
-          for="twitchTheater"
-          data-locale="settingsTheaterLabel"
-        ></label>
+      <!-- Theater Mode -->
+      <div id="theaterDiv" class="setting-item">
+        <label class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-locale="settingsTheaterLabel"></div>
+            <div class="setting-desc" data-locale="settingsTheaterDesc"></div>
+          </div>
+          <div class="setting-control">
+            <input
+              type="checkbox"
+              id="twitchTheater"
+              name="twitchTheater"
+              value="true"
+            />
+            <div class="toggle-switch"></div>
+          </div>
+        </label>
       </div>
 
-      <span class="sub-label" data-locale="settingsTheaterDesc"></span>
-    </div>
-
-    <div id="pipDiv">
-      <div class="selector">
-        <input type="checkbox" id="pipButton" name="pipButton" value="true" />
-        <label
-          class="label"
-          for="pipButton"
-          data-locale="settingsPipLabel"
-        ></label>
+      <!-- PiP Button -->
+      <div id="pipDiv" class="setting-item">
+        <label class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label" data-locale="settingsPipLabel"></div>
+            <div class="setting-desc" data-locale="settingsPipDesc"></div>
+          </div>
+          <div class="setting-control">
+            <input
+              type="checkbox"
+              id="pipButton"
+              name="pipButton"
+              value="true"
+            />
+            <div class="toggle-switch"></div>
+          </div>
+        </label>
       </div>
 
-      <span class="sub-label" data-locale="settingsPipDesc"></span>
-    </div>
-
-    <div id="commentsDiv">
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="experimentalComments"
-          name="experimentalComments"
-          value="true"
-        />
-        <label
-          class="label"
-          for="experimentalComments"
-          data-locale="settingsCommentsLabel"
-        ></label>
+      <!-- Right-side Comments -->
+      <div id="commentsDiv" class="setting-item">
+        <label class="setting-row">
+          <div class="setting-info">
+            <div
+              class="setting-label"
+              data-locale="settingsCommentsLabel"
+            ></div>
+            <div class="setting-desc" data-locale="settingsCommentsDesc"></div>
+          </div>
+          <div class="setting-control">
+            <input
+              type="checkbox"
+              id="experimentalComments"
+              name="experimentalComments"
+              value="true"
+            />
+            <div class="toggle-switch"></div>
+          </div>
+        </label>
       </div>
+    </main>
 
-      <span class="sub-label" data-locale="settingsCommentsDesc"></span>
-    </div>
+    <footer class="footer">
+      <div class="refresh-notice refresh" data-locale="settingsRefresh"></div>
 
-    <p class="sub-label refresh" data-locale="settingsRefresh"></p>
+      <div class="footer-about">
+        <span id="version"></span>
+        <div class="footer-links">
+          <a
+            id="feedbackLink"
+            href="https://github.com/user/repo/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-link"
+            data-locale="footerFeedback"
+          ></a>
+          <a
+            id="rateLink"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-link"
+            data-locale="footerRate"
+          ></a>
+        </div>
+      </div>
+    </footer>
 
     <script src="../js/popup.js"></script>
   </body>

@@ -1,61 +1,356 @@
-body {
-  width: 350px;
-  background-color: #1f1f1f;
-  color: #f2f2f2;
-  font-family: 'Segoe UI', sans-serif;
-  line-height: 1.6;
-  padding: 10px;
+:root {
+  --bg-color: #0f0f0f;
+  --text-primary: #f1f1f1;
+  --text-secondary: #aaaaaa;
+  --hover-bg: #272727;
+  --accent-color: #ff0000;
+  --accent-glow: rgba(255, 0, 0, 0.35);
+  --switch-off: #3f3f3f;
+  --switch-knob: #ffffff;
+  --font-family: "Roboto", "Segoe UI", sans-serif;
+  --cubic-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-.logo {
+html,
+body {
+  height: auto;
+  min-height: 0;
+}
+
+body {
+  width: 340px;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  overflow-x: hidden;
+  border-radius: 12px;
+  border: 1px solid #1f1f1f;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes logoPulse {
+  0% {
+    filter: drop-shadow(0 0 0 rgba(255, 0, 0, 0));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 8px var(--accent-glow));
+    transform: scale(1.05);
+  }
+  100% {
+    filter: drop-shadow(0 0 0 rgba(255, 0, 0, 0));
+    transform: scale(1);
+  }
+}
+
+.header {
+  padding: 24px 24px 20px;
+  background: radial-gradient(
+    circle at top left,
+    #1a1a1a 0%,
+    var(--bg-color) 100%
+  );
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  position: relative;
+
+  /* Add a subtle top highlight */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.05)
+    );
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: fit-content;
+
+    &:hover .logo-icon {
+      animation: logoPulse 2s infinite ease-in-out;
+    }
+
+    &:hover .title {
+      background-position: 0% 50%;
+    }
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s var(--cubic-bounce);
+  }
+
+  .title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 40%, #a0a0a0 100%);
+    background-size: 200% auto;
+    background-position: 100% 50%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: background-position 0.5s ease;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.settings-list {
+  padding: 10px 0;
+}
+
+.setting-item {
+  animation: fadeInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+
+  &[hidden] {
+    display: none !important;
+  }
+
+  /* Staggered animation */
+  @for $i from 1 through 8 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.06}s;
+    }
+  }
+}
+
+.setting-row {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  user-select: none;
+  gap: 16px;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 3px;
+    background-color: var(--accent-color);
+    opacity: 0;
+    border-radius: 0 4px 4px 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover {
+    background-color: var(--hover-bg);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .setting-label {
+      color: #fff;
+    }
+  }
+
+  &:focus-visible {
+    background-color: var(--hover-bg);
+  }
+
+  &:active {
+    background-color: #2a2a2a;
+  }
 }
 
-.selector {
+.setting-info {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    transition: background-color 0.3s ease;
-    cursor: pointer;
+.setting-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.setting-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.setting-control {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+
+  input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+
+    &:checked + .toggle-switch {
+      background-color: var(--accent-color);
+      box-shadow: 0 0 12px var(--accent-glow);
+
+      &::after {
+        transform: translateX(20px);
+        background-color: #fff;
+      }
+
+      /* Subtle pulse when active */
+      &:active::after {
+        width: 22px;
+        transform: translateX(16px);
+      }
+    }
+
+    &:focus-visible + .toggle-switch {
+      outline: 2px solid var(--text-primary);
+      outline-offset: 2px;
+    }
   }
 }
 
-.title {
-  margin-left: 10px;
-  font-size: 1.7em;
-}
+.toggle-switch {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--switch-off);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 20px;
 
-.label {
-  margin-left: 5px;
-  font-size: 1.3em;
+  &::after {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--switch-knob);
+    transition: transform 0.4s var(--cubic-bounce), width 0.2s ease;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
 
-  &:hover {
-    cursor: pointer;
+  /* Springy stretch interaction */
+  &:active::after {
+    width: 24px;
+    border-radius: 12px;
   }
 }
 
-.sub-label {
-  display: block;
-  margin-left: 20px;
-  margin-bottom: 20px;
-  font-size: 0.9em;
-  color: #a9a9a9;
+.footer {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-input[type='checkbox'] {
-  accent-color: #4caf50;
-
-  &:hover {
-    cursor: pointer;
-  }
-}
-
-:root:not([refresh]) .refresh,
-:root:not([pip]) #pipDiv {
+.refresh-notice {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 -20px 16px;
+  padding: 0 20px 16px;
+  background: transparent;
+  border: none;
+  text-align: center;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   display: none;
+  animation: fadeIn 0.6s var(--cubic-bounce);
+
+  &::before {
+    content: "↻";
+    display: block;
+    font-size: 16px;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+}
+
+/* Visibility Logic mirroring old CSS */
+:root[refresh] .refresh-notice {
+  display: block;
+}
+
+:root:not([pip]) #pipDiv {
+  display: none !important;
+}
+
+.footer-about {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  #version {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.footer-links {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-link {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--text-secondary);
+  }
 }

@@ -60,5 +60,14 @@
   "settingsCommentsDesc": {
     "message": "Sposta la sezione dei commenti dove normalmente si trova la sezione correlata, permettendo una lettura più facile dei commenti mentre si guarda un video.",
     "description": "Descrizione dei commenti sul lato destro"
+  },
+
+  "footerFeedback": {
+    "message": "Feedback",
+    "description": "Etichetta per il pulsante di feedback nel piè di pagina"
+  },
+  "footerRate": {
+    "message": "Valuta",
+    "description": "Etichetta per il pulsante di valutazione nel piè di pagina"
   }
 }

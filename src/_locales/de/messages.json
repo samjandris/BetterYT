@@ -60,5 +60,14 @@
   "settingsCommentsDesc": {
     "message": "Verschiebt den Kommentarbereich dorthin, wo normalerweise der Verwandte-Bereich ist, um das Lesen von Kommentaren beim Anschauen eines Videos zu erleichtern.",
     "description": "Beschreibung der Kommentare auf der rechten Seite"
+  },
+
+  "footerFeedback": {
+    "message": "Feedback",
+    "description": "Beschriftung für die Feedback-Schaltfläche in der Fußzeile"
+  },
+  "footerRate": {
+    "message": "Bewerten",
+    "description": "Beschriftung für die Bewertungs-Schaltfläche in der Fußzeile"
   }
 }
