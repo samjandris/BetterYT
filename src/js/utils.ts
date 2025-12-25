@@ -22,7 +22,7 @@ const SELECTORS = {
         'ytd-watch-flexy h1.title.ytd-video-primary-info-renderer > yt-formatted-string',
       CHANNEL:
         'ytd-watch-flexy #channel-name.ytd-video-owner-renderer > #container > #text-container > #text > a',
-      DISLIKE: 'yt-formatted-string.ytd-toggle-button-renderer',
+      DISLIKE_BUTTON: 'segmented-like-dislike-button-view-model dislike-button-view-model button',
       CONTAINER: '#player-container.ytd-watch-flexy',
       DEFAULT_CONTAINER: '#player-container-inner',
       THEATER_CONTAINER: '#player-wide-container, #player-full-bleed-container',
@@ -143,8 +143,8 @@ const SELECTORS = {
       document.querySelector(SELECTORS.RAW.PLAYER.TITLE),
     CHANNEL: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.PLAYER.CHANNEL),
-    DISLIKE: (): HTMLElement | null =>
-      document.querySelectorAll(SELECTORS.RAW.PLAYER.DISLIKE)[1] as HTMLElement,
+    DISLIKE_BUTTON: (): HTMLElement | null =>
+      document.querySelector(SELECTORS.RAW.PLAYER.DISLIKE_BUTTON),
     CONTAINER: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.PLAYER.CONTAINER),
     DEFAULT_CONTAINER: (): HTMLElement | null =>
