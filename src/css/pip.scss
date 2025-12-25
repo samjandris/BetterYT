@@ -1,5 +1,11 @@
 body[betteryt-pip] {
   .ytp-pip-button {
-    display: unset !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      transform: scale(1.45);
+    }
   }
 }
