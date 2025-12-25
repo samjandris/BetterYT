@@ -74,13 +74,6 @@ const SELECTORS = {
       TITLE: '.ytdMiniplayerInfoBarTitle',
       CHANNEL: '.ytdMiniplayerInfoBarSubtitle',
       RESIZERS: '.ytdMiniplayerComponentResizers',
-      // TODO: Modern container is deprecated now (could be removed)
-      MODERN: {
-        CONTAINER: '#modern-player-container.ytd-miniplayer',
-        INFO_BAR: '#modern-info-bar',
-        TITLE: '#modern-info-bar .miniplayer-title',
-        CHANNEL: '#modern-owner-name.ytd-miniplayer',
-      },
     },
     RELATED: '#related',
     COMMENTS: '#comments',
@@ -220,16 +213,6 @@ const SELECTORS = {
       document.querySelector(SELECTORS.RAW.MINI_PLAYER.CHANNEL),
     RESIZERS: (): HTMLElement | null =>
       document.querySelector(SELECTORS.RAW.MINI_PLAYER.RESIZERS),
-    MODERN: {
-      CONTAINER: (): HTMLElement | null =>
-        document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER),
-      INFO_BAR: (): HTMLElement | null =>
-        document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.INFO_BAR),
-      TITLE: (): HTMLElement | null =>
-        document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.TITLE),
-      CHANNEL: (): HTMLElement | null =>
-        document.querySelector(SELECTORS.RAW.MINI_PLAYER.MODERN.CHANNEL),
-    },
   },
   RELATED: (): HTMLElement | null =>
     document.querySelector(SELECTORS.RAW.RELATED),

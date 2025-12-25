@@ -9,7 +9,6 @@
  * - Activates when scrolling past the player bounds
  * - Moves the actual video element (not a copy) between containers
  * - Handles SponsorBlock integration by moving its overlay too
- * - Supports both legacy and "modern" YouTube player layouts
  */
 
 import { SELECTORS, Helper } from "../utils";
@@ -75,28 +74,13 @@ function isWatchPage(): boolean {
   return Helper.getUrl().pathname.startsWith("/watch");
 }
 
-/**
- * YouTube has two mini player layouts - legacy and "modern" (has 'modern' attribute).
- * Returns the correct elements for whichever layout is active.
- */
 function getMiniPlayerElements() {
-  const root = SELECTORS.MINI_PLAYER.ROOT();
-  const isModern = root?.hasAttribute("modern");
-
   return {
-    root,
-    container: isModern
-      ? SELECTORS.MINI_PLAYER.MODERN.CONTAINER()
-      : SELECTORS.MINI_PLAYER.CONTAINER(),
-    title: isModern
-      ? SELECTORS.MINI_PLAYER.MODERN.TITLE()
-      : SELECTORS.MINI_PLAYER.TITLE(),
-    channel: isModern
-      ? SELECTORS.MINI_PLAYER.MODERN.CHANNEL()
-      : SELECTORS.MINI_PLAYER.CHANNEL(),
-    infoBar: isModern
-      ? SELECTORS.MINI_PLAYER.MODERN.INFO_BAR()
-      : SELECTORS.MINI_PLAYER.INFO_BAR(),
+    root: SELECTORS.MINI_PLAYER.ROOT(),
+    container: SELECTORS.MINI_PLAYER.CONTAINER(),
+    title: SELECTORS.MINI_PLAYER.TITLE(),
+    channel: SELECTORS.MINI_PLAYER.CHANNEL(),
+    infoBar: SELECTORS.MINI_PLAYER.INFO_BAR(),
   };
 }
 
@@ -520,7 +504,6 @@ function onPageChange() {
     Helper.onElementsLoad([
       SELECTORS.RAW.PLAYER.VIDEO,
       SELECTORS.RAW.MINI_PLAYER.CONTAINER,
-      SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER,
       SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
     ]).then(() => {
       updatePlayerState();

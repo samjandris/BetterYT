@@ -1,4 +1,13 @@
+// =============================================================================
+// Mini Player Styles
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// YouTube Element Overrides (when mini player is active)
+// -----------------------------------------------------------------------------
+
 body[betteryt-mini] {
+  // Video element sizing
   .html5-main-video {
     top: 0px !important;
     left: 0px !important;
@@ -8,6 +17,7 @@ body[betteryt-mini] {
     background: black;
   }
 
+  // Player controls positioning
   .ytp-chrome-controls {
     position: absolute;
     left: 8px;
@@ -20,11 +30,36 @@ body[betteryt-mini] {
     margin-bottom: 5px;
   }
 
-  // Hide resizeres as we don't want users to resize the miniplayer
+  // Mini player container sizing
+  ytd-miniplayer {
+    display: unset !important;
+    width: var(--ytd-miniplayer-width, 400px) !important;
+    height: calc(
+      var(--ytd-miniplayer-height, 225px) +
+        var(--ytd-miniplayer-info-bar-height, 76px)
+    ) !important;
+  }
+
+  .ytp-miniplayer-button {
+    display: unset !important;
+  }
+
+  // Info bar (title and channel) - click to scroll back to video
+  .ytdMiniplayerInfoBarHost {
+    align-items: center;
+    cursor: pointer;
+
+    *:not(.metadata) {
+      pointer-events: none;
+    }
+  }
+
+  // Disable resizing (we control the size)
   .ytdMiniplayerComponentResizers {
     display: none !important;
   }
 
+  // Hide unnecessary YouTube UI elements
   .ytp-left-controls
     > *:not(.ytp-play-button, .ytp-volume-area, .ytp-time-display),
   .ytp-right-controls,
@@ -41,57 +76,10 @@ body[betteryt-mini] {
     display: none !important;
   }
 
-  ytd-miniplayer {
-    display: unset !important;
-    width: var(--ytd-miniplayer-width, 400px) !important;
-    height: calc(
-      var(--ytd-miniplayer-height, 225px) +
-        var(--ytd-miniplayer-info-bar-height, 76px)
-    ) !important;
-  }
+  // ---------------------------------------------------------------------------
+  // BetterYT Custom Progress Bar
+  // ---------------------------------------------------------------------------
 
-  .ytp-miniplayer-button {
-    display: unset !important;
-  }
-
-  // This is the info bar that shows the title and channel
-  .ytdMiniplayerInfoBarHost {
-    align-items: center;
-    cursor: pointer;
-
-    *:not(.metadata) {
-      pointer-events: none;
-    }
-  }
-}
-
-body:not([betteryt-mini]) {
-  .betteryt.ytp-progress-bar-container,
-  .betteryt.ytp-gradient-bottom {
-    display: none;
-  }
-}
-
-body[betteryt-live] {
-  .betteryt.ytp-progress-bar-container {
-    display: none;
-  }
-}
-
-// This is needed to fix youtube update hiding title when first showing miniplayer and actually activating miniplayer
-.ytd-miniplayer.title,
-yt-formatted-string.miniplayer-title,
-yt-formatted-string #owner-name {
-  display: unset !important;
-}
-
-// TODO: Animations temporarily disabled, need to fix weird behavior when dragging mini player
-// Animate miniplayer opening/closing
-// ytd-miniplayer {
-//   transition: all 0.25s cubic-bezier(0, 0, 0.2, 1) !important;
-// }
-
-body[betteryt-mini] {
   .betteryt.ytp-progress-bar-container {
     position: absolute;
     left: 0;
@@ -101,6 +89,27 @@ body[betteryt-mini] {
     z-index: 59;
     cursor: pointer;
     pointer-events: auto !important;
+
+    &:hover {
+      height: 5px;
+
+      .betteryt.ytp-scrubber-button {
+        width: 8px;
+        height: 8px;
+      }
+
+      .betteryt.ytp-scrubber-container {
+        margin-left: -4px;
+        margin-top: -4px;
+      }
+    }
+
+    // SponsorBlock integration - pin previewbar to prevent jumping
+    #previewbar {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
   }
 
   .betteryt.ytp-progress-bar {
@@ -174,18 +183,36 @@ body[betteryt-mini] {
   .betteryt.ytp-gradient-bottom {
     display: none;
   }
+}
 
-  .betteryt.ytp-progress-bar-container:hover {
-    height: 5px;
+// -----------------------------------------------------------------------------
+// State: Mini Player Inactive
+// -----------------------------------------------------------------------------
 
-    .betteryt.ytp-scrubber-button {
-      width: 8px;
-      height: 8px;
-    }
-
-    .betteryt.ytp-scrubber-container {
-      margin-left: -4px;
-      margin-top: -4px;
-    }
+body:not([betteryt-mini]) {
+  .betteryt.ytp-progress-bar-container,
+  .betteryt.ytp-gradient-bottom {
+    display: none;
   }
+}
+
+// -----------------------------------------------------------------------------
+// State: Live Stream (hide progress bar)
+// -----------------------------------------------------------------------------
+
+body[betteryt-live] {
+  .betteryt.ytp-progress-bar-container {
+    display: none;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// YouTube Bug Fixes
+// -----------------------------------------------------------------------------
+
+// Fix: YouTube hides title when first activating miniplayer
+.ytd-miniplayer.title,
+yt-formatted-string.miniplayer-title,
+yt-formatted-string #owner-name {
+  display: unset !important;
 }
