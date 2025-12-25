@@ -9,7 +9,9 @@ body[betteryt-mini] {
   }
 
   .ytp-chrome-controls {
-    width: calc(var(--ytd-miniplayer-width, 400px) - 2px);
+    position: absolute;
+    left: 8px;
+    bottom: -5px;
   }
 
   .ytp-chrome-bottom {
@@ -25,7 +27,7 @@ body[betteryt-mini] {
 
   .ytp-left-controls
     > *:not(.ytp-play-button, .ytp-volume-area, .ytp-time-display),
-  .ytp-right-controls > *:not(.ytp-miniplayer-button),
+  .ytp-right-controls,
   #movie_player
     > *:not(
       .html5-video-container,
