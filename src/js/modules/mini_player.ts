@@ -14,32 +14,23 @@
 
 import { SELECTORS, Helper } from "../utils";
 
-function isWatchPage(): boolean {
-  return Helper.getUrl().pathname.startsWith("/watch");
-}
+// =============================================================================
+// Constants
+// =============================================================================
 
-// YouTube has two mini player layouts - legacy and "modern" (has 'modern' attribute).
-// This helper returns the correct elements for whichever layout is active.
-function getMiniPlayerElements() {
-  const root = SELECTORS.MINI_PLAYER.ROOT();
-  const isModern = root?.hasAttribute("modern");
+const DEFAULT_MINIPLAYER_WIDTH = 400;
+const CHAPTER_MARGIN_PX = 2;
+const CHAPTER_LOAD_DELAY_MS = 100;
 
-  return {
-    root,
-    container: isModern
-      ? SELECTORS.MINI_PLAYER.MODERN.CONTAINER()
-      : SELECTORS.MINI_PLAYER.CONTAINER(),
-    title: isModern
-      ? SELECTORS.MINI_PLAYER.MODERN.TITLE()
-      : SELECTORS.MINI_PLAYER.TITLE(),
-    channel: isModern
-      ? SELECTORS.MINI_PLAYER.MODERN.CHANNEL()
-      : SELECTORS.MINI_PLAYER.CHANNEL(),
-    infoBar: isModern
-      ? SELECTORS.MINI_PLAYER.MODERN.INFO_BAR()
-      : SELECTORS.MINI_PLAYER.INFO_BAR(),
-  };
-}
+// =============================================================================
+// State
+// =============================================================================
+
+let currentVideoElement: HTMLVideoElement | null = null;
+
+// =============================================================================
+// DOM Utilities
+// =============================================================================
 
 function ensureAttr(el: HTMLElement | null, attr: string): void {
   if (el && !el.hasAttribute(attr)) el.setAttribute(attr, "");
@@ -76,17 +67,50 @@ function syncText(
   }
 }
 
-function calculateSeekTime(
-  clientX: number,
-  container: HTMLElement,
-  video: HTMLVideoElement
-): number {
-  const x = clientX - container.getBoundingClientRect().x;
-  return (x / container.offsetWidth) * video.duration;
+// =============================================================================
+// Mini Player Layout Detection
+// =============================================================================
+
+function isWatchPage(): boolean {
+  return Helper.getUrl().pathname.startsWith("/watch");
 }
 
-// Activates mini player mode: moves video element to floating container,
-// syncs metadata, and configures YouTube's internal player state
+/**
+ * YouTube has two mini player layouts - legacy and "modern" (has 'modern' attribute).
+ * Returns the correct elements for whichever layout is active.
+ */
+function getMiniPlayerElements() {
+  const root = SELECTORS.MINI_PLAYER.ROOT();
+  const isModern = root?.hasAttribute("modern");
+
+  return {
+    root,
+    container: isModern
+      ? SELECTORS.MINI_PLAYER.MODERN.CONTAINER()
+      : SELECTORS.MINI_PLAYER.CONTAINER(),
+    title: isModern
+      ? SELECTORS.MINI_PLAYER.MODERN.TITLE()
+      : SELECTORS.MINI_PLAYER.TITLE(),
+    channel: isModern
+      ? SELECTORS.MINI_PLAYER.MODERN.CHANNEL()
+      : SELECTORS.MINI_PLAYER.CHANNEL(),
+    infoBar: isModern
+      ? SELECTORS.MINI_PLAYER.MODERN.INFO_BAR()
+      : SELECTORS.MINI_PLAYER.INFO_BAR(),
+  };
+}
+
+function getMiniPlayerWidth(): number {
+  const cssValue = getComputedStyle(document.documentElement).getPropertyValue(
+    "--ytd-miniplayer-width"
+  );
+  return parseInt(cssValue) || DEFAULT_MINIPLAYER_WIDTH;
+}
+
+// =============================================================================
+// Player State Management
+// =============================================================================
+
 function showMiniPlayer() {
   ensureAttr(document.body, "betteryt-mini");
   if (Helper.isLive()) ensureAttr(document.body, "betteryt-live");
@@ -95,7 +119,6 @@ function showMiniPlayer() {
   const playerTitle = SELECTORS.PLAYER.TITLE();
   const playerChannel = SELECTORS.PLAYER.CHANNEL();
   const moviePlayer = SELECTORS.PLAYER.MOVIE_PLAYER();
-
   const mini = getMiniPlayerElements();
 
   reparent(player, mini.container, true);
@@ -105,26 +128,22 @@ function showMiniPlayer() {
   if (mini.root) {
     ensureAttr(mini.root, "enabled");
     ensureAttr(mini.root, "active");
-    // Prevent YouTube's native playlist UI from appearing in mini player
     removeAttr(mini.root, "has-playlist-data");
     removeAttr(mini.root, "expanded");
   }
 
   if (moviePlayer) {
-    // These classes tell YouTube's player to use compact controls
     ensureClass(moviePlayer, "ytp-player-minimized");
     ensureClass(moviePlayer, "ytp-small-mode");
     removeClass(moviePlayer, "ytp-big-mode");
   }
 
-  // Move SponsorBlock's segment overlay to our mini player progress bar
   reparent(
     SELECTORS.SPONSOR_BLOCK.CONTAINER(),
     SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
   );
 }
 
-// Restores video to main player container and resets YouTube player state
 function showFullPlayer() {
   const mini = getMiniPlayerElements();
   const player = SELECTORS.PLAYER.PLAYER();
@@ -151,16 +170,13 @@ function showFullPlayer() {
     removeClass(moviePlayer, "ytp-player-minimized");
     removeClass(moviePlayer, "ytp-small-mode");
 
-    // Restore big mode only if player was in fullscreen
     if (moviePlayer.classList.contains("ytp-fullscreen")) {
       ensureClass(moviePlayer, "ytp-big-mode");
     }
   }
 }
 
-// Main scroll handler: determines whether to show mini or full player
-// based on scroll position relative to the player bounds
-function doPlayer() {
+function updatePlayerState() {
   const playerBounds = SELECTORS.PLAYER.BOUNDS();
   const pageApp = SELECTORS.PAGE.APP();
 
@@ -173,7 +189,19 @@ function doPlayer() {
   scrolledPastPlayer ? showMiniPlayer() : showFullPlayer();
 }
 
-// Updates the progress bar position and chapter fill based on current video time
+// =============================================================================
+// Progress Bar
+// =============================================================================
+
+function calculateSeekTime(
+  clientX: number,
+  container: HTMLElement,
+  video: HTMLVideoElement
+): number {
+  const x = clientX - container.getBoundingClientRect().x;
+  return (x / container.offsetWidth) * video.duration;
+}
+
 function updateProgressBar() {
   const video = SELECTORS.PLAYER.VIDEO();
   const progressBar =
@@ -196,10 +224,7 @@ function updateProgressBar() {
   scrubberContainer.style.transform = `translateX(${scrubberX}px)`;
 
   const chapters = Array.from(chaptersContainer.children) as HTMLElement[];
-
-  if (chapters.length === 0) {
-    return;
-  }
+  if (chapters.length === 0) return;
 
   let accumulatedWidth = 0;
   for (const chapter of chapters) {
@@ -235,11 +260,116 @@ function handleProgressBarSeek(clientX: number) {
   }
 }
 
-// Creates the custom progress bar and gradient overlay for the mini player
-function createMiniPlayer() {
-  const moviePlayer = SELECTORS.PLAYER.MOVIE_PLAYER();
-  if (!moviePlayer) return;
+// =============================================================================
+// Chapters
+// =============================================================================
 
+function createChapterElement(width: string, hasMargin: boolean): HTMLElement {
+  const chapter = document.createElement("div");
+  chapter.className = "betteryt ytp-chapter-hover-container";
+  chapter.style.width = width;
+  if (hasMargin) chapter.style.marginRight = `${CHAPTER_MARGIN_PX}px`;
+
+  const padding = document.createElement("div");
+  padding.className = "betteryt ytp-progress-bar-padding";
+
+  const progressList = document.createElement("div");
+  progressList.className = "betteryt ytp-progress-list";
+
+  const playProgress = document.createElement("div");
+  playProgress.className =
+    "betteryt ytp-play-progress ytp-swatch-background-color";
+  playProgress.style.transform = "scaleX(0)";
+
+  progressList.appendChild(playProgress);
+  chapter.appendChild(padding);
+  chapter.appendChild(progressList);
+
+  return chapter;
+}
+
+function createSingleChapter(container: HTMLElement): void {
+  const singleChapter = createChapterElement("100%", false);
+  container.appendChild(singleChapter);
+}
+
+function createChapters() {
+  const miniChaptersContainer =
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
+  const playerChaptersContainer =
+    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
+  const progressBar =
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER();
+
+  if (!miniChaptersContainer || !progressBar) return;
+
+  miniChaptersContainer.innerHTML = "";
+
+  const miniWidth = getMiniPlayerWidth();
+
+  if (!playerChaptersContainer) {
+    createSingleChapter(miniChaptersContainer);
+    return;
+  }
+
+  const playerChapters = Array.from(
+    playerChaptersContainer.children
+  ) as HTMLElement[];
+
+  // Videos without chapters have a single child with no inline width style
+  const hasValidChapters =
+    playerChapters.length > 1 ||
+    (playerChapters.length === 1 &&
+      playerChapters[0].style.width &&
+      parseFloat(playerChapters[0].style.width) > 0);
+
+  if (!hasValidChapters) {
+    createSingleChapter(miniChaptersContainer);
+    return;
+  }
+
+  // Calculate total source width from inline styles (more reliable than offsetWidth during navigation)
+  let totalSourceWidth = 0;
+  for (const chapter of playerChapters) {
+    totalSourceWidth += parseFloat(chapter.style.width) || 0;
+  }
+
+  if (totalSourceWidth === 0) {
+    createSingleChapter(miniChaptersContainer);
+    return;
+  }
+
+  const hasMultipleChapters = playerChapters.length > 1;
+  const marginCount = hasMultipleChapters ? playerChapters.length - 1 : 0;
+  const availableMiniWidth = miniWidth - marginCount * CHAPTER_MARGIN_PX;
+
+  let usedWidth = 0;
+  for (let i = 0; i < playerChapters.length; i++) {
+    const sourceChapter = playerChapters[i];
+    const sourceWidth = parseFloat(sourceChapter.style.width) || 0;
+    const isLastChapter = i === playerChapters.length - 1;
+    const hasMargin = hasMultipleChapters && !isLastChapter;
+
+    let scaledWidth: number;
+    if (isLastChapter) {
+      scaledWidth = availableMiniWidth - usedWidth;
+    } else {
+      scaledWidth = Math.round(
+        (sourceWidth / totalSourceWidth) * availableMiniWidth
+      );
+      usedWidth += scaledWidth;
+    }
+
+    const chapter = createChapterElement(`${scaledWidth}px`, hasMargin);
+    miniChaptersContainer.appendChild(chapter);
+  }
+}
+
+// =============================================================================
+// Mini Player Creation
+// =============================================================================
+
+function createProgressBar(moviePlayer: HTMLElement): void {
   const progressBarContainer = document.createElement("div");
   progressBarContainer.className = "betteryt ytp-progress-bar-container";
   progressBarContainer.setAttribute("data-layer", "4");
@@ -289,12 +419,13 @@ function createMiniPlayer() {
 
   moviePlayer.appendChild(progressBarContainer);
   moviePlayer.appendChild(gradientBottom);
+}
 
+function setupInfoBarClickHandler(): void {
   const mini = getMiniPlayerElements();
   const pageApp = SELECTORS.PAGE.APP();
 
   if (mini.infoBar && pageApp) {
-    // Clicking the info bar (title/channel area) scrolls back to main player
     mini.infoBar.addEventListener("click", () => {
       if (isWatchPage()) {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -304,161 +435,87 @@ function createMiniPlayer() {
   }
 }
 
-function createChapters() {
-  const miniChaptersContainer =
-    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
-  const playerChaptersContainer =
-    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
-  const progressBar =
-    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER();
-  const playerControlsContainer = SELECTORS.PLAYER.CONTROLS.CONTAINER();
-
-  if (!miniChaptersContainer || !progressBar) return;
-
-  miniChaptersContainer.innerHTML = "";
-
-  const miniWidth = parseInt(
-    getComputedStyle(document.documentElement).getPropertyValue(
-      "--ytd-miniplayer-width"
-    ) || "400"
-  );
-
-  // If no player chapters container exists, create single full-width bar
-  if (!playerChaptersContainer || !playerControlsContainer) {
-    const singleChapter = createChapterElement("100%", false);
-    miniChaptersContainer.appendChild(singleChapter);
-    return;
-  }
-
-  const playerChapters = Array.from(
-    playerChaptersContainer.children
-  ) as HTMLElement[];
-
-  // Check if video has actual chapters (multiple segments with explicit widths)
-  // Videos without chapters have a single child with no inline width style
-  const hasValidChapters =
-    playerChapters.length > 1 ||
-    (playerChapters.length === 1 &&
-      playerChapters[0].style.width &&
-      parseFloat(playerChapters[0].style.width) > 0);
-
-  if (!hasValidChapters) {
-    const singleChapter = createChapterElement("100%", false);
-    miniChaptersContainer.appendChild(singleChapter);
-    return;
-  }
-
-  // Calculate total source width from inline styles (more reliable than offsetWidth during navigation)
-  let totalSourceWidth = 0;
-  for (const chapter of playerChapters) {
-    totalSourceWidth += parseFloat(chapter.style.width) || 0;
-  }
-
-  if (totalSourceWidth === 0) {
-    const singleChapter = createChapterElement("100%", false);
-    miniChaptersContainer.appendChild(singleChapter);
-    return;
-  }
-
-  const hasMultipleChapters = playerChapters.length > 1;
-  const marginCount = hasMultipleChapters ? playerChapters.length - 1 : 0;
-  const availableMiniWidth = miniWidth - marginCount * 2;
-
-  for (let i = 0; i < playerChapters.length; i++) {
-    const sourceChapter = playerChapters[i];
-    const sourceWidth = parseFloat(sourceChapter.style.width) || 0;
-    const scaledWidth = Math.round(
-      (sourceWidth / totalSourceWidth) * availableMiniWidth
-    );
-    const hasMargin = hasMultipleChapters && i < playerChapters.length - 1;
-
-    const chapter = createChapterElement(`${scaledWidth}px`, hasMargin);
-    miniChaptersContainer.appendChild(chapter);
-  }
-
-  adjustChapterWidths(miniChaptersContainer, miniWidth);
-}
-
-function createChapterElement(width: string, hasMargin: boolean): HTMLElement {
-  const chapter = document.createElement("div");
-  chapter.className = "betteryt ytp-chapter-hover-container";
-  chapter.style.width = width;
-  if (hasMargin) chapter.style.marginRight = "2px";
-
-  const padding = document.createElement("div");
-  padding.className = "betteryt ytp-progress-bar-padding";
-
-  const progressList = document.createElement("div");
-  progressList.className = "betteryt ytp-progress-list";
-
-  const playProgress = document.createElement("div");
-  playProgress.className =
-    "betteryt ytp-play-progress ytp-swatch-background-color";
-  playProgress.style.transform = "scaleX(0)";
-
-  progressList.appendChild(playProgress);
-  chapter.appendChild(padding);
-  chapter.appendChild(progressList);
-
-  return chapter;
-}
-
-function adjustChapterWidths(
-  container: HTMLElement,
-  targetWidth: number
-): void {
-  const chapters = Array.from(container.children) as HTMLElement[];
-  let totalWidth = 0;
-
-  for (const chapter of chapters) {
-    totalWidth += parseFloat(chapter.style.width) || 0;
-    if (chapter.style.marginRight) {
-      totalWidth += parseFloat(chapter.style.marginRight) || 0;
-    }
-  }
-
-  let maxIterations = 1000;
-  while (totalWidth > targetWidth && maxIterations > 0) {
-    maxIterations--;
-    let madeProgress = false;
-
-    for (const chapter of chapters) {
-      const currentWidth = parseFloat(chapter.style.width) || 0;
-      if (currentWidth > 1 && totalWidth > targetWidth) {
-        chapter.style.width = `${currentWidth - 1}px`;
-        totalWidth -= 1;
-        madeProgress = true;
-      }
-    }
-
-    if (!madeProgress) break;
-  }
-}
-
-function onWatchPageScroll() {
-  if (isWatchPage()) doPlayer();
-}
-
-function onWatchPageResize() {
+function createMiniPlayer() {
   const moviePlayer = SELECTORS.PLAYER.MOVIE_PLAYER();
-  // Don't trigger in fullscreen - the player fills the screen regardless
+  if (!moviePlayer) return;
+
+  createProgressBar(moviePlayer);
+  setupInfoBarClickHandler();
+}
+
+// =============================================================================
+// Video Event Listeners
+// =============================================================================
+
+function setupVideoListeners() {
+  const video = SELECTORS.PLAYER.VIDEO();
+  if (!video) return;
+
+  if (video === currentVideoElement) return;
+
+  currentVideoElement = video;
+
+  video.addEventListener("timeupdate", () => {
+    const currentVideo = SELECTORS.PLAYER.VIDEO();
+    const scrubberContainer =
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER();
+    const slider =
+      SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER();
+
+    if (currentVideo && scrubberContainer && slider) {
+      slider.setAttribute("aria-valuemin", "0");
+      slider.setAttribute("aria-valuemax", currentVideo.duration.toString());
+      slider.setAttribute("aria-valuenow", currentVideo.currentTime.toString());
+      updateProgressBar();
+    }
+  });
+
+  video.addEventListener("loadedmetadata", () => {
+    resetProgressBar();
+    if (isWatchPage()) {
+      setTimeout(createChapters, CHAPTER_LOAD_DELAY_MS);
+    }
+  });
+}
+
+function resetProgressBar() {
+  const scrubberContainer =
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER();
+  if (scrubberContainer) {
+    scrubberContainer.style.transform = "translateX(0px)";
+  }
+
+  const chaptersContainer =
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER();
+  if (chaptersContainer) {
+    const progressFills =
+      chaptersContainer.querySelectorAll(".ytp-play-progress");
+    progressFills.forEach((fill) => {
+      (fill as HTMLElement).style.transform = "scaleX(0)";
+    });
+  }
+}
+
+// =============================================================================
+// Event Handlers
+// =============================================================================
+
+function onScroll() {
+  if (isWatchPage()) updatePlayerState();
+}
+
+function onResize() {
+  const moviePlayer = SELECTORS.PLAYER.MOVIE_PLAYER();
   if (
     isWatchPage() &&
     moviePlayer?.ariaLabel &&
     !moviePlayer.ariaLabel.includes("Fullscreen")
   ) {
-    doPlayer();
+    updatePlayerState();
   }
 }
 
-window.addEventListener("scroll", onWatchPageScroll);
-
-const pageApp = SELECTORS.PAGE.APP();
-pageApp?.addEventListener("scroll", onWatchPageScroll);
-window.addEventListener("resize", onWatchPageResize);
-
-// Needed to solve bug where video doesn't maximize fully when expanding from mini player
-window.addEventListener("onPageChange", () => {
+function onPageChange() {
   if (isWatchPage()) {
     Helper.onElementsLoad([
       SELECTORS.RAW.PLAYER.VIDEO,
@@ -466,88 +523,99 @@ window.addEventListener("onPageChange", () => {
       SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER,
       SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
     ]).then(() => {
-      doPlayer();
+      updatePlayerState();
       createChapters();
+      setupVideoListeners();
     });
   } else {
-    removeAttr(document.body, "betteryt-mini");
-    removeAttr(document.body, "betteryt-live");
+    showFullPlayer();
+    resetProgressBar();
+    currentVideoElement = null;
   }
-});
+}
 
-// Fixes problem where exiting fullscreen when in mini player doesn't auto expand
-window.addEventListener("onViewModeChange", () => {
-  if (isWatchPage()) doPlayer();
-});
+function onViewModeChange() {
+  if (isWatchPage()) updatePlayerState();
+}
 
-// Initial setup after required elements are available
-Helper.onElementsLoad([
-  SELECTORS.RAW.PLAYER.VIDEO,
-  SELECTORS.RAW.MINI_PLAYER.CONTAINER,
-  // TODO: Modern player seems to be renamed to normal container now, could most likely remove
-  // SELECTORS.RAW.MINI_PLAYER.MODERN.CONTAINER,
-  SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
-]).then(() => {
-  createMiniPlayer();
-  createChapters();
+// =============================================================================
+// Mutation Observers
+// =============================================================================
 
-  const video = SELECTORS.PLAYER.VIDEO();
-  if (video) {
-    video.addEventListener("timeupdate", () => {
-      const scrubberContainer =
-        SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER();
-      const slider =
-        SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER();
-
-      if (scrubberContainer && slider) {
-        slider.setAttribute("aria-valuemin", "0");
-        slider.setAttribute("aria-valuemax", video.duration.toString());
-        slider.setAttribute("aria-valuenow", video.currentTime.toString());
-        updateProgressBar();
-      }
-    });
-
-    video.addEventListener("loadedmetadata", () => {
-      if (isWatchPage()) {
-        setTimeout(createChapters, 100);
-      }
-    });
-  }
-
+function setupChaptersObserver(): void {
   Helper.onChildElementChange(
     SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
     () => {
       if (isWatchPage()) {
-        doPlayer();
+        updatePlayerState();
         createChapters();
       }
     }
   );
+}
 
-  // On first load, title/channel elements add extra string nodes that need cleanup
+function setupTitleCleanupObserver(): void {
   Helper.onChildElementChange(SELECTORS.RAW.MINI_PLAYER.TITLE, () => {
     const titleEl = SELECTORS.MINI_PLAYER.TITLE();
     if (titleEl && titleEl.childNodes.length >= 2 && titleEl.lastChild) {
       titleEl.textContent = titleEl.lastChild.textContent;
     }
   });
+}
 
+function setupChannelCleanupObserver(): void {
   Helper.onChildElementChange(SELECTORS.RAW.MINI_PLAYER.CHANNEL, () => {
     const channelEl = SELECTORS.MINI_PLAYER.CHANNEL();
     if (channelEl && channelEl.childNodes.length >= 2 && channelEl.lastChild) {
       channelEl.textContent = channelEl.lastChild.textContent;
     }
   });
+}
 
+function setupPlaylistAttributeObserver(): void {
   Helper.onAttributeChange(
     SELECTORS.RAW.MINI_PLAYER.ROOT,
     () => {
-      if (isWatchPage()) doPlayer();
+      if (isWatchPage()) updatePlayerState();
     },
-    // These attributes trigger when YouTube tries to show playlist in mini player
     {
       attributes: true,
       attributeFilter: ["has-playlist-data", "expanded"],
     }
   );
-});
+}
+
+// =============================================================================
+// Initialization
+// =============================================================================
+
+function registerGlobalEventListeners(): void {
+  window.addEventListener("scroll", onScroll);
+  window.addEventListener("resize", onResize);
+  window.addEventListener("onPageChange", onPageChange);
+  window.addEventListener("onViewModeChange", onViewModeChange);
+
+  const pageApp = SELECTORS.PAGE.APP();
+  pageApp?.addEventListener("scroll", onScroll);
+}
+
+function init(): void {
+  registerGlobalEventListeners();
+
+  Helper.onElementsLoad([
+    SELECTORS.RAW.PLAYER.VIDEO,
+    SELECTORS.RAW.MINI_PLAYER.CONTAINER,
+    SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
+  ]).then(() => {
+    createMiniPlayer();
+    createChapters();
+    setupVideoListeners();
+
+    setupChaptersObserver();
+    setupTitleCleanupObserver();
+    setupChannelCleanupObserver();
+    setupPlaylistAttributeObserver();
+  });
+}
+
+init();
