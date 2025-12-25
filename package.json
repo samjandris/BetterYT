@@ -1,6 +1,6 @@
 {
   "name": "betteryt",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "Adds useful changes to YouTube, such as showing the mini player when scrolling.",
   "private": true,
   "scripts": {
@@ -17,15 +17,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/chrome": "^0.1.12",
+    "@types/chrome": "^0.1.32",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^7.1.2",
     "mini-css-extract-plugin": "^2.9.4",
-    "sass": "^1.92.1",
-    "sass-loader": "^16.0.5",
+    "sass": "^1.97.1",
+    "sass-loader": "^16.0.6",
     "ts-loader": "^9.5.4",
-    "typescript": "^5.9.2",
-    "webpack": "^5.101.3",
+    "typescript": "^5.9.3",
+    "webpack": "^5.104.1",
     "webpack-cli": "^6.0.1"
   }
 }
