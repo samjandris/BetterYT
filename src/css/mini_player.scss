@@ -1,4 +1,13 @@
+// =============================================================================
+// Mini Player Styles
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// YouTube Element Overrides (when mini player is active)
+// -----------------------------------------------------------------------------
+
 body[betteryt-mini] {
+  // Video element sizing
   .html5-main-video {
     top: 0px !important;
     left: 0px !important;
@@ -8,8 +17,11 @@ body[betteryt-mini] {
     background: black;
   }
 
+  // Player controls positioning
   .ytp-chrome-controls {
-    width: calc(var(--ytd-miniplayer-width, 400px) - 2px);
+    position: absolute;
+    left: 8px;
+    bottom: -5px;
   }
 
   .ytp-chrome-bottom {
@@ -18,27 +30,7 @@ body[betteryt-mini] {
     margin-bottom: 5px;
   }
 
-  // Hide resizeres as we don't want users to resize the miniplayer
-  .ytdMiniplayerComponentResizers {
-    display: none !important;
-  }
-
-  .ytp-left-controls
-    > *:not(.ytp-play-button, .ytp-volume-area, .ytp-time-display),
-  .ytp-right-controls > *:not(.ytp-miniplayer-button),
-  #movie_player
-    > *:not(
-      .html5-video-container,
-      .ytp-spinner,
-      .ytp-chrome-bottom,
-      .betteryt
-    ),
-  .ytp-chrome-bottom .ytp-progress-bar-container,
-  .expander.ytd-miniplayer,
-  .index-message.ytd-miniplayer {
-    display: none !important;
-  }
-
+  // Mini player container sizing
   ytd-miniplayer {
     display: unset !important;
     width: var(--ytd-miniplayer-width, 400px) !important;
@@ -52,7 +44,7 @@ body[betteryt-mini] {
     display: unset !important;
   }
 
-  // This is the info bar that shows the title and channel
+  // Info bar (title and channel) - click to scroll back to video
   .ytdMiniplayerInfoBarHost {
     align-items: center;
     cursor: pointer;
@@ -61,7 +53,141 @@ body[betteryt-mini] {
       pointer-events: none;
     }
   }
+
+  // Disable resizing (we control the size)
+  .ytdMiniplayerComponentResizers {
+    display: none !important;
+  }
+
+  // Hide unnecessary YouTube UI elements
+  .ytp-left-controls
+    > *:not(.ytp-play-button, .ytp-volume-area, .ytp-time-display),
+  .ytp-right-controls,
+  #movie_player
+    > *:not(
+      .html5-video-container,
+      .ytp-spinner,
+      .ytp-chrome-bottom,
+      .betteryt
+    ),
+  .ytp-chrome-bottom .ytp-progress-bar-container,
+  .expander.ytd-miniplayer,
+  .index-message.ytd-miniplayer {
+    display: none !important;
+  }
+
+  // ---------------------------------------------------------------------------
+  // BetterYT Custom Progress Bar
+  // ---------------------------------------------------------------------------
+
+  .betteryt.ytp-progress-bar-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: var(--ytd-miniplayer-width, 400px);
+    height: 4px;
+    z-index: 59;
+    cursor: pointer;
+    pointer-events: auto !important;
+
+    &:hover {
+      height: 5px;
+
+      .betteryt.ytp-scrubber-button {
+        width: 8px;
+        height: 8px;
+      }
+
+      .betteryt.ytp-scrubber-container {
+        margin-left: -4px;
+        margin-top: -4px;
+      }
+    }
+
+    // SponsorBlock integration - pin previewbar to prevent jumping
+    #previewbar {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
+  }
+
+  .betteryt.ytp-progress-bar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    pointer-events: auto !important;
+  }
+
+  .betteryt.ytp-chapters-container {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+  }
+
+  .betteryt.ytp-chapter-hover-container {
+    position: relative;
+    height: 100%;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .betteryt.ytp-progress-bar-padding {
+    height: 100%;
+  }
+
+  .betteryt.ytp-progress-list {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 1px;
+  }
+
+  .betteryt.ytp-play-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #ff0000;
+    transform-origin: left;
+    border-radius: 1px;
+  }
+
+  .betteryt.ytp-scrubber-container {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    z-index: 60;
+    transform: translateX(0);
+    margin-left: -4px;
+    margin-top: -4px;
+    pointer-events: none;
+  }
+
+  .betteryt.ytp-scrubber-button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff0000;
+  }
+
+  .betteryt.ytp-gradient-bottom {
+    display: none;
+  }
 }
+
+// -----------------------------------------------------------------------------
+// State: Mini Player Inactive
+// -----------------------------------------------------------------------------
 
 body:not([betteryt-mini]) {
   .betteryt.ytp-progress-bar-container,
@@ -70,21 +196,23 @@ body:not([betteryt-mini]) {
   }
 }
 
+// -----------------------------------------------------------------------------
+// State: Live Stream (hide progress bar)
+// -----------------------------------------------------------------------------
+
 body[betteryt-live] {
   .betteryt.ytp-progress-bar-container {
     display: none;
   }
 }
 
-// This is needed to fix youtube update hiding title when first showing miniplayer and actually activating miniplayer
+// -----------------------------------------------------------------------------
+// YouTube Bug Fixes
+// -----------------------------------------------------------------------------
+
+// Fix: YouTube hides title when first activating miniplayer
 .ytd-miniplayer.title,
 yt-formatted-string.miniplayer-title,
 yt-formatted-string #owner-name {
   display: unset !important;
 }
-
-// TODO: Animations temporarily disabled, need to fix weird behavior when dragging mini player
-// Animate miniplayer opening/closing
-// ytd-miniplayer {
-//   transition: all 0.25s cubic-bezier(0, 0, 0.2, 1) !important;
-// }
