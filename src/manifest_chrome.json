@@ -33,5 +33,9 @@
     }
   },
   "permissions": ["storage"],
-  "host_permissions": ["https://returnyoutubedislikeapi.com/"]
+  "host_permissions": [
+    "*://youtube.com/*",
+    "*://*.youtube.com/*",
+    "https://returnyoutubedislikeapi.com/"
+  ]
 }

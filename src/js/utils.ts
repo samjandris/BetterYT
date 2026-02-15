@@ -1,40 +1,41 @@
 const SELECTORS = {
   RAW: {
     PAGE: {
-      APP: 'ytd-app',
-      WATCH_FLEXY: 'ytd-watch-flexy',
-      NAVIGATION_PROGRESS: 'yt-page-navigation-progress',
+      APP: "ytd-app",
+      WATCH_FLEXY: "ytd-watch-flexy",
+      NAVIGATION_PROGRESS: "yt-page-navigation-progress",
     },
     CHAT: {
-      CHAT: '#chat',
-      FRAME: '#chatframe',
-      SHOW_HIDE: '#show-hide-button',
+      CHAT: "#chat",
+      FRAME: "#chatframe",
+      SHOW_HIDE: "#show-hide-button",
       OPEN_BUTTON:
-        '#show-hide-button > ytd-toggle-button-renderer > a > tp-yt-paper-button > #text',
+        "#show-hide-button > ytd-toggle-button-renderer > a > tp-yt-paper-button > #text",
       REPLAY:
-        '#chat > #item-list > yt-live-chat-item-list-renderer > #contents > #item-scroller > #item-offset > #items > yt-live-chat-viewer-engagement-message-renderer > #id > #content > #message',
-      BODY: ['#chatframe', 'body'],
+        "#chat > #item-list > yt-live-chat-item-list-renderer > #contents > #item-scroller > #item-offset > #items > yt-live-chat-viewer-engagement-message-renderer > #id > #content > #message",
+      BODY: ["#chatframe", "body"],
     },
     PLAYER: {
-      PLAYER: '#ytd-player',
-      MOVIE_PLAYER: '#movie_player',
+      PLAYER: "#ytd-player",
+      MOVIE_PLAYER: "#movie_player",
       TITLE:
-        'ytd-watch-flexy h1.title.ytd-video-primary-info-renderer > yt-formatted-string',
+        "ytd-watch-flexy h1.title.ytd-video-primary-info-renderer > yt-formatted-string",
       CHANNEL:
-        'ytd-watch-flexy #channel-name.ytd-video-owner-renderer > #container > #text-container > #text > a',
-      DISLIKE_BUTTON: 'segmented-like-dislike-button-view-model dislike-button-view-model button',
-      CONTAINER: '#player-container.ytd-watch-flexy',
-      DEFAULT_CONTAINER: '#player-container-inner',
-      THEATER_CONTAINER: '#player-wide-container, #player-full-bleed-container',
+        "ytd-watch-flexy #channel-name.ytd-video-owner-renderer > #container > #text-container > #text > a",
+      DISLIKE_BUTTON:
+        "segmented-like-dislike-button-view-model dislike-button-view-model button",
+      CONTAINER: "#player-container.ytd-watch-flexy",
+      DEFAULT_CONTAINER: "#player-container-inner",
+      THEATER_CONTAINER: "#player-wide-container, #player-full-bleed-container",
       BOUNDS:
-        '#player-container-inner, #player-wide-container, #player-full-bleed-container',
-      VIDEO: '#movie_player > div.html5-video-container > video',
-      GRADIENT_TOP: '.ytp-gradient-top',
-      GRADIENT_BOTTOM: '.ytp-gradient-bottom',
+        "#player-container-inner, #player-wide-container, #player-full-bleed-container",
+      VIDEO: "#movie_player > div.html5-video-container > video",
+      GRADIENT_TOP: ".ytp-gradient-top",
+      GRADIENT_BOTTOM: ".ytp-gradient-bottom",
       CONTROLS: {
         TO_HIDE: [
-          '.ytp-chrome-top',
-          '.ytp-iv-player-content',
+          ".ytp-chrome-top",
+          ".ytp-iv-player-content",
           'a[aria-label*="Previous"]',
           'a[aria-label*="Next"]',
           'div[class="ytp-chapter-container"]',
@@ -46,59 +47,59 @@ const SELECTORS = {
           'button[aria-label*="Play on TV"]',
           'button[aria-label*="AirPlay"]',
           'button[title*="Full screen"]',
-          '#ytp-caption-window-container',
+          "#ytp-caption-window-container",
         ],
-        CONTAINER: '#movie_player > div.ytp-chrome-bottom',
-        CONTROLS: '.ytp-chrome-controls',
+        CONTAINER: "#movie_player > div.ytp-chrome-bottom",
+        CONTROLS: ".ytp-chrome-controls",
         PROGRESS_BAR: {
-          CONTAINER: '.ytp-chrome-bottom .ytp-progress-bar-container',
+          CONTAINER: ".ytp-chrome-bottom .ytp-progress-bar-container",
           SLIDER:
-            '.ytp-chrome-bottom .ytp-progress-bar-container .ytp-progress-bar',
+            ".ytp-chrome-bottom .ytp-progress-bar-container .ytp-progress-bar",
           CHAPTERS: {
-            CONTAINER: '.ytp-chapters-container',
+            CONTAINER: ".ytp-chapters-container",
           },
           SCRUBBER: {
-            CONTAINER: '.ytp-scrubber-container',
+            CONTAINER: ".ytp-scrubber-container",
           },
         },
         FULLSCREEN: 'button[title*=" screen (f)"]',
         THEATER: 'button[aria-label*="(t)"]',
-        LIVE: '.ytp-live-badge.ytp-button',
-        TIME_DISPLAY: '.ytp-chrome-bottom .ytp-time-display',
+        LIVE: ".ytp-live-badge.ytp-button",
+        TIME_DISPLAY: ".ytp-chrome-bottom .ytp-time-display",
       },
     },
     MINI_PLAYER: {
-      ROOT: 'ytd-miniplayer',
-      CONTAINER: '.ytDraggableComponentHost',
-      INFO_BAR: 'ytd-miniplayer-info-bar',
-      TITLE: '.ytdMiniplayerInfoBarTitle',
-      CHANNEL: '.ytdMiniplayerInfoBarSubtitle',
-      RESIZERS: '.ytdMiniplayerComponentResizers',
+      ROOT: "ytd-miniplayer",
+      CONTAINER: ".ytDraggableComponentHost",
+      INFO_BAR: "ytd-miniplayer-info-bar",
+      TITLE: ".ytdMiniplayerInfoBarTitle",
+      CHANNEL: ".ytdMiniplayerInfoBarSubtitle",
+      RESIZERS: ".ytdMiniplayerComponentResizers",
     },
-    RELATED: '#related',
-    COMMENTS: '#comments',
-    PLAYLIST: '#secondary-inner > #playlist',
-    COLUMN_LEFT: '#primary-inner',
-    COLUMN_RIGHT: '#secondary-inner',
+    RELATED: "#related",
+    COMMENTS: "#comments",
+    PLAYLIST: "#secondary-inner > #playlist",
+    COLUMN_LEFT: "#primary-inner",
+    COLUMN_RIGHT: "#secondary-inner",
     BETTERYT: {
       MINI_PLAYER: {
         CONTROLS: {
           PROGRESS_BAR: {
-            CONTAINER: '.betteryt.ytp-progress-bar-container',
-            SLIDER: '.betteryt.ytp-progress-bar',
+            CONTAINER: ".betteryt.ytp-progress-bar-container",
+            SLIDER: ".betteryt.ytp-progress-bar",
             CHAPTERS: {
-              CONTAINER: '.betteryt.ytp-chapters-container',
+              CONTAINER: ".betteryt.ytp-chapters-container",
             },
             SCRUBBER: {
-              CONTAINER: '.betteryt.ytp-scrubber-container',
+              CONTAINER: ".betteryt.ytp-scrubber-container",
             },
           },
         },
-        GRADIENT_BOTTOM: '.betteryt.ytp-gradient-bottom',
+        GRADIENT_BOTTOM: ".betteryt.ytp-gradient-bottom",
       },
     },
     SPONSOR_BLOCK: {
-      CONTAINER: '#previewbar',
+      CONTAINER: "#previewbar",
     },
   },
   PAGE: {
@@ -124,7 +125,7 @@ const SELECTORS = {
       // document
       //   .querySelector(SELECTORS.RAW.CHAT.BODY[0])
       SELECTORS.CHAT.FRAME()?.contentDocument?.querySelector(
-        SELECTORS.RAW.CHAT.BODY[1]
+        SELECTORS.RAW.CHAT.BODY[1],
       ) || null,
   },
   PLAYER: {
@@ -171,22 +172,22 @@ const SELECTORS = {
       PROGRESS_BAR: {
         CONTAINER: (): HTMLElement | null =>
           document.querySelector(
-            SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER
+            SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER,
           ),
         SLIDER: (): HTMLElement | null =>
           document.querySelector(
-            SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER
+            SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.SLIDER,
           ),
         CHAPTERS: {
           CONTAINER: (): HTMLElement | null =>
             document.querySelector(
-              SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER
+              SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.CHAPTERS.CONTAINER,
             ),
         },
         SCRUBBER: {
           CONTAINER: (): HTMLElement | null =>
             document.querySelector(
-              SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER
+              SELECTORS.RAW.PLAYER.CONTROLS.PROGRESS_BAR.SCRUBBER.CONTAINER,
             ),
         },
       },
@@ -230,31 +231,32 @@ const SELECTORS = {
         PROGRESS_BAR: {
           CONTAINER: (): HTMLElement | null =>
             document.querySelector(
-              SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER
+              SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR
+                .CONTAINER,
             ),
           SLIDER: (): HTMLElement | null =>
             document.querySelector(
-              SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER
+              SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.SLIDER,
             ),
           CHAPTERS: {
             CONTAINER: (): HTMLElement | null =>
               document.querySelector(
                 SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR
-                  .CHAPTERS.CONTAINER
+                  .CHAPTERS.CONTAINER,
               ),
           },
           SCRUBBER: {
             CONTAINER: (): HTMLElement | null =>
               document.querySelector(
                 SELECTORS.RAW.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR
-                  .SCRUBBER.CONTAINER
+                  .SCRUBBER.CONTAINER,
               ),
           },
         },
       },
       GRADIENT_BOTTOM: (): HTMLElement | null =>
         document.querySelector(
-          SELECTORS.RAW.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM
+          SELECTORS.RAW.BETTERYT.MINI_PLAYER.GRADIENT_BOTTOM,
         ),
     },
   },
@@ -329,9 +331,9 @@ class Helper {
     selectorRaw: string,
     callback: (
       observer: MutationObserver,
-      mutationsList: MutationRecord[]
+      mutationsList: MutationRecord[],
     ) => void,
-    settings = { attributes: true, attributeFilter: [] as string[] }
+    settings = { attributes: true, attributeFilter: [] as string[] },
   ) {
     Helper.onElementLoad(selectorRaw).then(() => {
       const element = document.querySelector(selectorRaw);
@@ -349,11 +351,11 @@ class Helper {
     selectorRaw: string,
     callback: (
       observer: MutationObserver,
-      mutationsList: MutationRecord[]
+      mutationsList: MutationRecord[],
     ) => void,
     settings = {
       childList: true,
-    }
+    },
   ) {
     Helper.onElementLoad(selectorRaw).then(() => {
       const element = document.querySelector(selectorRaw);
@@ -368,7 +370,7 @@ class Helper {
   }
 
   static abbreviateNumber(num: number) {
-    const abbrev = ['K', 'M', 'B', 'T'];
+    const abbrev = ["K", "M", "B", "T"];
 
     function round(n: number, precision: number) {
       const prec = Math.pow(10, precision);
@@ -378,7 +380,7 @@ class Helper {
     let base = Math.floor(Math.log(Math.abs(num)) / Math.log(1000));
     const suffix = abbrev[Math.min(2, base - 1)];
     base = abbrev.indexOf(suffix) + 1;
-    return suffix ? round(num / Math.pow(1000, base), 0) + suffix : '' + num;
+    return suffix ? round(num / Math.pow(1000, base), 0) + suffix : "" + num;
   }
 
   static getUrl() {
@@ -393,9 +395,9 @@ class Helper {
     const pageWatchFlexyElement = SELECTORS.PAGE.WATCH_FLEXY();
     return (
       pageWatchFlexyElement &&
-      pageWatchFlexyElement.hasAttribute('theater') &&
+      pageWatchFlexyElement.hasAttribute("theater") &&
       !this.isFullscreen() &&
-      currentURL.pathname.startsWith('/watch')
+      currentURL.pathname.startsWith("/watch")
     );
   }
 
@@ -403,8 +405,8 @@ class Helper {
     const pageWatchFlexyElement = SELECTORS.PAGE.WATCH_FLEXY();
     return (
       pageWatchFlexyElement &&
-      pageWatchFlexyElement.hasAttribute('fullscreen') &&
-      currentURL.pathname.startsWith('/watch')
+      pageWatchFlexyElement.hasAttribute("fullscreen") &&
+      currentURL.pathname.startsWith("/watch")
     );
   }
 
@@ -412,10 +414,10 @@ class Helper {
     const playerTimeDisplayElement = SELECTORS.PLAYER.CONTROLS.TIME_DISPLAY();
     return (
       playerTimeDisplayElement &&
-      playerTimeDisplayElement.classList.contains('ytp-live') &&
+      playerTimeDisplayElement.classList.contains("ytp-live") &&
       SELECTORS.CHAT.SHOW_HIDE() !== null &&
       SELECTORS.PLAYER.CONTROLS.LIVE() !== null &&
-      currentURL.pathname.startsWith('/watch')
+      currentURL.pathname.startsWith("/watch")
     );
   }
 
@@ -423,10 +425,10 @@ class Helper {
     const playerTimeDisplayElement = SELECTORS.PLAYER.CONTROLS.TIME_DISPLAY();
     return (
       playerTimeDisplayElement &&
-      !playerTimeDisplayElement.classList.contains('ytp-live') &&
+      !playerTimeDisplayElement.classList.contains("ytp-live") &&
       SELECTORS.CHAT.SHOW_HIDE() !== null &&
       SELECTORS.PLAYER.CONTROLS.LIVE() !== null &&
-      currentURL.pathname.startsWith('/watch')
+      currentURL.pathname.startsWith("/watch")
     );
   }
 
@@ -435,7 +437,7 @@ class Helper {
     return (
       chatFrameElement &&
       chatFrameElement.offsetHeight > 0 &&
-      currentURL.pathname.startsWith('/watch')
+      currentURL.pathname.startsWith("/watch")
     );
   }
 }

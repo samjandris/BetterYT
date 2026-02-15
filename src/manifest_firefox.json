@@ -32,7 +32,12 @@
       "72": "images/toolbar-icon-72.png"
     }
   },
-  "permissions": ["storage", "https://returnyoutubedislikeapi.com/"],
+  "permissions": [
+    "storage",
+    "*://youtube.com/*",
+    "*://*.youtube.com/*",
+    "https://returnyoutubedislikeapi.com/"
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "{fe1efc84-ba8a-4b97-9f91-88991d3a52c2}"

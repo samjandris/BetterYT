@@ -9,12 +9,16 @@
   },
 
   "settingsTitle": {
-    "message": "Impostazioni di BetterYT",
+    "message": "BetterYT",
     "description": "Titolo per la finestra popup"
   },
   "settingsRefresh": {
-    "message": "*Le modifiche richiedono un aggiornamento",
-    "description": "Testo per quando cambiare una impostazione richiede un aggiornamento"
+    "message": "Alcune modifiche richiedono un aggiornamento.",
+    "description": "Testo per quando cambiare un'impostazione richiede un aggiornamento"
+  },
+  "settingsRefreshAction": {
+    "message": "Aggiorna le schede YouTube aperte",
+    "description": "Testo del pulsante per aggiornare le schede YouTube aperte"
   },
 
   "settingsMiniLabel": {
@@ -22,17 +26,17 @@
     "description": "Etichetta per la casella di controllo del mini player"
   },
   "settingsMiniDesc": {
-    "message": "Mostra un mini player durante lo scorrimento.",
+    "message": "Mostra un mini player fluttuante quando scorri oltre il video.",
     "description": "Descrizione del mini player"
   },
 
   "settingsDislikeLabel": {
-    "message": "Ripristina conteggio non mi piace",
-    "description": "Etichetta per la casella di controllo per ripristinare il conteggio dei non mi piace"
+    "message": "Contatore dislike",
+    "description": "Etichetta per la casella di controllo del conteggio non mi piace"
   },
   "settingsDislikeDesc": {
-    "message": "Ripristina il conteggio dei non mi piace usando l'API di Return YouTube Dislike. Disabilitare per essere compatibile con Return YouTube Dislike nativo.",
-    "description": "Descrizione del ripristino del conteggio non mi piace"
+    "message": "Mostra il contatore dei dislike tramite l'API Return YouTube Dislike.",
+    "description": "Descrizione del conteggio non mi piace"
   },
 
   "settingsTheaterLabel": {
@@ -40,25 +44,25 @@
     "description": "Etichetta per la casella di controllo della modalità teatro di chat"
   },
   "settingsTheaterDesc": {
-    "message": "Blocca la chat accanto alla diretta quando in modalità teatro, simile a Twitch.",
+    "message": "Fissa la chat dal vivo accanto al video in modalità teatro, come su Twitch.",
     "description": "Descrizione della modalità teatro di chat"
   },
 
   "settingsPipLabel": {
-    "message": "Pulsante immagine nell'immagine",
-    "description": "Etichetta per la casella di controllo del pulsante immagine nell'immagine"
+    "message": "Picture-in-picture",
+    "description": "Etichetta per la casella di controllo di picture-in-picture"
   },
   "settingsPipDesc": {
-    "message": "Mostra un pulsante sul lettore video che attiva la modalità immagine nell'immagine, creando un video fluttuante sullo schermo.",
-    "description": "Descrizione del pulsante immagine nell'immagine"
+    "message": "Aggiunge un pulsante picture-in-picture al lettore video.",
+    "description": "Descrizione di picture-in-picture"
   },
 
   "settingsCommentsLabel": {
-    "message": "Commenti sul lato destro",
-    "description": "Etichetta per la casella di controllo dei commenti sul lato destro"
+    "message": "Commenti a destra",
+    "description": "Etichetta per la casella di controllo dei commenti a destra"
   },
   "settingsCommentsDesc": {
-    "message": "Sposta la sezione dei commenti dove normalmente si trova la sezione correlata, permettendo una lettura più facile dei commenti mentre si guarda un video.",
-    "description": "Descrizione dei commenti sul lato destro"
+    "message": "Sposta i commenti nella barra laterale destra per leggere mentre guardi.",
+    "description": "Descrizione dei commenti a destra"
   }
 }

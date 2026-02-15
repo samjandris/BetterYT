@@ -1,4 +1,4 @@
-import { SELECTORS, Helper } from '../utils';
+import { SELECTORS, Helper } from "../utils";
 
 function handleComments() {
   const relatedElement = SELECTORS.RELATED();
@@ -7,7 +7,7 @@ function handleComments() {
   const columnRightElement = SELECTORS.COLUMN_RIGHT();
 
   if (window.innerWidth < 1014) {
-    document.body.removeAttribute('betteryt-comments-fixed');
+    document.body.removeAttribute("betteryt-comments-fixed");
     if (
       relatedElement &&
       columnLeftElement &&
@@ -28,10 +28,10 @@ function handleComments() {
       !Helper.isLive() &&
       !Helper.isReplay()
     ) {
-      if (!document.body.hasAttribute('betteryt-comments-fixed'))
-        document.body.setAttribute('betteryt-comments-fixed', '');
+      if (!document.body.hasAttribute("betteryt-comments-fixed"))
+        document.body.setAttribute("betteryt-comments-fixed", "");
     } else {
-      document.body.removeAttribute('betteryt-comments-fixed');
+      document.body.removeAttribute("betteryt-comments-fixed");
     }
 
     if (
@@ -50,25 +50,25 @@ function handleComments() {
   }
 }
 
-window.addEventListener('resize', () => {
-  if (Helper.getUrl().pathname.startsWith('/watch')) {
+window.addEventListener("resize", () => {
+  if (Helper.getUrl().pathname.startsWith("/watch")) {
     handleComments();
   }
 });
 
-window.addEventListener('onViewModeChange', () => {
-  if (Helper.getUrl().pathname.startsWith('/watch')) {
+window.addEventListener("onViewModeChange", () => {
+  if (Helper.getUrl().pathname.startsWith("/watch")) {
     handleComments();
   }
 });
 
-window.addEventListener('onUrlChange', () => {
-  if (Helper.getUrl().pathname.startsWith('/watch')) {
+window.addEventListener("onUrlChange", () => {
+  if (Helper.getUrl().pathname.startsWith("/watch")) {
     handleComments();
   }
 });
 
-if (Helper.getUrl().pathname.startsWith('/watch')) {
+if (Helper.getUrl().pathname.startsWith("/watch")) {
   Helper.onElementsLoad([
     SELECTORS.RAW.COMMENTS,
     SELECTORS.RAW.RELATED,

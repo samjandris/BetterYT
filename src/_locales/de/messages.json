@@ -9,12 +9,16 @@
   },
 
   "settingsTitle": {
-    "message": "BetterYT Einstellungen",
+    "message": "BetterYT",
     "description": "Titel für Popup-Fenster"
   },
   "settingsRefresh": {
-    "message": "*Änderungen erfordern eine Aktualisierung",
+    "message": "Einige Änderungen erfordern eine Aktualisierung.",
     "description": "Text, wenn eine Änderung eine Aktualisierung erfordert"
+  },
+  "settingsRefreshAction": {
+    "message": "Offene YouTube-Tabs aktualisieren",
+    "description": "Schaltflächentext zum Aktualisieren offener YouTube-Tabs"
   },
 
   "settingsMiniLabel": {
@@ -22,17 +26,17 @@
     "description": "Beschriftung für das Kontrollkästchen für den Mini-Player"
   },
   "settingsMiniDesc": {
-    "message": "Zeigt beim Scrollen einen Mini-Player an.",
+    "message": "Zeigt einen schwebenden Mini-Player, wenn du über das Video hinaus scrollst.",
     "description": "Beschreibung des Mini-Players"
   },
 
   "settingsDislikeLabel": {
-    "message": "Dislike-Zähler zurückbringen",
-    "description": "Beschriftung für das Kontrollkästchen, um den Dislike-Zähler zurückzubringen"
+    "message": "Dislike-Zähler",
+    "description": "Beschriftung für das Kontrollkästchen für den Dislike-Zähler"
   },
   "settingsDislikeDesc": {
-    "message": "Stellt den Dislike-Zähler mit der Return YouTube Dislike API wieder her. Deaktivieren für Kompatibilität mit nativem Return YouTube Dislike.",
-    "description": "Beschreibung des Zurückbringens des Dislike-Zählers"
+    "message": "Zeigt den Dislike-Zähler über die Return YouTube Dislike API an.",
+    "description": "Beschreibung des Dislike-Zählers"
   },
 
   "settingsTheaterLabel": {
@@ -40,25 +44,25 @@
     "description": "Beschriftung für das Kontrollkästchen für den Chat-Theatermodus"
   },
   "settingsTheaterDesc": {
-    "message": "Sperrt den Chat neben dem Livestream im Theatermodus, ähnlich wie bei Twitch.",
+    "message": "Fixiert den Live-Chat im Theatermodus neben dem Video, wie bei Twitch.",
     "description": "Beschreibung des Chat-Theatermodus"
   },
 
   "settingsPipLabel": {
-    "message": "Bild-im-Bild-Knopf",
-    "description": "Beschriftung für das Kontrollkästchen für den Bild-im-Bild-Knopf"
+    "message": "Bild-in-Bild",
+    "description": "Beschriftung für das Kontrollkästchen für Bild-in-Bild"
   },
   "settingsPipDesc": {
-    "message": "Zeigt einen Knopf auf dem Videoplayer an, der in den Bild-im-Bild-Modus wechselt, wodurch ein schwebendes Video auf dem Bildschirm erstellt wird.",
-    "description": "Beschreibung des Bild-im-Bild-Knopfes"
+    "message": "Fügt dem Videoplayer einen Bild-in-Bild-Button hinzu.",
+    "description": "Beschreibung von Bild-in-Bild"
   },
 
   "settingsCommentsLabel": {
-    "message": "Kommentare auf der rechten Seite",
+    "message": "Kommentare rechts",
     "description": "Beschriftung für das Kontrollkästchen für Kommentare auf der rechten Seite"
   },
   "settingsCommentsDesc": {
-    "message": "Verschiebt den Kommentarbereich dorthin, wo normalerweise der Verwandte-Bereich ist, um das Lesen von Kommentaren beim Anschauen eines Videos zu erleichtern.",
+    "message": "Verschiebt Kommentare in die rechte Seitenleiste, damit du beim Schauen lesen kannst.",
     "description": "Beschreibung der Kommentare auf der rechten Seite"
   }
 }

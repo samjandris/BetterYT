@@ -22,7 +22,7 @@ function createDislikeTextElement(): HTMLDivElement {
 
 function injectDislikeCount(button: HTMLElement, count: number): void {
   let textElement = button.querySelector(
-    `.${CLASSES.BETTERYT.DISLIKE_COUNT}`
+    `.${CLASSES.BETTERYT.DISLIKE_COUNT}`,
   ) as HTMLElement | null;
 
   if (!textElement) {

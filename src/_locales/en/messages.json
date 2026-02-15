@@ -9,12 +9,16 @@
   },
 
   "settingsTitle": {
-    "message": "BetterYT Settings",
+    "message": "BetterYT",
     "description": "Title for popup window"
   },
   "settingsRefresh": {
-    "message": "*Changes require a refresh",
-    "description": "Text for when changing a setting requires a refresh"
+    "message": "Some changes need a refresh.",
+    "description": "Text shown when changing a setting requires a refresh"
+  },
+  "settingsRefreshAction": {
+    "message": "Refresh open YouTube tabs",
+    "description": "Button text for refreshing open YouTube tabs"
   },
 
   "settingsMiniLabel": {
@@ -22,16 +26,16 @@
     "description": "Label for checkbox for mini player"
   },
   "settingsMiniDesc": {
-    "message": "Shows a mini player when scrolling.",
+    "message": "Shows a floating mini player when you scroll past the video.",
     "description": "Description of mini player"
   },
 
   "settingsDislikeLabel": {
-    "message": "Return dislike count",
+    "message": "Dislike count",
     "description": "Label for checkbox for returning dislike count"
   },
   "settingsDislikeDesc": {
-    "message": "Returns the dislike counter using Return YouTube Dislike API. Disable to be compatible with native Return YouTube Dislike.",
+    "message": "Shows the dislike count using the Return YouTube Dislike API.",
     "description": "Description of return dislike count"
   },
 
@@ -40,16 +44,16 @@
     "description": "Label for checkbox for chat theater mode"
   },
   "settingsTheaterDesc": {
-    "message": "Locks chat next to livestream when in theater mode, similar to Twitch.",
+    "message": "Pins live chat beside the video in theater mode, like Twitch.",
     "description": "Description of chat theater mode"
   },
 
   "settingsPipLabel": {
-    "message": "Picture in picture button",
+    "message": "Picture-in-picture",
     "description": "Label for checkbox for picture in picture button"
   },
   "settingsPipDesc": {
-    "message": "Shows a button on the video player that enters picture in picture mode, which creates a floating video on the screen.",
+    "message": "Adds a picture-in-picture button to the video player.",
     "description": "Description of picture in picture button"
   },
 
@@ -58,7 +62,7 @@
     "description": "Label for checkbox for right-side comments"
   },
   "settingsCommentsDesc": {
-    "message": "Moves the comment section to where the related section normally is, allowing easier reading of comments while watching a video.",
+    "message": "Moves comments to the right sidebar so you can read while watching.",
     "description": "Description of right-side comments"
   }
 }
