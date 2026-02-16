@@ -2,95 +2,239 @@
 <html>
   <head>
     <link rel="stylesheet" href="../css/popup.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Outfit:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
-    <div class="logo">
-      <img src="/images/icon-512.png" width="32" height="32" />
-      <span class="title" data-locale="settingsTitle"></span>
-    </div>
+    <div class="popup-grain"></div>
 
-    <div id="miniDiv">
-      <div class="selector">
-        <input type="checkbox" id="miniPlayer" name="miniPlayer" value="true" />
-        <label
-          class="label"
-          for="miniPlayer"
-          data-locale="settingsMiniLabel"
-        ></label>
+    <header class="header">
+      <div class="header-brand">
+        <div class="header-icon">
+          <img src="/images/icon-512.png" width="24" height="24" />
+        </div>
+        <span class="header-title" data-locale="settingsTitle"></span>
+      </div>
+      <div class="header-rule"></div>
+    </header>
+
+    <main class="features">
+      <div id="miniDiv" class="feature" style="--i: 0">
+        <div class="feature-row">
+          <div class="feature-info">
+            <svg
+              class="feature-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <rect x="12" y="10" width="9" height="6" rx="1" />
+            </svg>
+            <label
+              class="feature-label"
+              for="miniPlayer"
+              data-locale="settingsMiniLabel"
+            ></label>
+          </div>
+          <div class="selector">
+            <input
+              type="checkbox"
+              id="miniPlayer"
+              name="miniPlayer"
+              value="true"
+            />
+            <label class="toggle" for="miniPlayer" aria-hidden="true">
+              <span class="toggle-knob"></span>
+            </label>
+          </div>
+        </div>
+        <span class="feature-desc" data-locale="settingsMiniDesc"></span>
       </div>
 
-      <span class="sub-label" data-locale="settingsMiniDesc"></span>
-    </div>
-
-    <div id="dislikesDiv">
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="returnDislikes"
-          name="returnDislikes"
-          value="true"
-        />
-        <label
-          class="label"
-          for="returnDislikes"
-          data-locale="settingsDislikeLabel"
-        ></label>
+      <div id="dislikesDiv" class="feature" style="--i: 1">
+        <div class="feature-row">
+          <div class="feature-info">
+            <svg
+              class="feature-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"
+              />
+              <path
+                d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"
+              />
+            </svg>
+            <label
+              class="feature-label"
+              for="returnDislikes"
+              data-locale="settingsDislikeLabel"
+            ></label>
+          </div>
+          <div class="selector">
+            <input
+              type="checkbox"
+              id="returnDislikes"
+              name="returnDislikes"
+              value="true"
+            />
+            <label class="toggle" for="returnDislikes" aria-hidden="true">
+              <span class="toggle-knob"></span>
+            </label>
+          </div>
+        </div>
+        <span class="feature-desc" data-locale="settingsDislikeDesc"></span>
       </div>
 
-      <span class="sub-label" data-locale="settingsDislikeDesc"></span>
-    </div>
-
-    <div id="theaterDiv">
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="twitchTheater"
-          name="twitchTheater"
-          value="true"
-        />
-        <label
-          class="label"
-          for="twitchTheater"
-          data-locale="settingsTheaterLabel"
-        ></label>
+      <div id="theaterDiv" class="feature" style="--i: 2">
+        <div class="feature-row">
+          <div class="feature-info">
+            <svg
+              class="feature-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <line x1="14" y1="4" x2="14" y2="20" />
+              <path d="M17 9h2" />
+              <path d="M17 13h2" />
+            </svg>
+            <label
+              class="feature-label"
+              for="twitchTheater"
+              data-locale="settingsTheaterLabel"
+            ></label>
+          </div>
+          <div class="selector">
+            <input
+              type="checkbox"
+              id="twitchTheater"
+              name="twitchTheater"
+              value="true"
+            />
+            <label class="toggle" for="twitchTheater" aria-hidden="true">
+              <span class="toggle-knob"></span>
+            </label>
+          </div>
+        </div>
+        <span class="feature-desc" data-locale="settingsTheaterDesc"></span>
       </div>
 
-      <span class="sub-label" data-locale="settingsTheaterDesc"></span>
-    </div>
-
-    <div id="pipDiv">
-      <div class="selector">
-        <input type="checkbox" id="pipButton" name="pipButton" value="true" />
-        <label
-          class="label"
-          for="pipButton"
-          data-locale="settingsPipLabel"
-        ></label>
+      <div id="pipDiv" class="feature" style="--i: 3">
+        <div class="feature-row">
+          <div class="feature-info">
+            <svg
+              class="feature-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <rect x="11" y="9" width="10" height="7" rx="1.5" />
+              <circle cx="15.5" cy="12.5" r="1.5" />
+            </svg>
+            <label
+              class="feature-label"
+              for="pipButton"
+              data-locale="settingsPipLabel"
+            ></label>
+          </div>
+          <div class="selector">
+            <input
+              type="checkbox"
+              id="pipButton"
+              name="pipButton"
+              value="true"
+            />
+            <label class="toggle" for="pipButton" aria-hidden="true">
+              <span class="toggle-knob"></span>
+            </label>
+          </div>
+        </div>
+        <span class="feature-desc" data-locale="settingsPipDesc"></span>
       </div>
 
-      <span class="sub-label" data-locale="settingsPipDesc"></span>
-    </div>
-
-    <div id="commentsDiv">
-      <div class="selector">
-        <input
-          type="checkbox"
-          id="experimentalComments"
-          name="experimentalComments"
-          value="true"
-        />
-        <label
-          class="label"
-          for="experimentalComments"
-          data-locale="settingsCommentsLabel"
-        ></label>
+      <div id="commentsDiv" class="feature" style="--i: 4">
+        <div class="feature-row">
+          <div class="feature-info">
+            <svg
+              class="feature-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              />
+              <line x1="8" y1="8" x2="16" y2="8" />
+              <line x1="8" y1="12" x2="13" y2="12" />
+            </svg>
+            <label
+              class="feature-label"
+              for="experimentalComments"
+              data-locale="settingsCommentsLabel"
+            ></label>
+          </div>
+          <div class="selector">
+            <input
+              type="checkbox"
+              id="experimentalComments"
+              name="experimentalComments"
+              value="true"
+            />
+            <label class="toggle" for="experimentalComments" aria-hidden="true">
+              <span class="toggle-knob"></span>
+            </label>
+          </div>
+        </div>
+        <span class="feature-desc" data-locale="settingsCommentsDesc"></span>
       </div>
+    </main>
 
-      <span class="sub-label" data-locale="settingsCommentsDesc"></span>
-    </div>
-
-    <p class="sub-label refresh" data-locale="settingsRefresh"></p>
+    <footer class="footer">
+      <p class="refresh">
+        <span class="refresh-text" data-locale="settingsRefresh"></span>
+        <button id="refreshYoutubeTabs" class="refresh-action" type="button">
+          <svg
+            class="refresh-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="23 4 23 10 17 10" />
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+          </svg>
+          <span data-locale="settingsRefreshAction"></span>
+        </button>
+      </p>
+    </footer>
 
     <script src="../js/popup.js"></script>
   </body>

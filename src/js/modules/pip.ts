@@ -1,3 +1,3 @@
-const testVideo = document.createElement('video');
+const testVideo = document.createElement("video");
 if (testVideo.requestPictureInPicture!)
-  document.body.setAttribute('betteryt-pip', '');
+  document.body.setAttribute("betteryt-pip", "");

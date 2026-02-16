@@ -1,6 +1,7 @@
 import "../css/popup.scss";
 import { STORAGE_DEFAULT } from "./utils";
 
+// Localize all elements with data-locale attribute
 document.querySelectorAll("[data-locale]").forEach((rawElem: Element) => {
   const element = rawElem as HTMLElement;
 
@@ -8,73 +9,58 @@ document.querySelectorAll("[data-locale]").forEach((rawElem: Element) => {
     element.innerText = chrome.i18n.getMessage(element.dataset.locale);
 });
 
+// Setting IDs that map directly to storage keys
+const SETTING_IDS = [
+  "miniPlayer",
+  "returnDislikes",
+  "twitchTheater",
+  "pipButton",
+  "experimentalComments",
+] as const;
+
+const YOUTUBE_URL_PATTERNS = ["*://youtube.com/*", "*://*.youtube.com/*"];
+
+// Load saved settings and set checkbox states
 chrome.storage.sync.get(STORAGE_DEFAULT, (data: typeof STORAGE_DEFAULT) => {
-  (document.getElementById("miniPlayer") as HTMLInputElement).checked =
-    data.miniPlayer;
-  (document.getElementById("returnDislikes") as HTMLInputElement).checked =
-    data.returnDislikes;
-  (document.getElementById("twitchTheater") as HTMLInputElement).checked =
-    data.twitchTheater;
-  (document.getElementById("pipButton") as HTMLInputElement).checked =
-    data.pipButton;
-  (
-    document.getElementById("experimentalComments") as HTMLInputElement
-  ).checked = data.experimentalComments;
+  for (const id of SETTING_IDS) {
+    const el = document.getElementById(id) as HTMLInputElement | null;
+    if (el) el.checked = data[id];
+  }
 });
 
-const miniPlayerElement = document.getElementById("miniPlayer");
-if (miniPlayerElement)
-  miniPlayerElement.addEventListener("change", () => {
-    chrome.storage.sync.set({
-      miniPlayer: (miniPlayerElement as HTMLInputElement).checked,
+// Attach change listeners to all setting checkboxes
+for (const id of SETTING_IDS) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener("change", () => {
+      chrome.storage.sync.set({
+        [id]: (el as HTMLInputElement).checked,
+      });
+      document.documentElement.setAttribute("refresh", "");
     });
+  }
+}
 
-    document.documentElement.setAttribute("refresh", "");
-  });
-
-const returnDislikesElement = document.getElementById("returnDislikes");
-if (returnDislikesElement)
-  returnDislikesElement.addEventListener("change", () => {
-    chrome.storage.sync.set({
-      returnDislikes: (returnDislikesElement as HTMLInputElement).checked,
-    });
-
-    document.documentElement.setAttribute("refresh", "");
-  });
-
-const twitchTheaterElement = document.getElementById("twitchTheater");
-if (twitchTheaterElement)
-  twitchTheaterElement.addEventListener("change", () => {
-    chrome.storage.sync.set({
-      twitchTheater: (twitchTheaterElement as HTMLInputElement).checked,
-    });
-
-    document.documentElement.setAttribute("refresh", "");
-  });
-
+// PiP feature detection
 const testVideo = document.createElement("video");
 if (testVideo.requestPictureInPicture!)
   document.documentElement.setAttribute("pip", "");
 
-const pipButtonElement = document.getElementById("pipButton");
-if (pipButtonElement)
-  pipButtonElement.addEventListener("change", () => {
-    chrome.storage.sync.set({
-      pipButton: (pipButtonElement as HTMLInputElement).checked,
+// Refresh YouTube tabs button
+const refreshYoutubeTabsButton = document.getElementById("refreshYoutubeTabs");
+if (refreshYoutubeTabsButton) {
+  refreshYoutubeTabsButton.addEventListener("click", () => {
+    chrome.tabs.query({ url: YOUTUBE_URL_PATTERNS }, (tabs) => {
+      if (chrome.runtime.lastError) {
+        window.close();
+        return;
+      }
+
+      for (const tab of tabs) {
+        if (tab.id !== undefined) chrome.tabs.reload(tab.id);
+      }
+
+      window.close();
     });
-
-    document.documentElement.setAttribute("refresh", "");
   });
-
-const experimentalCommentsElement = document.getElementById(
-  "experimentalComments"
-);
-if (experimentalCommentsElement)
-  experimentalCommentsElement.addEventListener("change", () => {
-    chrome.storage.sync.set({
-      experimentalComments: (experimentalCommentsElement as HTMLInputElement)
-        .checked,
-    });
-
-    document.documentElement.setAttribute("refresh", "");
-  });
+}

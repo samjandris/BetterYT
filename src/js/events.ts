@@ -1,4 +1,4 @@
-import { SELECTORS, Helper } from './utils';
+import { SELECTORS, Helper } from "./utils";
 
 // create url event
 setInterval(() => {
@@ -6,9 +6,9 @@ setInterval(() => {
     Helper.setUrl(new URL(window.location.href));
     setTimeout(() => {
       window.dispatchEvent(
-        new CustomEvent('onUrlChange', {
+        new CustomEvent("onUrlChange", {
           detail: { url: Helper.getUrl() },
-        })
+        }),
       );
 
       // fix for delayed loading of navigation bar or already loaded page
@@ -17,18 +17,18 @@ setInterval(() => {
       if (
         !pageNavigationProgressElement ||
         (pageNavigationProgressElement &&
-          pageNavigationProgressElement.getAttribute('aria-valuenow') === '100')
+          pageNavigationProgressElement.getAttribute("aria-valuenow") === "100")
       ) {
         Helper.onElementLoad(SELECTORS.RAW.PAGE.NAVIGATION_PROGRESS).then(
           () => {
             window.dispatchEvent(
-              new CustomEvent('onPageChange', {
+              new CustomEvent("onPageChange", {
                 detail: { url: Helper.getUrl() },
-              })
+              }),
             );
 
-            window.dispatchEvent(new Event('resize'));
-          }
+            window.dispatchEvent(new Event("resize"));
+          },
         );
       }
     });
@@ -42,53 +42,53 @@ Helper.onAttributeChange(
     const pageNavigationProgressElement = SELECTORS.PAGE.NAVIGATION_PROGRESS();
     if (
       pageNavigationProgressElement &&
-      pageNavigationProgressElement.getAttribute('aria-valuenow') === '100'
+      pageNavigationProgressElement.getAttribute("aria-valuenow") === "100"
     ) {
       setTimeout(() => {
         window.dispatchEvent(
-          new CustomEvent('onPageChange', {
+          new CustomEvent("onPageChange", {
             detail: { url: Helper.getUrl() },
-          })
+          }),
         );
 
-        window.dispatchEvent(new Event('resize'));
+        window.dispatchEvent(new Event("resize"));
       });
     }
   },
-  { attributes: true, attributeFilter: ['aria-valuenow'] }
+  { attributes: true, attributeFilter: ["aria-valuenow"] },
 );
 
 // create miniplayer mode event
 Helper.onAttributeChange(
-  'body',
+  "body",
   () => {
     window.dispatchEvent(
-      new CustomEvent('onToggleMiniplayer', {
+      new CustomEvent("onToggleMiniplayer", {
         detail: {
-          isMiniplayer: document.body.hasAttribute('betteryt-mini'),
+          isMiniplayer: document.body.hasAttribute("betteryt-mini"),
         },
-      })
+      }),
     );
 
-    window.dispatchEvent(new CustomEvent('onViewModeChange'));
-    window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new CustomEvent("onViewModeChange"));
+    window.dispatchEvent(new Event("resize"));
   },
-  { attributes: true, attributeFilter: ['betteryt-mini'] }
+  { attributes: true, attributeFilter: ["betteryt-mini"] },
 );
 
 // create theater mode event
 Helper.onChildElementChange(SELECTORS.RAW.PLAYER.BOUNDS, () => {
   if (!Helper.isFullscreen()) {
     window.dispatchEvent(
-      new CustomEvent('onToggleTheater', {
+      new CustomEvent("onToggleTheater", {
         detail: {
           isTheater: Helper.isTheater(),
         },
-      })
+      }),
     );
 
-    window.dispatchEvent(new CustomEvent('onViewModeChange'));
-    window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new CustomEvent("onViewModeChange"));
+    window.dispatchEvent(new Event("resize"));
   }
 });
 
@@ -97,15 +97,15 @@ Helper.onAttributeChange(
   SELECTORS.RAW.PLAYER.MOVIE_PLAYER,
   () => {
     window.dispatchEvent(
-      new CustomEvent('onToggleFullscreen', {
+      new CustomEvent("onToggleFullscreen", {
         detail: {
           isFullscreen: Helper.isFullscreen(),
         },
-      })
+      }),
     );
 
-    window.dispatchEvent(new CustomEvent('onViewModeChange'));
-    window.dispatchEvent(new Event('resize'));
+    window.dispatchEvent(new CustomEvent("onViewModeChange"));
+    window.dispatchEvent(new Event("resize"));
   },
-  { attributes: true, attributeFilter: ['aria-label'] }
+  { attributes: true, attributeFilter: ["aria-label"] },
 );

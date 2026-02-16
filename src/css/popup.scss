@@ -1,61 +1,377 @@
-body {
-  width: 350px;
-  background-color: #1f1f1f;
-  color: #f2f2f2;
-  font-family: 'Segoe UI', sans-serif;
-  line-height: 1.6;
-  padding: 10px;
+// ==========================================================================
+// BetterYT Popup — Cinematic Editorial Dark
+// ==========================================================================
+
+// --- Tokens ---
+$bg-deep: #0a0a0b;
+$bg-card: #131316;
+$bg-card-hover: #19191e;
+$border-subtle: rgba(255, 255, 255, 0.06);
+$border-hover: rgba(255, 255, 255, 0.1);
+$text-primary: #e8e6e3;
+$text-secondary: #7a7880;
+$text-tertiary: #4e4c52;
+$accent: #ff2d37;
+$accent-glow: rgba(255, 45, 55, 0.25);
+$accent-soft: rgba(255, 45, 55, 0.08);
+$toggle-bg-off: #2a2930;
+$toggle-bg-on: $accent;
+$toggle-knob: #fff;
+$radius-sm: 6px;
+$radius-md: 8px;
+$transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// --- Base ---
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+body {
+  width: 340px;
+  background-color: $bg-deep;
+  color: $text-primary;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 14px 16px 16px;
+  position: relative;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.selector {
+// --- Grain overlay ---
+.popup-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  z-index: 100;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px;
+}
+
+// --- Header ---
+.header {
+  margin-bottom: 12px;
+  animation: fadeSlideDown 0.4s ease both;
+}
+
+.header-brand {
   display: flex;
   align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    transition: background-color 0.3s ease;
-    cursor: pointer;
+.header-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  img {
+    display: block;
+    border-radius: 4px;
   }
 }
 
-.title {
-  margin-left: 10px;
-  font-size: 1.7em;
+.header-title {
+  font-family: "Outfit", "DM Sans", system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  color: $text-primary;
 }
 
-.label {
-  margin-left: 5px;
-  font-size: 1.3em;
+.header-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    $accent 0%,
+    rgba($accent, 0.3) 40%,
+    $border-subtle 100%
+  );
+}
+
+// --- Features list ---
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.feature {
+  background: $bg-card;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  padding: 9px 12px;
+  transition:
+    background $transition-smooth,
+    border-color $transition-smooth,
+    box-shadow $transition-smooth;
+  animation: fadeSlideUp 0.35s ease both;
+  animation-delay: calc(0.08s + var(--i, 0) * 0.05s);
 
   &:hover {
-    cursor: pointer;
+    background: $bg-card-hover;
+    border-color: $border-hover;
   }
 }
 
-.sub-label {
+.feature-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.feature-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-icon {
+  width: 16px;
+  height: 16px;
+  color: $text-secondary;
+  flex-shrink: 0;
+  transition: color $transition-smooth;
+
+  .feature:hover & {
+    color: $text-primary;
+  }
+}
+
+.feature-label {
+  font-weight: 500;
+  font-size: 13px;
+  color: $text-primary;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.feature-desc {
   display: block;
-  margin-left: 20px;
-  margin-bottom: 20px;
-  font-size: 0.9em;
-  color: #a9a9a9;
+  margin-top: 4px;
+  padding-left: 24px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: $text-secondary;
+  letter-spacing: 0.005em;
 }
 
-input[type='checkbox'] {
-  accent-color: #4caf50;
+// --- Custom toggle switch ---
+.selector {
+  flex-shrink: 0;
 
-  &:hover {
-    cursor: pointer;
+  input[type="checkbox"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 }
 
-:root:not([refresh]) .refresh,
+.toggle {
+  position: relative;
+  display: block;
+  width: 36px;
+  height: 20px;
+  background: $toggle-bg-off;
+  border-radius: 99px;
+  cursor: pointer;
+  transition:
+    background $transition-fast,
+    box-shadow $transition-fast;
+
+  &:hover {
+    background: #33323a;
+  }
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  background: $toggle-knob;
+  border-radius: 50%;
+  transition:
+    transform $transition-fast,
+    box-shadow $transition-fast;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+// Checked state
+input[type="checkbox"]:checked + .toggle {
+  background: $toggle-bg-on;
+  box-shadow: 0 0 12px $accent-glow;
+
+  .toggle-knob {
+    transform: translateX(16px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  }
+}
+
+// Focus-visible ring
+input[type="checkbox"]:focus-visible + .toggle {
+  outline: 2px solid $accent;
+  outline-offset: 2px;
+}
+
+// --- Active toggle: tint the feature card ---
+.feature:has(input[type="checkbox"]:checked) {
+  border-color: rgba($accent, 0.12);
+  background: linear-gradient(135deg, $accent-soft 0%, $bg-card 60%);
+
+  .feature-icon {
+    color: $accent;
+  }
+}
+
+// --- Refresh toast ---
+.footer {
+  overflow: hidden;
+}
+
+.refresh {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba($accent, 0.08);
+  border: 1px solid rgba($accent, 0.15);
+  border-radius: $radius-md;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: $accent;
+  letter-spacing: 0.01em;
+  animation: toastSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  .refresh-text {
+    text-align: center;
+  }
+}
+
+.refresh-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  border: 1px solid rgba($accent, 0.24);
+  border-radius: $radius-sm;
+  background: rgba($accent, 0.12);
+  color: $accent;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition:
+    background $transition-fast,
+    border-color $transition-fast,
+    color $transition-fast,
+    transform $transition-fast;
+
+  &:hover {
+    background: rgba($accent, 0.18);
+    border-color: rgba($accent, 0.38);
+    color: #ff5961;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.8);
+    outline-offset: 2px;
+  }
+
+  .refresh-icon {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    animation: refreshSpin 0.5s ease 0.3s both;
+  }
+}
+
+// --- Conditional visibility ---
+:root:not([refresh]) .refresh {
+  display: none;
+}
+
 :root:not([pip]) #pipDiv {
   display: none;
+}
+
+// --- Animations ---
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes refreshSpin {
+  from {
+    transform: rotate(-90deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
 }

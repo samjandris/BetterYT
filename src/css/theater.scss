@@ -35,11 +35,11 @@
 
       yt-button-shape > button > div {
         span::before {
-          content: 'Exit chat theater mode (';
+          content: "Exit chat theater mode (";
         }
 
         span::after {
-          content: ')';
+          content: ")";
         }
       }
     }
@@ -86,24 +86,24 @@
       > button
       > div {
       span::before {
-        content: 'Enter chat theater mode (';
+        content: "Enter chat theater mode (";
       }
 
       span::after {
-        content: ')';
+        content: ")";
       }
     }
   }
 
   // Rotates the theater button when chat is open
   body[betteryt-theater-button] {
-    button[aria-keyshortcuts='t'] {
-      transform: rotate(90deg);
+    button[aria-keyshortcuts="t"] {
+      transform: rotate(-90deg);
     }
   }
 
   // Base case for the theater button rotation animation, if left inside of the above case it will not animate
-  button[aria-keyshortcuts='t'] {
+  button[aria-keyshortcuts="t"] {
     transition: all 0.5s cubic-bezier(0, 0, 0.2, 1) !important;
   }
 

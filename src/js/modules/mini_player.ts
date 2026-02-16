@@ -50,7 +50,7 @@ function removeClass(el: HTMLElement | null, className: string): void {
 function reparent(
   el: HTMLElement | null,
   newParent: HTMLElement | null,
-  prepend = false
+  prepend = false,
 ): void {
   if (el && newParent && el.parentElement !== newParent) {
     prepend ? newParent.prepend(el) : newParent.appendChild(el);
@@ -59,7 +59,7 @@ function reparent(
 
 function syncText(
   target: HTMLElement | null,
-  source: HTMLElement | null
+  source: HTMLElement | null,
 ): void {
   if (target && source && target.textContent !== source.textContent) {
     target.textContent = source.textContent;
@@ -86,7 +86,7 @@ function getMiniPlayerElements() {
 
 function getMiniPlayerWidth(): number {
   const cssValue = getComputedStyle(document.documentElement).getPropertyValue(
-    "--ytd-miniplayer-width"
+    "--ytd-miniplayer-width",
   );
   return parseInt(cssValue) || DEFAULT_MINIPLAYER_WIDTH;
 }
@@ -124,7 +124,7 @@ function showMiniPlayer() {
 
   reparent(
     SELECTORS.SPONSOR_BLOCK.CONTAINER(),
-    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
+    SELECTORS.BETTERYT.MINI_PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER(),
   );
 }
 
@@ -147,7 +147,7 @@ function showFullPlayer() {
   reparent(player, playerContainer);
   reparent(
     SELECTORS.SPONSOR_BLOCK.CONTAINER(),
-    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER()
+    SELECTORS.PLAYER.CONTROLS.PROGRESS_BAR.CONTAINER(),
   );
 
   if (moviePlayer) {
@@ -180,7 +180,7 @@ function updatePlayerState() {
 function calculateSeekTime(
   clientX: number,
   container: HTMLElement,
-  video: HTMLVideoElement
+  video: HTMLVideoElement,
 ): number {
   const x = clientX - container.getBoundingClientRect().x;
   return (x / container.offsetWidth) * video.duration;
@@ -213,7 +213,7 @@ function updateProgressBar() {
   let accumulatedWidth = 0;
   for (const chapter of chapters) {
     const chapterProgress = chapter.querySelector(
-      ".ytp-play-progress"
+      ".ytp-play-progress",
     ) as HTMLElement;
     if (!chapterProgress) continue;
 
@@ -297,7 +297,7 @@ function createChapters() {
   }
 
   const playerChapters = Array.from(
-    playerChaptersContainer.children
+    playerChaptersContainer.children,
   ) as HTMLElement[];
 
   // Videos without chapters have a single child with no inline width style
@@ -339,7 +339,7 @@ function createChapters() {
       scaledWidth = availableMiniWidth - usedWidth;
     } else {
       scaledWidth = Math.round(
-        (sourceWidth / totalSourceWidth) * availableMiniWidth
+        (sourceWidth / totalSourceWidth) * availableMiniWidth,
       );
       usedWidth += scaledWidth;
     }
@@ -533,7 +533,7 @@ function setupChaptersObserver(): void {
         updatePlayerState();
         createChapters();
       }
-    }
+    },
   );
 }
 
@@ -564,7 +564,7 @@ function setupPlaylistAttributeObserver(): void {
     {
       attributes: true,
       attributeFilter: ["has-playlist-data", "expanded"],
-    }
+    },
   );
 }
 

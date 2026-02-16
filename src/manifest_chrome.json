@@ -32,6 +32,10 @@
       "72": "images/toolbar-icon-72.png"
     }
   },
-  "permissions": ["storage"],
-  "host_permissions": ["https://returnyoutubedislikeapi.com/"]
+  "permissions": ["storage", "tabs"],
+  "host_permissions": [
+    "*://youtube.com/*",
+    "*://*.youtube.com/*",
+    "https://returnyoutubedislikeapi.com/"
+  ]
 }

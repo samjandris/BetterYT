@@ -9,12 +9,16 @@
   },
 
   "settingsTitle": {
-    "message": "Configuraciones de BetterYT",
+    "message": "BetterYT",
     "description": "Título para la ventana emergente"
   },
   "settingsRefresh": {
-    "message": "*Los cambios requieren una actualización",
+    "message": "Algunos cambios necesitan una actualización.",
     "description": "Texto para cuando cambiar una configuración requiere una actualización"
+  },
+  "settingsRefreshAction": {
+    "message": "Actualizar pestañas abiertas de YouTube",
+    "description": "Texto del botón para actualizar las pestañas abiertas de YouTube"
   },
 
   "settingsMiniLabel": {
@@ -22,17 +26,17 @@
     "description": "Etiqueta para la casilla del mini reproductor"
   },
   "settingsMiniDesc": {
-    "message": "Muestra un mini reproductor al desplazarse.",
+    "message": "Muestra un mini reproductor flotante cuando bajas más allá del video.",
     "description": "Descripción del mini reproductor"
   },
 
   "settingsDislikeLabel": {
-    "message": "Devolver contador de no me gusta",
-    "description": "Etiqueta para la casilla para devolver el contador de no me gusta"
+    "message": "Contador de dislikes",
+    "description": "Etiqueta para la casilla del contador de no me gusta"
   },
   "settingsDislikeDesc": {
-    "message": "Devuelve el contador de no me gusta usando la API de Return YouTube Dislike. Desactivar para ser compatible con Return YouTube Dislike nativo.",
-    "description": "Descripción de devolver el contador de no me gusta"
+    "message": "Muestra el contador de dislikes usando la API de Return YouTube Dislike.",
+    "description": "Descripción del contador de no me gusta"
   },
 
   "settingsTheaterLabel": {
@@ -40,25 +44,25 @@
     "description": "Etiqueta para la casilla del modo teatro de chat"
   },
   "settingsTheaterDesc": {
-    "message": "Bloquea el chat junto a la transmisión en vivo en modo teatro, similar a Twitch.",
+    "message": "Fija el chat en vivo junto al video en modo teatro, como en Twitch.",
     "description": "Descripción del modo teatro de chat"
   },
 
   "settingsPipLabel": {
-    "message": "Botón de imagen en imagen",
-    "description": "Etiqueta para la casilla del botón de imagen en imagen"
+    "message": "Imagen en imagen",
+    "description": "Etiqueta para la casilla de imagen en imagen"
   },
   "settingsPipDesc": {
-    "message": "Muestra un botón en el reproductor de video que entra en modo de imagen en imagen, creando un video flotante en la pantalla.",
-    "description": "Descripción del botón de imagen en imagen"
+    "message": "Añade un botón de imagen en imagen al reproductor de video.",
+    "description": "Descripción de imagen en imagen"
   },
 
   "settingsCommentsLabel": {
-    "message": "Comentarios en el lado derecho",
-    "description": "Etiqueta para la casilla de comentarios en el lado derecho"
+    "message": "Comentarios a la derecha",
+    "description": "Etiqueta para la casilla de comentarios a la derecha"
   },
   "settingsCommentsDesc": {
-    "message": "Mueve la sección de comentarios al lugar donde normalmente está la sección relacionada, permitiendo leer más fácilmente los comentarios mientras se ve un video.",
-    "description": "Descripción de comentarios en el lado derecho"
+    "message": "Mueve los comentarios a la barra lateral derecha para leer mientras ves el video.",
+    "description": "Descripción de comentarios a la derecha"
   }
 }

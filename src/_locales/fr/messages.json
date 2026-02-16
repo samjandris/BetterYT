@@ -9,30 +9,34 @@
   },
 
   "settingsTitle": {
-    "message": "Paramètres de BetterYT",
+    "message": "BetterYT",
     "description": "Titre pour la fenêtre popup"
   },
   "settingsRefresh": {
-    "message": "*Les changements nécessitent un rafraîchissement",
+    "message": "Certaines modifications nécessitent une actualisation.",
     "description": "Texte pour quand changer un paramètre nécessite un rafraîchissement"
+  },
+  "settingsRefreshAction": {
+    "message": "Actualiser les onglets YouTube ouverts",
+    "description": "Texte du bouton pour actualiser les onglets YouTube ouverts"
   },
 
   "settingsMiniLabel": {
-    "message": "Mini lecteur",
+    "message": "Mini-lecteur",
     "description": "Étiquette pour la case à cocher du mini-lecteur"
   },
   "settingsMiniDesc": {
-    "message": "Affiche un mini-lecteur lors du défilement.",
+    "message": "Affiche un mini-lecteur flottant quand tu défiles après la vidéo.",
     "description": "Description du mini-lecteur"
   },
 
   "settingsDislikeLabel": {
-    "message": "Retour du compteur de dislikes",
-    "description": "Étiquette pour la case à cocher pour retourner le compteur de dislikes"
+    "message": "Compteur de dislikes",
+    "description": "Étiquette pour la case à cocher du compteur de dislikes"
   },
   "settingsDislikeDesc": {
-    "message": "Restitue le compteur de dislikes en utilisant l'API Return YouTube Dislike. Désactiver pour être compatible avec Return YouTube Dislike natif.",
-    "description": "Description du retour du compteur de dislikes"
+    "message": "Affiche le compteur de dislikes via l'API Return YouTube Dislike.",
+    "description": "Description du compteur de dislikes"
   },
 
   "settingsTheaterLabel": {
@@ -40,25 +44,25 @@
     "description": "Étiquette pour la case à cocher du mode théâtre de chat"
   },
   "settingsTheaterDesc": {
-    "message": "Verrouille le chat à côté de la diffusion en direct en mode théâtre, similaire à Twitch.",
+    "message": "Épingle le chat en direct à côté de la vidéo en mode théâtre, comme sur Twitch.",
     "description": "Description du mode théâtre de chat"
   },
 
   "settingsPipLabel": {
-    "message": "Bouton d'image dans l'image",
-    "description": "Étiquette pour la case à cocher du bouton d'image dans l'image"
+    "message": "Image dans l'image",
+    "description": "Étiquette pour la case à cocher d'image dans l'image"
   },
   "settingsPipDesc": {
-    "message": "Affiche un bouton sur le lecteur vidéo qui active le mode image dans l'image, créant ainsi une vidéo flottante à l'écran.",
-    "description": "Description du bouton d'image dans l'image"
+    "message": "Ajoute un bouton image dans l'image au lecteur vidéo.",
+    "description": "Description d'image dans l'image"
   },
 
   "settingsCommentsLabel": {
-    "message": "Commentaires sur le côté droit",
-    "description": "Étiquette pour la case à cocher des commentaires sur le côté droit"
+    "message": "Commentaires à droite",
+    "description": "Étiquette pour la case à cocher des commentaires à droite"
   },
   "settingsCommentsDesc": {
-    "message": "Déplace la section des commentaires à l'endroit où se trouve normalement la section connexe, permettant une lecture plus aisée des commentaires tout en regardant une vidéo.",
-    "description": "Description des commentaires sur le côté droit"
+    "message": "Déplace les commentaires dans la barre latérale droite pour lire en regardant.",
+    "description": "Description des commentaires à droite"
   }
 }
